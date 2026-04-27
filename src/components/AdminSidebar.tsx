@@ -29,22 +29,12 @@ interface NavItem {
 }
 
 export default function AdminSidebar() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin, canViewModule } = useAuth();
   const { isMultiStore } = useConfig();
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const hasPermission = (key: string): boolean => {
-    if (user?.role === 'admin') return true;
-    const perms = user?.permissions;
-    if (!perms) return false;
-    if (typeof perms === 'object') {
-      return perms[key]?.canView || false;
-    }
-    return false;
-  };
 
   const navItems: NavItem[] = [
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -57,8 +47,8 @@ export default function AdminSidebar() {
   ];
 
   const filteredNavItems = navItems.filter(item => {
-    if (item.adminOnly && user?.role !== 'admin') return false;
-    if (item.permissionKey && !hasPermission(item.permissionKey)) return false;
+    if (item.adminOnly && !isAdmin) return false;
+    if (item.permissionKey && !canViewModule(item.permissionKey) && !isAdmin) return false;
     return true;
   });
 

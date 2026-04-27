@@ -6,11 +6,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import AdminSidebar from '@/components/AdminSidebar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAdmin, isEditor } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && (!user || (user.role !== 'admin' && user.role !== 'editor'))) {
+    if (!isLoading && (!user || (!isAdmin && !isEditor))) {
       router.replace('/login');
     }
   }, [user, isLoading, router]);
@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!user || (user.role !== 'admin' && user.role !== 'editor')) {
+  if (!user || (!isAdmin && !isEditor)) {
     return null;
   }
 

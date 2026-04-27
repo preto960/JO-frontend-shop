@@ -7,7 +7,7 @@ import Header from '@/components/Header';
 import { getInitials, showToast } from '@/lib/utils';
 
 export default function ProfilePage() {
-  const { user, updateProfile, logout } = useAuth();
+  const { user, updateProfile, logout, userRole, refreshProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [phone, setPhone] = useState(user?.phone || '');
   const [birthdate, setBirthdate] = useState(user?.birthdate || '');
@@ -30,12 +30,9 @@ export default function ProfilePage() {
     try {
       const { default: api } = await import('@/lib/api');
       const res = await api.post('/auth/2fa/toggle');
-      const data = res.data || res;
-      showToast(data.message || '2FA actualizado', 'success');
+      showToast(res?.message || '2FA actualizado', 'success');
       // Refresh profile
-      const profileRes = await api.get('/auth/me');
-      const updated = (profileRes as any).data || (profileRes as any).user || profileRes;
-      await updateProfile(updated);
+      await refreshProfile();
     } catch (err: any) {
       showToast(err?.message || 'Error al cambiar 2FA', 'error');
     }
@@ -68,7 +65,7 @@ export default function ProfilePage() {
             display: 'inline-block', marginTop: 8, padding: '4px 12px', borderRadius: 12,
             background: 'var(--input-bg)', fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)',
           }}>
-            {user?.role || 'customer'}
+            {userRole || 'customer'}
           </span>
         </div>
 

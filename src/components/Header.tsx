@@ -16,11 +16,11 @@ interface HeaderProps {
 }
 
 export default function Header({ title, showBack, showLogout = true, showSettings, rightAction, onBack }: HeaderProps) {
-  const { logout, user } = useAuth();
+  const { logout, user, isEditor } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const canShowSettings = showSettings && user?.role !== 'editor';
+  const canShowSettings = showSettings && !isEditor;
 
   return (
     <>

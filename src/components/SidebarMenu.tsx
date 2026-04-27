@@ -27,7 +27,7 @@ interface SidebarMenuProps {
 }
 
 export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin, isEditor, isDelivery, canViewModule } = useAuth();
   const { isMultiStore } = useConfig();
   const router = useRouter();
   const pathname = usePathname();
@@ -79,24 +79,34 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
   };
 
   const getNavItems = () => {
-    const role = user?.role;
-
-    if (role === 'admin' || role === 'editor') {
+    // Admin or Editor
+    if (isAdmin || isEditor) {
       const items: any[] = [
         { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/admin/products', label: 'Productos', icon: Package },
-        { path: '/admin/categories', label: 'Categorías', icon: Tag },
-        { path: '/admin/orders', label: 'Pedidos', icon: ClipboardList },
-        ...(isMultiStore ? [{ path: '/admin/stores', label: 'Tiendas', icon: Store }] : []),
-        { path: '/admin/roles', label: 'Roles', icon: Shield },
       ];
-      if (role === 'admin') {
+      if (canViewModule('products') || isAdmin) {
+        items.push({ path: '/admin/products', label: 'Productos', icon: Package });
+      }
+      if (canViewModule('categories') || isAdmin) {
+        items.push({ path: '/admin/categories', label: 'Categorías', icon: Tag });
+      }
+      if (canViewModule('orders') || isAdmin) {
+        items.push({ path: '/admin/orders', label: 'Pedidos', icon: ClipboardList });
+      }
+      if (isMultiStore && (canViewModule('stores') || isAdmin)) {
+        items.push({ path: '/admin/stores', label: 'Tiendas', icon: Store });
+      }
+      if (canViewModule('roles') || isAdmin) {
+        items.push({ path: '/admin/roles', label: 'Roles', icon: Shield });
+      }
+      if (isAdmin) {
         items.push({ path: '/admin/users', label: 'Usuarios', icon: Users });
       }
       return items;
     }
 
-    if (role === 'delivery') {
+    // Delivery
+    if (isDelivery) {
       return [
         { path: '/delivery', label: 'Entregas', icon: Truck },
         { path: '/profile', label: 'Mi Perfil', icon: User },

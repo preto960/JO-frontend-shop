@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomePage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAdmin, isEditor, isDelivery } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,9 +14,9 @@ export default function HomePage() {
       router.replace('/login');
       return;
     }
-    if (user.role === 'admin' || user.role === 'editor') {
+    if (isAdmin || isEditor) {
       router.replace('/admin');
-    } else if (user.role === 'delivery') {
+    } else if (isDelivery) {
       router.replace('/delivery');
     } else {
       router.replace('/home');

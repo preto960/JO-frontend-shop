@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function DeliveryLayout({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isDelivery } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'delivery')) {
+    if (!isLoading && (!user || !isDelivery)) {
       router.replace('/login');
     }
   }, [user, isLoading, router]);
@@ -25,7 +25,7 @@ export default function DeliveryLayout({ children }: { children: React.ReactNode
     );
   }
 
-  if (!user || user.role !== 'delivery') return null;
+  if (!user || !isDelivery) return null;
 
   return <>{children}</>;
 }

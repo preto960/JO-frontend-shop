@@ -11,8 +11,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
   const [otpCode, setOtpCode] = useState('');
-  const { login, verifyOtp } = useAuth();
+  const { login, verifyOtp, isAdmin, isEditor, isDelivery } = useAuth();
   const router = useRouter();
+
+  const redirectByRole = () => {
+    if (isAdmin || isEditor) {
+      router.replace('/admin');
+    } else if (isDelivery) {
+      router.replace('/delivery');
+    } else {
+      router.replace('/home');
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +35,10 @@ export default function LoginPage() {
       const result = await login(email, password);
       if (result.requiresOtp) {
         setOtpEmail(result.email || email);
+      } else if (result.error) {
+        showToast(result.error, 'error');
       } else {
-        router.push('/home');
+        redirectByRole();
       }
     } catch (err: any) {
       showToast(err?.message || 'Error al iniciar sesión', 'error');
@@ -45,7 +57,7 @@ export default function LoginPage() {
     try {
       await verifyOtp(otpEmail!, otpCode);
       showToast('Verificación exitosa', 'success');
-      router.push('/home');
+      redirectByRole();
     } catch (err: any) {
       showToast(err?.message || 'Código inválido', 'error');
     } finally {

@@ -3,31 +3,88 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '@/lib/api';
 
+interface Permission {
+  id?: string;
+  code: string;
+  name?: string;
+}
+
+interface Role {
+  id?: string;
+  name: string;
+}
+
 interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role?: string;
+  roles?: Role[];
+  permissions?: Permission[];
   phone?: string;
   birthdate?: string;
   twoFactorEnabled?: boolean;
   storeId?: string;
-  permissions?: any;
+  stores?: any[];
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string }>;
+  login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string; error?: string }>;
   verifyOtp: (email: string, code: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<any>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
+  // Role helpers
+  userRole: string;
+  isAdmin: boolean;
+  isEditor: boolean;
+  isDelivery: boolean;
+  isCustomer: boolean;
+  hasPermission: (code: string) => boolean;
+  canViewModule: (moduleName: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function extractUser(data: any): User | null {
+  if (!data) return null;
+  // Direct user object
+  if (data.id && (data.email || data.name)) return data;
+  // Nested in .data
+  if (data.data && typeof data.data === 'object' && data.data.id) return data.data;
+  // Nested in .user
+  if (data.user && typeof data.user === 'object' && data.user.id) return data.user;
+  return null;
+}
+
+function extractToken(data: any): string | null {
+  if (!data) return null;
+  return data.token || data.accessToken || null;
+}
+
+function extractRefreshToken(data: any): string | null {
+  if (!data) return null;
+  return data.refreshToken || null;
+}
+
+function getRoleFromUser(user: User): string {
+  if (!user) return 'customer';
+  // Backend sends roles as array of {name: 'admin'} or role as string
+  if (user.roles && Array.isArray(user.roles) && user.roles.length > 0) {
+    return user.roles[0].name.toLowerCase();
+  }
+  if (user.role && typeof user.role === 'string') {
+    return user.role.toLowerCase();
+  }
+  if (user.role && typeof user.role === 'object' && 'name' in user.role) {
+    return String((user.role as any).name).toLowerCase();
+  }
+  return 'customer';
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -36,67 +93,97 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Load auth from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('joshop_auth');
-    if (stored) {
+    const restoreSession = async () => {
       try {
-        const { user, token } = JSON.parse(stored);
-        if (token) {
-          setToken(token);
-          setUser(user);
-          // Verify token is still valid
-          api.get('/auth/me').then((res: any) => {
-            const u = res.data || res.user || res;
+        const stored = localStorage.getItem('joshop_auth');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const u = extractUser(parsed);
+          const t = parsed.token || extractToken(parsed);
+
+          if (u && t) {
+            setToken(t);
             setUser(u);
-            const updated = JSON.stringify({ user: u, token });
-            localStorage.setItem('joshop_auth', updated);
-            setIsLoading(false);
-          }).catch(() => {
-            localStorage.removeItem('joshop_auth');
-            setToken(null);
-            setUser(null);
-            setIsLoading(false);
-          });
-          return;
+
+            // Verify token is still valid by fetching fresh profile
+            try {
+              const res = await api.get('/auth/me');
+              const freshUser = extractUser(res);
+              if (freshUser) {
+                setUser(freshUser);
+                const updated = JSON.stringify({ user: freshUser, token: t, refreshToken: parsed.refreshToken });
+                localStorage.setItem('joshop_auth', updated);
+              }
+            } catch {
+              // Token invalid - clear session
+              localStorage.removeItem('joshop_auth');
+              setToken(null);
+              setUser(null);
+            }
+          }
         }
       } catch {
         localStorage.removeItem('joshop_auth');
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+    restoreSession();
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await api.post('/auth/login', { email, password });
-    const data = res.data || res;
-    if (data.requiresOtp) {
-      return { requiresOtp: true, email: data.email || email };
+    try {
+      const res = await api.post('/auth/login', { email, password });
+
+      // Check for 2FA
+      if (res.requiresOtp || res.data?.requiresOtp) {
+        return { requiresOtp: true, email: res.email || res.data?.email || email };
+      }
+
+      const u = extractUser(res);
+      const t = extractToken(res);
+      const rt = extractRefreshToken(res);
+
+      if (u && t) {
+        setToken(t);
+        setUser(u);
+        localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+        return { requiresOtp: false };
+      }
+
+      return { requiresOtp: false, error: 'Respuesta inesperada del servidor' };
+    } catch (err: any) {
+      const message = err?.message || err?.error || 'Error al iniciar sesión';
+      return { requiresOtp: false, error: message };
     }
-    const u = data.user || data;
-    const t = data.token || data.accessToken;
-    if (t) {
-      setToken(t);
-      setUser(u);
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: data.refreshToken }));
-    }
-    return { requiresOtp: false };
   }, []);
 
   const verifyOtp = useCallback(async (email: string, code: string) => {
     const res = await api.post('/auth/login-verify', { email, code });
-    const data = res.data || res;
-    const u = data.user || data;
-    const t = data.token || data.accessToken;
-    if (t) {
+    const u = extractUser(res);
+    const t = extractToken(res);
+    const rt = extractRefreshToken(res);
+
+    if (u && t) {
       setToken(t);
       setUser(u);
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: data.refreshToken }));
+      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+      return true;
     }
-    return true;
+    return false;
   }, []);
 
   const register = useCallback(async (name: string, email: string, password: string) => {
     const res = await api.post('/auth/register', { name, email, password });
-    return res.data || res;
+    const u = extractUser(res);
+    const t = extractToken(res);
+    const rt = extractRefreshToken(res);
+
+    if (u && t) {
+      setToken(t);
+      setUser(u);
+      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+    }
+    return res;
   }, []);
 
   const logout = useCallback(() => {
@@ -108,29 +195,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
     const res = await api.put('/auth/me', data);
-    const u = res.data || res.user || res;
-    setUser(prev => {
-      const updated = { ...prev, ...u };
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: updated, token }));
-      return updated;
-    });
+    const u = extractUser(res);
+    if (u) {
+      setUser(prev => {
+        const updated = { ...prev, ...u } as User;
+        localStorage.setItem('joshop_auth', JSON.stringify({ user: updated, token }));
+        return updated;
+      });
+    }
   }, [token]);
 
   const refreshProfile = useCallback(async () => {
     try {
       const res = await api.get('/auth/me');
-      const u = res.data || res.user || res;
-      setUser(u);
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token }));
+      const u = extractUser(res);
+      if (u) {
+        setUser(u);
+        localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token }));
+      }
     } catch {
       // ignore
     }
   }, [token]);
 
+  // ─── Role helpers ─────────────────────────────────────────────────────
+  const userRole = user ? getRoleFromUser(user) : '';
+
+  const isAdmin = userRole === 'admin';
+  const isEditor = userRole === 'editor';
+  const isDelivery = userRole === 'delivery';
+  const isCustomer = userRole === 'customer' || (!isAdmin && !isEditor && !isDelivery);
+
+  const hasPermission = useCallback((code: string): boolean => {
+    if (!user?.permissions) return false;
+    if (Array.isArray(user.permissions)) {
+      return user.permissions.some((p: any) => p.code === code);
+    }
+    return false;
+  }, [user?.permissions]);
+
+  const canViewModule = useCallback((moduleName: string): boolean => {
+    if (isAdmin) return true;
+    if (!user?.permissions) return false;
+    if (Array.isArray(user.permissions)) {
+      return user.permissions.some((p: any) => p.code === `${moduleName}.view_menu`);
+    }
+    return false;
+  }, [user?.permissions, isAdmin]);
+
   return (
     <AuthContext.Provider value={{
       user, token, isLoading,
       login, verifyOtp, register, logout, updateProfile, refreshProfile,
+      userRole, isAdmin, isEditor, isDelivery, isCustomer,
+      hasPermission, canViewModule,
     }}>
       {children}
     </AuthContext.Provider>
