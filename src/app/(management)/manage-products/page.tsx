@@ -86,16 +86,7 @@ export default function AdminProductsPage() {
       if (search) url += `?search=${encodeURIComponent(search)}`;
       const res = await api.get(url);
       const extracted = extractData(res);
-      if (extracted.length > 0) {
-        setProducts(extracted);
-      } else if (res) {
-        // Fallback: try to find products in raw response
-        const raw = Array.isArray(res) ? res : null;
-        const rawNested = res?.data && Array.isArray(res.data) ? res.data : null;
-        setProducts(raw || rawNested || []);
-      } else {
-        setProducts([]);
-      }
+      setProducts(Array.isArray(extracted) ? extracted : []);
     } catch (err: any) {
       console.error('Error fetching products:', err);
       setProducts([]);
@@ -107,8 +98,8 @@ export default function AdminProductsPage() {
     try {
       const res = await api.get('/categories');
       const extracted = extractData(res);
-      setCategories(extracted.length > 0 ? extracted : []);
-    } catch (err) { console.error('Error fetching categories:', err); }
+      setCategories(Array.isArray(extracted) ? extracted : []);
+    } catch { /* ignore */ }
   };
 
   const fetchStores = async () => {
@@ -116,8 +107,8 @@ export default function AdminProductsPage() {
     try {
       const res = await api.get('/stores');
       const extracted = extractData(res);
-      setStores(extracted.length > 0 ? extracted : []);
-    } catch (err) { console.error('Error fetching stores:', err); }
+      setStores(Array.isArray(extracted) ? extracted : []);
+    } catch { /* ignore */ }
   };
 
   useEffect(() => { fetchCategories(); fetchStores(); }, [isMultiStore]);
@@ -131,8 +122,8 @@ export default function AdminProductsPage() {
 
   const openEdit = (product: any) => {
     setEditingProduct(product);
-    const cat = product.categoryId || (product.category?.id) || '';
-    const store = product.storeId || (product.store?.id) || '';
+    const cat = product.categoryId || (product.category && product.category.id) || '';
+    const store = product.storeId || (product.store && product.store.id) || '';
     setForm({
       name: product.name || '',
       description: product.description || '',
@@ -245,8 +236,8 @@ export default function AdminProductsPage() {
               </thead>
               <tbody>
                 {products.map((product: any) => {
-                  const catName = typeof product.category === 'object' ? (product.category.name || product.category.nombre) : '';
-                  const storeName = typeof product.store === 'object' ? (product.store.name || product.store.nombre) : '';
+                  const catName = product.category && typeof product.category === 'object' ? (product.category.name || product.category.nombre || '') : '';
+                  const storeName = product.store && typeof product.store === 'object' ? (product.store.name || product.store.nombre || '') : '';
                   return (
                     <tr key={product.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.15s ease' }}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--input-bg)'; }}
@@ -272,8 +263,8 @@ export default function AdminProductsPage() {
                       <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#FF6B35' }}>
                         {formatPrice(product.price)}
                       </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, color: product.stock <= 0 ? '#FF6B6B' : 'var(--text)' }}>
-                        {product.stock !== undefined ? product.stock : 'N/A'}
+                      <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? '#FF6B6B' : 'var(--text)' }}>
+                        {product.stock != null ? product.stock : 'N/A'}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
                       {isMultiStore && <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{storeName || 'N/A'}</td>}

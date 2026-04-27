@@ -634,8 +634,10 @@ export default function HomePage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 16,
+            overflow: 'hidden',
           }}>
             <style>{`
+              .products-grid > div { min-width: 0; overflow: hidden; }
               @media (min-width: 768px) {
                 .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
               }
