@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { LogOut, Settings, ArrowLeft, Menu } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LogOut, Settings, ArrowLeft, Menu, ShoppingCart, LogIn } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import SidebarMenu from './SidebarMenu';
@@ -19,8 +19,28 @@ export default function Header({ title, showBack, showLogout = true, showSetting
   const { logout, user, isEditor } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   const canShowSettings = showSettings && !isEditor;
+  const isLoggedIn = !!user;
+
+  useEffect(() => {
+    const updateCart = () => {
+      try {
+        const cart = JSON.parse(localStorage.getItem('joshop_cart') || '[]');
+        setCartCount(cart.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0));
+      } catch {
+        setCartCount(0);
+      }
+    };
+    updateCart();
+    window.addEventListener('cartUpdated', updateCart);
+    window.addEventListener('storage', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+      window.removeEventListener('storage', updateCart);
+    };
+  }, []);
 
   return (
     <>
@@ -48,7 +68,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
           gap: 4,
           zIndex: 1,
         }}>
-          {!showBack && (
+          {!showBack && isLoggedIn && (
             <button
               onClick={() => setMenuOpen(true)}
               style={{
@@ -101,7 +121,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, alignItems: 'center', zIndex: 1 }}>
           {canShowSettings && (
             <button
-              onClick={() => router.push('/admin/users')}
+              onClick={() => router.push('/manage-users')}
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
@@ -121,8 +141,44 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               <Settings size={20} />
             </button>
           )}
+          {/* Cart icon with badge */}
+          {isLoggedIn && (
+            <button
+              onClick={() => router.push('/cart')}
+              style={{
+                background: 'rgba(255,255,255,0.15)',
+                border: 'none',
+                color: 'var(--white)',
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
+                position: 'relative',
+              }}
+              aria-label="Carrito"
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: 2, right: 2,
+                  background: '#FF6B6B', color: 'white',
+                  fontSize: 10, fontWeight: 700,
+                  minWidth: 16, height: 16, borderRadius: 8,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 4px',
+                }}>
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
+            </button>
+          )}
           {rightAction}
-          {showLogout && (
+          {isLoggedIn && showLogout && (
             <button
               onClick={logout}
               style={{
@@ -148,7 +204,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
       </header>
 
       {/* Sidebar menu */}
-      <SidebarMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      {isLoggedIn && <SidebarMenu open={menuOpen} onClose={() => setMenuOpen(false)} />}
     </>
   );
 }

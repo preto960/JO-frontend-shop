@@ -5,9 +5,9 @@ import { Home, ShoppingCart, ClipboardList, User } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 const tabs = [
-  { path: '/home', label: 'Inicio', icon: Home },
+  { path: '/', label: 'Inicio', icon: Home },
   { path: '/cart', label: 'Carrito', icon: ShoppingCart },
-  { path: '/orders', label: 'Pedidos', icon: ClipboardList },
+  { path: '/my-orders', label: 'Pedidos', icon: ClipboardList },
   { path: '/profile', label: 'Perfil', icon: User },
 ];
 
@@ -52,7 +52,7 @@ export default function BottomNav() {
       }}
     >
       {tabs.map((tab) => {
-        const isActive = pathname === tab.path || (tab.path === '/home' && pathname === '/');
+        const isActive = pathname === tab.path || (tab.path === '/' && pathname === '/');
         const Icon = tab.icon;
         return (
           <button

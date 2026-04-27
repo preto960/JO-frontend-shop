@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      <Header title={name} showBack onBack={() => router.push('/home')} showLogout={false} />
+      <Header title={name} showBack onBack={() => router.push('/')} showLogout={false} />
 
       <div style={{ padding: '0 0 100px' }}>
         {loading ? (

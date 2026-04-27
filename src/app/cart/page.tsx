@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2, ShoppingCart, ShoppingBag } from 'lucide-react';
-import Header from '@/components/Header';
-
+import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice, getProductImage, showToast } from '@/lib/utils';
 
 interface CartItem {
@@ -19,7 +18,9 @@ interface CartItem {
 
 export default function CartPage() {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
+  const isLoggedIn = !!user;
 
   const loadCart = () => {
     try {
@@ -66,43 +67,41 @@ export default function CartPage() {
 
   const total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
 
-  const placeOrder = async () => {
-    if (cart.length === 0) return;
-    try {
-      const { default: api } = await import('@/lib/api');
-      const items = cart.map(item => ({
-        productId: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      }));
-      await api.post('/orders', { items });
-      showToast('¡Pedido realizado con éxito!', 'success');
-      setCart([]);
-      localStorage.removeItem('joshop_cart');
-      window.dispatchEvent(new Event('cartUpdated'));
-      router.push('/orders');
-    } catch (err: any) {
-      showToast(err?.message || 'Error al realizar el pedido', 'error');
-    }
-  };
-
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)', display: 'flex', flexDirection: 'column' }}>
-      <Header
-        title="Mi Carrito"
-        showLogout={false}
-        rightAction={
-          cart.length > 0 ? (
+      {/* Simple public header */}
+      <header style={{
+        background: 'var(--primary-gradient)', color: 'var(--white)',
+        padding: '0 16px', height: 60, display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        position: 'sticky', top: 0, zIndex: 100,
+        boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
+      }}>
+        <div style={{ position: 'absolute', left: 16 }}>
+          <button
+            onClick={() => router.push('/')}
+            style={{
+              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+              cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <ShoppingCart size={22} />
+          </button>
+        </div>
+        <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>Mi Carrito</h1>
+        <div style={{ position: 'absolute', right: 16, zIndex: 1 }}>
+          {cart.length > 0 && (
             <button
               onClick={clearCart}
-              style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4 }}
+              style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', cursor: 'pointer', width: 40, height: 40, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               aria-label="Vaciar carrito"
             >
               <Trash2 size={20} />
             </button>
-          ) : undefined
-        }
-      />
+          )}
+        </div>
+      </header>
 
       <div style={{ flex: 1, padding: '16px 16px 120px', maxWidth: 900, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
         {cart.length === 0 ? (
@@ -124,7 +123,7 @@ export default function CartPage() {
               Agrega productos para comenzar
             </p>
             <button
-              onClick={() => router.push('/home')}
+              onClick={() => router.push('/')}
               style={{
                 padding: '13px 32px',
                 borderRadius: 'var(--radius-full)',
@@ -264,28 +263,56 @@ export default function CartPage() {
             </span>
           </div>
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
-            <button
-              onClick={placeOrder}
-              style={{
-                width: '100%',
-                height: 50,
-                borderRadius: 12,
-                background: 'var(--primary-gradient)',
-                color: 'white',
-                fontSize: 16,
-                fontWeight: 700,
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                boxShadow: 'var(--shadow-accent)',
-                transition: 'all 0.25s ease',
-              }}
-            >
-              Realizar pedido
-            </button>
+            {isLoggedIn ? (
+              <button
+                onClick={() => router.push('/checkout')}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 12,
+                  background: 'var(--primary-gradient)',
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  boxShadow: 'var(--shadow-accent)',
+                  transition: 'all 0.25s ease',
+                }}
+              >
+                Realizar pedido
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  localStorage.setItem('joshop_redirect_after_login', '/checkout');
+                  router.push('/login');
+                }}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 12,
+                  background: 'var(--primary-gradient)',
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  boxShadow: 'var(--shadow-accent)',
+                  transition: 'all 0.25s ease',
+                }}
+              >
+                Inicia sesión para comprar
+              </button>
+            )}
           </div>
         </div>
       )}

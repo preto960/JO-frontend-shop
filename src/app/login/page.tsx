@@ -15,10 +15,17 @@ export default function LoginPage() {
   const router = useRouter();
 
   const redirectByRole = () => {
+    // Check if there's a saved redirect after login (e.g., /checkout)
+    const savedRedirect = localStorage.getItem('joshop_redirect_after_login');
+    if (savedRedirect) {
+      localStorage.removeItem('joshop_redirect_after_login');
+      router.replace(savedRedirect);
+      return;
+    }
     if (isDelivery) {
-      router.replace('/delivery');
+      router.replace('/deliveries');
     } else {
-      router.replace('/home');
+      router.replace('/');
     }
   };
 

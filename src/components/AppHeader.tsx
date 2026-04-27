@@ -1,15 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, Menu, ShoppingBag } from 'lucide-react';
+import { LogOut, Menu, ShoppingBag, ShoppingCart } from 'lucide-react';
 import SidebarMenu from '@/components/SidebarMenu';
 
 export default function AppHeader() {
   const { logout, isEditor, user } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCart = () => {
+      try {
+        const cart = JSON.parse(localStorage.getItem('joshop_cart') || '[]');
+        setCartCount(cart.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0));
+      } catch {
+        setCartCount(0);
+      }
+    };
+    updateCart();
+    window.addEventListener('cartUpdated', updateCart);
+    window.addEventListener('storage', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+      window.removeEventListener('storage', updateCart);
+    };
+  }, []);
 
   return (
     <>
@@ -68,8 +87,42 @@ export default function AppHeader() {
           <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.3px' }}>JO-Shop</h1>
         </div>
 
-        {/* Right: logout */}
-        <div style={{ position: 'absolute', right: 16, zIndex: 1 }}>
+        {/* Right: cart + logout */}
+        <div style={{ position: 'absolute', right: 16, zIndex: 1, display: 'flex', gap: 8 }}>
+          {/* Cart icon with badge */}
+          <button
+            onClick={() => router.push('/cart')}
+            style={{
+              background: 'rgba(255,255,255,0.15)',
+              border: 'none',
+              color: 'var(--white)',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 40,
+              height: 40,
+              borderRadius: 'var(--radius-sm)',
+              transition: 'var(--transition-fast)',
+              position: 'relative',
+            }}
+            aria-label="Carrito"
+          >
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span style={{
+                position: 'absolute', top: 2, right: 2,
+                background: '#FF6B6B', color: 'white',
+                fontSize: 10, fontWeight: 700,
+                minWidth: 16, height: 16, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '0 4px',
+              }}>
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
+          </button>
           <button
             onClick={logout}
             style={{

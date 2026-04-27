@@ -1,11 +1,10 @@
 'use client';
-
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import AppHeader from '@/components/AppHeader';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function ManagementLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, isAdmin, isEditor } = useAuth();
   const router = useRouter();
 
@@ -28,9 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <AppHeader />
-      <main style={{ minHeight: '100vh', background: 'var(--background)' }}>
-        {children}
-      </main>
+      <main style={{ minHeight: '100vh', background: 'var(--background)' }}>{children}</main>
     </>
   );
 }

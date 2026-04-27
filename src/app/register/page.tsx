@@ -31,8 +31,14 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(name, email, password);
-      showToast('Cuenta creada exitosamente. Inicia sesión.', 'success');
-      router.push('/login');
+      showToast('Cuenta creada exitosamente.', 'success');
+      const savedRedirect = localStorage.getItem('joshop_redirect_after_login');
+      if (savedRedirect) {
+        localStorage.removeItem('joshop_redirect_after_login');
+        router.push(savedRedirect);
+      } else {
+        router.push('/');
+      }
     } catch (err: any) {
       showToast(err?.message || 'Error al registrarse', 'error');
     } finally {

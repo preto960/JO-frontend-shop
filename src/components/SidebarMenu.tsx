@@ -76,25 +76,26 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
     // Admin or Editor
     if (isAdmin || isEditor) {
       const items: any[] = [
-        { path: '/home', label: 'Inicio', icon: Home },
+        { path: '/', label: 'Inicio', icon: Home },
+        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       ];
       if (canViewModule('products') || isAdmin) {
-        items.push({ path: '/admin/products', label: 'Gestionar Productos', icon: Package });
+        items.push({ path: '/manage-products', label: 'Gestionar Productos', icon: Package });
       }
       if (canViewModule('categories') || isAdmin) {
-        items.push({ path: '/admin/categories', label: 'Categorías', icon: Tag });
+        items.push({ path: '/manage-categories', label: 'Categorías', icon: Tag });
       }
       if (canViewModule('orders') || isAdmin) {
-        items.push({ path: '/admin/orders', label: 'Pedidos', icon: ClipboardList });
+        items.push({ path: '/manage-orders', label: 'Pedidos', icon: ClipboardList });
       }
       if (isMultiStore && (canViewModule('stores') || isAdmin)) {
-        items.push({ path: '/admin/stores', label: 'Tiendas', icon: Store });
+        items.push({ path: '/manage-stores', label: 'Tiendas', icon: Store });
       }
       if (canViewModule('roles') || isAdmin) {
-        items.push({ path: '/admin/roles', label: 'Roles', icon: Shield });
+        items.push({ path: '/manage-roles', label: 'Roles', icon: Shield });
       }
       if (isAdmin) {
-        items.push({ path: '/admin/users', label: 'Usuarios', icon: Users });
+        items.push({ path: '/manage-users', label: 'Usuarios', icon: Users });
       }
       return items;
     }
@@ -102,16 +103,17 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
     // Delivery
     if (isDelivery) {
       return [
-        { path: '/delivery', label: 'Entregas', icon: Truck },
+        { path: '/', label: 'Inicio', icon: Home },
+        { path: '/deliveries', label: 'Entregas', icon: Truck },
         { path: '/profile', label: 'Mi Perfil', icon: User },
       ];
     }
 
     // Customer
     return [
-      { path: '/home', label: 'Inicio', icon: Home },
+      { path: '/', label: 'Inicio', icon: Home },
       { path: '/cart', label: 'Carrito', icon: ShoppingCart, badge: cartCount },
-      { path: '/orders', label: 'Pedidos', icon: ClipboardList },
+      { path: '/my-orders', label: 'Mis Pedidos', icon: ClipboardList },
       { path: '/profile', label: 'Perfil', icon: User },
     ];
   };
