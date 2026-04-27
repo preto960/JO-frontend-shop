@@ -52,6 +52,18 @@ export function extractData(response: any): any[] {
   if (response.stores && Array.isArray(response.stores)) return response.stores;
   if (response.categories && Array.isArray(response.categories)) return response.categories;
   if (response.roles && Array.isArray(response.roles)) return response.roles;
+  // Handle nested data.data.{collection} pattern (e.g., { data: { products: [...] } })
+  if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
+    const nested = response.data;
+    if (nested.products && Array.isArray(nested.products)) return nested.products;
+    if (nested.items && Array.isArray(nested.items)) return nested.items;
+    if (nested.data && Array.isArray(nested.data)) return nested.data;
+    if (nested.orders && Array.isArray(nested.orders)) return nested.orders;
+    if (nested.users && Array.isArray(nested.users)) return nested.users;
+    if (nested.stores && Array.isArray(nested.stores)) return nested.stores;
+    if (nested.categories && Array.isArray(nested.categories)) return nested.categories;
+    if (nested.roles && Array.isArray(nested.roles)) return nested.roles;
+  }
   return Array.isArray(response) ? response : [];
 }
 

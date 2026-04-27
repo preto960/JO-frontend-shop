@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import {
   Search, PackageSearch, ShoppingCart, Star, TrendingUp,
   Percent, ChevronRight, Truck, Shield, Clock, Sparkles,
-  Menu, LogIn, User,
+  Menu, LogIn, LogOut, User,
 } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import SidebarMenu from '@/components/SidebarMenu';
 import ProductCard from '@/components/ProductCard';
+import CartDropdown from '@/components/CartDropdown';
 import { showToast, debounce, formatPrice } from '@/lib/utils';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -32,6 +33,8 @@ export default function HomePage() {
   const [selectedStore, setSelectedStore] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [cartOpen, setCartOpen] = useState(false);
+  const cartBtnRef = React.useRef<HTMLButtonElement>(null);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -133,6 +136,7 @@ export default function HomePage() {
 
   const hasActiveFilters = search || selectedCategory || selectedStore;
 
+  const { logout } = useAuth();
   const isLoggedIn = !!user;
 
   return (
@@ -168,32 +172,51 @@ export default function HomePage() {
         <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>JO-Shop</h1>
 
         {/* Right section */}
-        <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
+        <div style={{ position: 'relative', display: 'flex', gap: 8, zIndex: 1 }}>
           {isLoggedIn ? (
-            <button
-              onClick={() => router.push('/cart')}
-              style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                position: 'relative',
-              }}
-              aria-label="Carrito"
-            >
-              <ShoppingCart size={20} />
-              {cartCount > 0 && (
-                <span style={{
-                  position: 'absolute', top: 2, right: 2,
-                  background: '#FF6B6B', color: 'white',
-                  fontSize: 10, fontWeight: 700,
-                  minWidth: 16, height: 16, borderRadius: 8,
+            <>
+              <button
+                ref={cartBtnRef}
+                onClick={() => setCartOpen(!cartOpen)}
+                style={{
+                  background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                  cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  padding: '0 4px',
-                }}>
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
-              )}
-            </button>
+                  position: 'relative',
+                }}
+                aria-label="Carrito"
+              >
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span style={{
+                    position: 'absolute', top: 2, right: 2,
+                    background: '#FF6B6B', color: 'white',
+                    fontSize: 10, fontWeight: 700,
+                    minWidth: 16, height: 16, borderRadius: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '0 4px',
+                  }}>
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={logout}
+                style={{
+                  background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                  cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+                aria-label="Cerrar sesión"
+              >
+                <LogOut size={20} />
+              </button>
+              <CartDropdown
+                isOpen={cartOpen}
+                onClose={() => setCartOpen(false)}
+                anchorRef={cartBtnRef}
+              />
+            </>
           ) : (
             <button
               onClick={() => router.push('/login')}

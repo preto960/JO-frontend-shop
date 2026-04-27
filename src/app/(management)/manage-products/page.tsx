@@ -85,24 +85,39 @@ export default function AdminProductsPage() {
       let url = '/products';
       if (search) url += `?search=${encodeURIComponent(search)}`;
       const res = await api.get(url);
-      setProducts(extractData(res));
-    } catch { /* ignore */ }
+      const extracted = extractData(res);
+      if (extracted.length > 0) {
+        setProducts(extracted);
+      } else if (res) {
+        // Fallback: try to find products in raw response
+        const raw = Array.isArray(res) ? res : null;
+        const rawNested = res?.data && Array.isArray(res.data) ? res.data : null;
+        setProducts(raw || rawNested || []);
+      } else {
+        setProducts([]);
+      }
+    } catch (err: any) {
+      console.error('Error fetching products:', err);
+      setProducts([]);
+    }
     finally { setLoading(false); }
   };
 
   const fetchCategories = async () => {
     try {
       const res = await api.get('/categories');
-      setCategories(extractData(res));
-    } catch { /* ignore */ }
+      const extracted = extractData(res);
+      setCategories(extracted.length > 0 ? extracted : []);
+    } catch (err) { console.error('Error fetching categories:', err); }
   };
 
   const fetchStores = async () => {
     if (!isMultiStore) return;
     try {
       const res = await api.get('/stores');
-      setStores(extractData(res));
-    } catch { /* ignore */ }
+      const extracted = extractData(res);
+      setStores(extracted.length > 0 ? extracted : []);
+    } catch (err) { console.error('Error fetching stores:', err); }
   };
 
   useEffect(() => { fetchCategories(); fetchStores(); }, [isMultiStore]);
