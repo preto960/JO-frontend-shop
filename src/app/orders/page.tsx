@@ -78,7 +78,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders list */}
-      <div style={{ padding: '16px 16px 24px' }}>
+      <div style={{ padding: '16px 16px 24px', maxWidth: 900, margin: '0 auto' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
             <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />

@@ -91,7 +91,7 @@ export default function HomePage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title="JO-Shop" showLogout />
 
-      <div style={{ padding: '16px 16px 24px' }}>
+      <div style={{ padding: '16px 16px 24px', maxWidth: 1200, margin: '0 auto' }}>
         {/* Search bar */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
           <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
@@ -169,7 +169,7 @@ export default function HomePage() {
         ) : (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
             gap: 12,
           }}>
             {products.map((product: any) => (

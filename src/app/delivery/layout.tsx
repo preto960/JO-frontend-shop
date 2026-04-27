@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import AppHeader from '@/components/AppHeader';
 
 export default function DeliveryLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, isDelivery } = useAuth();
@@ -27,5 +28,12 @@ export default function DeliveryLayout({ children }: { children: React.ReactNode
 
   if (!user || !isDelivery) return null;
 
-  return <>{children}</>;
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      <AppHeader />
+      <div style={{ padding: '0 16px 24px' }}>
+        {children}
+      </div>
+    </div>
+  );
 }

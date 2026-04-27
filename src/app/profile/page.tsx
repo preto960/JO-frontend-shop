@@ -42,7 +42,7 @@ export default function ProfilePage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title="Mi Perfil" showLogout={false} />
 
-      <div style={{ padding: '16px 16px 24px' }}>
+      <div style={{ padding: '16px 16px 24px', maxWidth: 600, margin: '0 auto' }}>
         {/* Avatar section */}
         <div className="animate-fade-in" style={{
           background: 'var(--white)', borderRadius: 16, padding: 24,

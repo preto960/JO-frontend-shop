@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, ChevronDown, ChevronUp, MapPin, Phone, User } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
-import Header from '@/components/Header';
 import { formatPrice, formatDate, formatDateTime, getStatusLabel, getStatusColor, showToast } from '@/lib/utils';
 
 export default function DeliveryPage() {
@@ -71,20 +70,21 @@ export default function DeliveryPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      <Header
-        title="Entregas"
-        showLogout={false}
-        rightAction={
-          <button
-            onClick={fetchOrders}
-            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4 }}
-            aria-label="Actualizar"
-          >
-            <RefreshCw size={20} />
-          </button>
-        }
-      />
+    <>
+      {/* Refresh button top right */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px 0 4px' }}>
+        <button
+          onClick={fetchOrders}
+          style={{
+            background: 'var(--white)', border: '1px solid var(--border)',
+            borderRadius: 8, padding: '8px 12px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text)',
+          }}
+        >
+          <RefreshCw size={16} />
+          Actualizar
+        </button>
+      </div>
 
       {/* Tabs */}
       <div style={{
@@ -267,6 +267,6 @@ export default function DeliveryPage() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

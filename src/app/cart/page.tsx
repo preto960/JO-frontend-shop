@@ -104,7 +104,7 @@ export default function CartPage() {
         }
       />
 
-      <div style={{ flex: 1, padding: '16px 16px 24px', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: '16px 16px 24px', maxWidth: 900, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
         {cart.length === 0 ? (
           <div className="animate-fade-in" style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
             <p style={{ fontSize: 64, marginBottom: 12 }}>🛒</p>

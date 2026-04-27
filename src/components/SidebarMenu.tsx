@@ -8,7 +8,6 @@ import {
   ClipboardList,
   User,
   X,
-  LogOut,
   Package,
   Tag,
   Store,
@@ -71,11 +70,6 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
   const navigate = (path: string) => {
     router.push(path);
     onClose();
-  };
-
-  const handleLogout = () => {
-    onClose();
-    logout();
   };
 
   const getNavItems = () => {
@@ -273,38 +267,6 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           })}
         </div>
 
-        {/* Footer - Logout */}
-        <div style={{
-          padding: '12px 8px',
-          borderTop: '1px solid var(--border)',
-        }}>
-          <button
-            onClick={handleLogout}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              padding: '14px 16px',
-              borderRadius: 10,
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--accent)',
-              cursor: 'pointer',
-              fontSize: 15,
-              fontWeight: 500,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(233,69,96,0.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-          >
-            <LogOut size={20} />
-            <span>Cerrar sesión</span>
-          </button>
-        </div>
       </div>
     </>
   );
