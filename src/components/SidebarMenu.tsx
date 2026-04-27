@@ -126,7 +126,9 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.4)',
+          background: 'rgba(26,29,41,0.5)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
           zIndex: 300,
           opacity: open ? 1 : 0,
           pointerEvents: open ? 'auto' : 'none',
@@ -141,14 +143,16 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           top: 0,
           left: 0,
           bottom: 0,
-          width: 280,
+          width: 300,
           background: 'var(--white)',
           zIndex: 400,
           transform: open ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s ease',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '4px 0 24px rgba(0,0,0,0.15)',
+          boxShadow: '8px 0 30px rgba(0,0,0,0.12)',
+          borderRadius: '0 20px 20px 0',
+          overflow: 'hidden',
         }}
       >
         {/* Header */}
@@ -156,29 +160,30 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '20px 16px 16px',
-          borderBottom: '1px solid var(--border)',
-          background: 'var(--primary)',
+          padding: '24px 20px 20px',
+          background: 'var(--secondary)',
           color: 'var(--white)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: '50%',
-              background: 'var(--accent)',
+              background: 'var(--primary-gradient)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 800,
-              fontSize: 16,
+              fontSize: 15,
               color: 'white',
+              boxShadow: '0 4px 12px rgba(255,107,53,0.4)',
+              letterSpacing: '0.5px',
             }}>
               JO
             </div>
             <div>
-              <p style={{ fontWeight: 700, fontSize: 16 }}>JO-Shop</p>
-              <p style={{ fontSize: 12, opacity: 0.8 }}>
+              <p style={{ fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px' }}>JO-Shop</p>
+              <p style={{ fontSize: 12, opacity: 0.7, marginTop: 1 }}>
                 {user?.name || 'Usuario'}
               </p>
             </div>
@@ -186,16 +191,17 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.12)',
               border: 'none',
               color: 'white',
               cursor: 'pointer',
               width: 36,
               height: 36,
-              borderRadius: 8,
+              borderRadius: 'var(--radius-sm)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              transition: 'var(--transition-fast)',
             }}
             aria-label="Cerrar menú"
           >
@@ -207,7 +213,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '12px 8px',
+          padding: '8px 0',
         }}>
           {navItems.map((item: any) => {
             const isActive = pathname === item.path;
@@ -221,16 +227,16 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 14,
-                  padding: '14px 16px',
-                  borderRadius: 10,
+                  padding: '13px 20px',
                   border: 'none',
-                  background: isActive ? 'var(--primary)' : 'transparent',
-                  color: isActive ? 'var(--white)' : 'var(--text)',
+                  background: isActive ? 'var(--primary-light)' : 'transparent',
+                  color: isActive ? 'var(--primary)' : 'var(--text)',
                   cursor: 'pointer',
                   marginBottom: 2,
-                  transition: 'all 0.2s',
-                  fontSize: 15,
+                  transition: 'var(--transition)',
+                  fontSize: 14,
                   fontWeight: isActive ? 600 : 400,
+                  borderLeft: isActive ? '3px solid var(--primary)' : '3px solid transparent',
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
@@ -243,11 +249,18 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                   }
                 }}
               >
-                <Icon size={20} style={{ flexShrink: 0 }} />
+                <Icon
+                  size={20}
+                  style={{
+                    flexShrink: 0,
+                    color: isActive ? 'var(--primary)' : 'var(--text-secondary)',
+                    transition: 'color 0.2s',
+                  }}
+                />
                 <span style={{ flex: 1, textAlign: 'left' }}>{item.label}</span>
                 {item.badge > 0 && (
                   <span style={{
-                    background: 'var(--accent)',
+                    background: 'var(--primary)',
                     color: 'white',
                     fontSize: 11,
                     fontWeight: 700,
@@ -258,6 +271,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '0 6px',
+                    boxShadow: 'var(--shadow-accent)',
                   }}>
                     {item.badge > 9 ? '9+' : item.badge}
                   </span>
@@ -267,6 +281,15 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           })}
         </div>
 
+        {/* Bottom version */}
+        <div style={{
+          padding: '16px 20px',
+          borderTop: '1px solid var(--border)',
+        }}>
+          <span style={{ fontSize: 11, color: 'var(--text-light)', letterSpacing: '0.3px' }}>
+            v1.0
+          </span>
+        </div>
       </div>
     </>
   );

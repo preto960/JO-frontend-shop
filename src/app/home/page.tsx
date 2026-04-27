@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, PackageSearch } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -94,27 +94,50 @@ export default function HomePage() {
       <div style={{ padding: '16px 16px 24px', maxWidth: 1200, margin: '0 auto' }}>
         {/* Search bar */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
-          <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+          <Search size={18} style={{
+            position: 'absolute', left: 16, top: '50%',
+            transform: 'translateY(-50%)', color: 'var(--text-light)',
+            pointerEvents: 'none',
+          }} />
           <input
             type="text"
             placeholder="Buscar productos..."
             defaultValue={search}
             onChange={(e) => debouncedSearch(e.target.value)}
-            style={{ paddingLeft: 40, paddingRight: 16, background: 'var(--white)', borderRadius: 12, height: 44 }}
+            style={{
+              paddingLeft: 44,
+              paddingRight: 16,
+              background: 'var(--white)',
+              borderRadius: 'var(--radius-full)',
+              height: 48,
+              border: 'none',
+              boxShadow: 'var(--shadow-md)',
+              fontSize: 15,
+            }}
           />
         </div>
 
-        {/* Categories */}
+        {/* Category pills */}
         {categories.length > 0 && (
-          <div className="scrollbar-hide" style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
+          <div className="scrollbar-hide" style={{
+            display: 'flex', gap: 8, marginBottom: 16,
+            overflowX: 'auto', paddingBottom: 4,
+          }}>
             <button
               onClick={() => setSelectedCategory('')}
               style={{
-                padding: '8px 16px', borderRadius: 20, border: 'none', fontSize: 13, fontWeight: 500,
-                whiteSpace: 'nowrap', cursor: 'pointer', transition: 'all 0.2s',
-                background: !selectedCategory ? 'var(--accent)' : 'var(--white)',
-                color: !selectedCategory ? 'white' : 'var(--text)',
-                boxShadow: 'var(--shadow)',
+                height: 36,
+                padding: '0 18px',
+                borderRadius: 'var(--radius-full)',
+                border: 'none',
+                fontSize: 13,
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                background: !selectedCategory ? 'var(--primary-gradient)' : 'var(--white)',
+                color: !selectedCategory ? '#fff' : 'var(--text)',
+                boxShadow: !selectedCategory ? 'var(--shadow-accent)' : 'var(--shadow)',
               }}
             >
               Todos
@@ -124,11 +147,18 @@ export default function HomePage() {
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id === selectedCategory ? '' : cat.id)}
                 style={{
-                  padding: '8px 16px', borderRadius: 20, border: 'none', fontSize: 13, fontWeight: 500,
-                  whiteSpace: 'nowrap', cursor: 'pointer', transition: 'all 0.2s',
-                  background: selectedCategory === cat.id ? 'var(--accent)' : 'var(--white)',
-                  color: selectedCategory === cat.id ? 'white' : 'var(--text)',
-                  boxShadow: 'var(--shadow)',
+                  height: 36,
+                  padding: '0 18px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                  background: selectedCategory === cat.id ? 'var(--primary-gradient)' : 'var(--white)',
+                  color: selectedCategory === cat.id ? '#fff' : 'var(--text)',
+                  boxShadow: selectedCategory === cat.id ? 'var(--shadow-accent)' : 'var(--shadow)',
                 }}
               >
                 {cat.name || cat.nombre || cat.id}
@@ -143,7 +173,16 @@ export default function HomePage() {
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
-              style={{ background: 'var(--white)', borderRadius: 8, height: 40, fontSize: 13 }}
+              style={{
+                background: 'var(--white)',
+                borderRadius: 10,
+                height: 42,
+                fontSize: 14,
+                fontWeight: 500,
+                border: '2px solid var(--border)',
+                padding: '0 36px 0 14px',
+                boxShadow: 'var(--shadow)',
+              }}
             >
               <option value="">Todas las tiendas</option>
               {stores.map((store: any) => (
@@ -158,20 +197,64 @@ export default function HomePage() {
         {/* Products grid */}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-            <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{
+              width: 32, height: 32,
+              border: '3px solid var(--border)',
+              borderTopColor: 'var(--primary)',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+            }} />
           </div>
         ) : products.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
-            <p style={{ fontSize: 48, marginBottom: 12 }}>🛒</p>
-            <p style={{ fontSize: 16, fontWeight: 500 }}>No se encontraron productos</p>
-            <p style={{ fontSize: 13, marginTop: 4 }}>Intenta con otra búsqueda</p>
+          <div className="animate-fade-in" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{
+              width: 80, height: 80, borderRadius: '50%',
+              background: 'var(--primary-light)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 16,
+            }}>
+              <PackageSearch size={36} color="var(--primary)" />
+            </div>
+            <p style={{
+              fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+            }}>
+              No se encontraron productos
+            </p>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 20 }}>
+              Intenta con otra búsqueda o categoría
+            </p>
+            <button
+              onClick={() => { setSelectedCategory(''); setSearch(''); }}
+              style={{
+                padding: '12px 28px',
+                borderRadius: 'var(--radius-full)',
+                background: 'var(--primary-gradient)',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 700,
+                fontSize: 14,
+                boxShadow: 'var(--shadow-accent)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              Explorar productos
+            </button>
           </div>
         ) : (
-          <div style={{
+          <div className="animate-fade-in products-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-            gap: 12,
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 16,
           }}>
+            <style>{`
+              @media (min-width: 768px) {
+                .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
+              }
+              @media (min-width: 1024px) {
+                .products-grid { grid-template-columns: repeat(4, 1fr) !important; }
+              }
+            `}</style>
             {products.map((product: any) => (
               <ProductCard
                 key={product.id}

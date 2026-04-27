@@ -8,6 +8,53 @@ import { showToast } from '@/lib/utils';
 
 const MODULES = ['dashboard', 'products', 'categories', 'orders', 'stores', 'users', 'roles'];
 
+const styles = {
+  overlay: {
+    position: 'fixed' as const, inset: 0, background: 'rgba(26,29,41,0.6)',
+    backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 1000, padding: 16,
+  },
+  modal: {
+    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    maxWidth: 600, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
+    boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
+  },
+  newBtn: {
+    padding: '10px 20px', borderRadius: 10, border: 'none',
+    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    display: 'flex', alignItems: 'center', gap: 6,
+    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    transition: 'all 0.2s ease',
+  },
+  editBtn: {
+    width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
+    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.2s ease',
+  },
+  deleteBtn: {
+    width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
+    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.2s ease',
+  },
+  saveBtn: {
+    padding: '10px 20px', borderRadius: 10, border: 'none',
+    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    transition: 'all 0.2s ease',
+  },
+  cancelBtn: {
+    padding: '10px 20px', borderRadius: 10,
+    border: '2px solid var(--border)', background: '#FFFFFF',
+    color: 'var(--text)', cursor: 'pointer', fontSize: 14,
+    transition: 'all 0.2s ease',
+  },
+};
+
 export default function AdminRolesPage() {
   const [roles, setRoles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,27 +155,33 @@ export default function AdminRolesPage() {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: 1000, margin: '0 auto' }}>
+    <div style={{ padding: 24, maxWidth: 1000, margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Roles y Permisos</h1>
-        <button onClick={openCreate} style={{
-          padding: '10px 20px', borderRadius: 8, background: 'var(--accent)',
-          color: 'white', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 6,
-        }}>
+        <button
+          onClick={openCreate}
+          style={styles.newBtn}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+        >
           <Plus size={18} /> Nuevo rol
         </button>
       </div>
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-          <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div style={{
+            width: 36, height: 36,
+            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            borderRadius: '50%', animation: 'spin 1s linear infinite',
+          }} />
         </div>
       ) : roles.length === 0 ? (
-        <div style={{ background: 'var(--white)', borderRadius: 12, padding: 40, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <p style={{ fontSize: 48, marginBottom: 12 }}>🛡️</p>
-          <p style={{ color: 'var(--text-secondary)' }}>No hay roles personalizados</p>
+          <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay roles personalizados</p>
+          <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Crea roles para gestionar los permisos de tu equipo</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -141,14 +194,20 @@ export default function AdminRolesPage() {
             }, 0);
 
             return (
-              <div key={role.id} className="animate-fade-in" style={{
-                background: 'var(--white)', borderRadius: 12, padding: 16,
-                boxShadow: 'var(--shadow)', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div
+                key={role.id} className="animate-fade-in"
+                style={{
+                  background: '#FFFFFF', borderRadius: 14, padding: 18,
+                  boxShadow: 'var(--shadow)', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{
-                    width: 48, height: 48, borderRadius: 12, background: '#9B59B615',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9B59B6',
+                    width: 48, height: 48, borderRadius: 12, background: '#FFF0E9',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FF6B35',
                   }}>
                     <Shield size={24} />
                   </div>
@@ -160,20 +219,20 @@ export default function AdminRolesPage() {
                     </p>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 4 }}>
-                  <button onClick={() => openEdit(role)} style={{
-                    width: 36, height: 36, borderRadius: 8, border: 'none',
-                    background: '#3498DB15', color: '#3498DB', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Edit2 size={16} />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={() => openEdit(role)} style={styles.editBtn}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                  >
+                    <Edit2 size={15} />
                   </button>
-                  <button onClick={() => setDeleteModal(role)} style={{
-                    width: 36, height: 36, borderRadius: 8, border: 'none',
-                    background: '#E9456015', color: '#E94560', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Trash2 size={16} />
+                  <button
+                    onClick={() => setDeleteModal(role)} style={styles.deleteBtn}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                  >
+                    <Trash2 size={15} />
                   </button>
                 </div>
               </div>
@@ -183,74 +242,97 @@ export default function AdminRolesPage() {
       )}
 
       {/* Create/Edit Modal */}
-      <div style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-        display: modalOpen ? 'flex' : 'none', alignItems: 'center', justifyContent: 'center',
-        zIndex: 1000, padding: 16,
-      }} onClick={() => setModalOpen(false)}>
-        <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={{
-          background: 'var(--white)', borderRadius: 16, padding: 24,
-          maxWidth: 600, width: '100%', maxHeight: '90vh', overflowY: 'auto',
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700 }}>{editingRole ? 'Editar rol' : 'Nuevo rol'}</h2>
-            <button onClick={() => setModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}><X size={20} /></button>
+      <div
+        style={{ ...styles.overlay, display: modalOpen ? 'flex' : 'none' }}
+        onClick={() => setModalOpen(false)}
+      >
+        <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingRole ? 'Editar rol' : 'Nuevo rol'}</h2>
+            <button
+              onClick={() => setModalOpen(false)}
+              style={{
+                width: 32, height: 32, borderRadius: '50%', border: 'none',
+                background: 'var(--input-bg)', color: 'var(--text-secondary)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <X size={16} />
+            </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Nombre *</label>
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nombre del rol" />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Nombre *</label>
+              <input
+                value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Nombre del rol"
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+              />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Descripción</label>
-              <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Descripción del rol" />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Descripción</label>
+              <input
+                value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Descripción del rol"
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+              />
             </div>
           </div>
 
-          <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12, color: 'var(--text)' }}>Permisos</h3>
-          <div className="table-responsive">
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid var(--border)' }}>
-                  <th style={{ textAlign: 'left', padding: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Módulo</th>
-                  <th style={{ textAlign: 'center', padding: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Ver</th>
-                  <th style={{ textAlign: 'center', padding: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Crear</th>
-                  <th style={{ textAlign: 'center', padding: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Editar</th>
-                  <th style={{ textAlign: 'center', padding: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Eliminar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {MODULES.map((mod) => (
-                  <tr key={mod} style={{ borderBottom: '1px solid var(--border)' }}>
-                    <td style={{ padding: 8, fontSize: 13, fontWeight: 500, textTransform: 'capitalize' }}>{mod}</td>
-                    {(['canView', 'canCreate', 'canEdit', 'canDelete'] as const).map((action) => (
-                      <td key={action} style={{ padding: 8, textAlign: 'center' }}>
-                        <button
-                          onClick={() => togglePermission(mod, action)}
-                          style={{
-                            width: 28, height: 28, borderRadius: 6, border: 'none',
-                            background: form.permissions[mod]?.[action] ? 'var(--success)' : 'var(--input-bg)',
-                            color: form.permissions[mod]?.[action] ? 'white' : 'var(--text-light)',
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}
-                        >
-                          {form.permissions[mod]?.[action] ? <ShieldCheck size={14} /> : <ShieldOff size={14} />}
-                        </button>
-                      </td>
-                    ))}
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14, color: 'var(--text)' }}>Permisos</h3>
+          <div style={{ background: '#FFFFFF', borderRadius: 14, boxShadow: 'var(--shadow)', overflow: 'hidden' }}>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--input-bg)' }}>
+                    <th style={{ textAlign: 'left', padding: '12px 14px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Módulo</th>
+                    <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Ver</th>
+                    <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Crear</th>
+                    <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Editar</th>
+                    <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Eliminar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {MODULES.map((mod) => (
+                    <tr key={mod} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '12px 14px', fontSize: 14, fontWeight: 500, textTransform: 'capitalize', color: 'var(--text)' }}>{mod}</td>
+                      {(['canView', 'canCreate', 'canEdit', 'canDelete'] as const).map((action) => {
+                        const isActive = form.permissions[mod]?.[action];
+                        return (
+                          <td key={action} style={{ padding: '8px 8px', textAlign: 'center' }}>
+                            <button
+                              onClick={() => togglePermission(mod, action)}
+                              style={{
+                                width: 32, height: 32, borderRadius: '50%', border: 'none',
+                                background: isActive ? '#00B894' : 'var(--input-bg)',
+                                color: isActive ? 'white' : 'var(--text-light)',
+                                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                transition: 'all 0.2s ease',
+                                boxShadow: isActive ? '0 2px 8px rgba(0,184,148,0.3)' : 'none',
+                              }}
+                              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
+                              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
+                            >
+                              {isActive ? <ShieldCheck size={15} /> : <ShieldOff size={15} />}
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 20 }}>
-            <button onClick={() => setModalOpen(false)} style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--white)', color: 'var(--text)', cursor: 'pointer' }}>Cancelar</button>
-            <button onClick={handleSave} disabled={saving} style={{
-              padding: '10px 20px', borderRadius: 8, border: 'none',
-              background: 'var(--accent)', color: 'white', cursor: 'pointer', fontWeight: 600,
-            }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 24 }}>
+            <button onClick={() => setModalOpen(false)} style={styles.cancelBtn}>Cancelar</button>
+            <button
+              onClick={handleSave} disabled={saving}
+              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? '#FDCB6E' : styles.saveBtn.background }}
+            >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>
           </div>

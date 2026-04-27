@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, ShoppingBag } from 'lucide-react';
 import api from '@/lib/api';
 import Header from '@/components/Header';
 
@@ -59,22 +59,30 @@ export default function ProductDetailPage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title={name} showBack onBack={() => router.push('/home')} showLogout={false} />
 
-      <div style={{ padding: '0 0 24px' }}>
+      <div style={{ padding: '0 0 100px' }}>
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-            <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
+            <div style={{ width: 36, height: 36, border: '3px solid var(--border)', borderTopColor: '#FF6B35', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           </div>
         ) : !product ? (
-          <div style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
-            <p style={{ fontSize: 48, marginBottom: 12 }}>😕</p>
-            <p>Producto no encontrado</p>
+          <div style={{ textAlign: 'center', padding: 80, color: 'var(--text-secondary)' }}>
+            <div style={{
+              width: 80, height: 80, borderRadius: '50%', background: 'var(--input-bg)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}>
+              <ShoppingBag size={36} style={{ color: 'var(--text-light)' }} />
+            </div>
+            <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Producto no encontrado</p>
+            <p style={{ fontSize: 14 }}>El producto que buscas no existe o fue eliminado</p>
           </div>
         ) : (
           <div className="animate-fade-in">
             {/* Product image */}
             <div style={{
-              width: '100%', height: 320, background: 'var(--input-bg)',
+              width: '100%', height: 340, background: 'var(--input-bg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+              position: 'relative',
             }}>
               {image ? (
                 <img
@@ -84,70 +92,103 @@ export default function ProductDetailPage() {
                 />
               ) : (
                 <div style={{ color: 'var(--text-light)' }}>
-                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" />
-                  </svg>
+                  <ShoppingBag size={80} />
+                </div>
+              )}
+              {!inStock && (
+                <div style={{
+                  position: 'absolute', top: 16, right: 16,
+                  background: 'var(--danger)', color: 'white',
+                  padding: '6px 14px', borderRadius: 'var(--radius-full)',
+                  fontSize: 12, fontWeight: 700,
+                }}>
+                  Agotado
                 </div>
               )}
             </div>
 
-            {/* Product details */}
-            <div style={{ padding: 20, background: 'var(--white)', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: -20, position: 'relative' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', flex: 1, marginRight: 12 }}>
+            {/* Product details card */}
+            <div style={{
+              padding: 24, background: 'var(--white)',
+              borderTopLeftRadius: 24, borderTopRightRadius: 24,
+              marginTop: -24, position: 'relative',
+              boxShadow: 'var(--shadow-lg)',
+            }}>
+              {/* Price + Name */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, gap: 16 }}>
+                <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text)', flex: 1, lineHeight: 1.3 }}>
                   {name}
                 </h1>
-                <span style={{ fontSize: 24, fontWeight: 800, color: 'var(--accent)', whiteSpace: 'nowrap' }}>
+                <span style={{
+                  fontSize: 26, fontWeight: 800, color: '#FF6B35', whiteSpace: 'nowrap',
+                  background: 'var(--primary-light)', padding: '6px 14px', borderRadius: 'var(--radius)',
+                }}>
                   {formatPrice(price)}
                 </span>
               </div>
 
+              {/* Category badge */}
               {product?.category && (
                 <span style={{
-                  display: 'inline-block', background: 'var(--input-bg)', color: 'var(--text-secondary)',
-                  padding: '4px 12px', borderRadius: 12, fontSize: 12, marginBottom: 12,
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  background: 'var(--input-bg)', color: 'var(--text-secondary)',
+                  padding: '6px 14px', borderRadius: 'var(--radius-full)',
+                  fontSize: 13, fontWeight: 500, marginBottom: 16,
                 }}>
                   {typeof product.category === 'object' ? (product.category.name || product.category.nombre) : product.category}
                 </span>
               )}
 
+              {/* Description */}
               {desc && (
-                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 20 }}>
+                <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 20 }}>
                   {desc}
                 </p>
               )}
 
+              {/* Stock */}
               {product?.stock !== undefined && (
-                <p style={{
-                  fontSize: 13, color: inStock ? 'var(--success)' : 'var(--accent)',
-                  marginBottom: 20, fontWeight: 500,
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '10px 16px', borderRadius: 'var(--radius)',
+                  background: inStock ? 'var(--success-light)' : 'var(--danger-light)',
+                  marginBottom: 24,
                 }}>
-                  {inStock ? `En stock (${product.stock} disponibles)` : 'Agotado'}
-                </p>
+                  <div style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: inStock ? 'var(--success)' : 'var(--danger)',
+                  }} />
+                  <span style={{
+                    fontSize: 14, fontWeight: 500,
+                    color: inStock ? '#155724' : '#CC3333',
+                  }}>
+                    {inStock ? `En stock (${product.stock} disponibles)` : 'Agotado'}
+                  </span>
+                </div>
               )}
 
+              {/* Add to cart button */}
               <button
                 onClick={addToCart}
                 disabled={!inStock}
                 style={{
-                  width: '100%', padding: '14px', borderRadius: 12,
-                  background: inStock ? 'var(--accent)' : 'var(--text-light)',
-                  color: 'white', fontSize: 16, fontWeight: 600,
+                  width: '100%', padding: '16px', borderRadius: 14,
+                  background: inStock ? 'var(--primary-gradient)' : 'var(--input-bg)',
+                  color: 'white', fontSize: 16, fontWeight: 700,
                   border: 'none', cursor: inStock ? 'pointer' : 'not-allowed',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                  transition: 'background 0.2s',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  boxShadow: inStock ? 'var(--shadow-accent)' : 'none',
+                  opacity: inStock ? 1 : 0.6,
+                  transition: 'all 0.25s ease',
                 }}
-                onMouseEnter={(e) => { if (inStock) e.currentTarget.style.background = 'var(--accent-light)'; }}
-                onMouseLeave={(e) => { if (inStock) e.currentTarget.style.background = 'var(--accent)'; }}
               >
-                <ShoppingCart size={20} />
+                <ShoppingCart size={22} />
                 {inStock ? 'Agregar al carrito' : 'Producto agotado'}
               </button>
             </div>
           </div>
         )}
       </div>
-
     </div>
   );
 }

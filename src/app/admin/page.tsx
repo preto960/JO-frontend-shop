@@ -6,32 +6,79 @@ import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { ShoppingBag, DollarSign, TrendingUp, Users, Package } from 'lucide-react';
 
+/* ═══════════════════════════════════════════════════════════════
+   Stat Card — 4px colored top border, 48px circle icon,
+   12px uppercase label with letter-spacing, 24px bold value
+   ═══════════════════════════════════════════════════════════════ */
+
 interface StatCardProps {
   title: string;
   value: string;
   icon: any;
   color: string;
+  bgColor: string;
 }
 
-function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
+function StatCard({ title, value, icon: Icon, color, bgColor }: StatCardProps) {
   return (
-    <div style={{
-      background: 'var(--white)', borderRadius: 12, padding: 20,
-      boxShadow: 'var(--shadow)', display: 'flex', alignItems: 'center', gap: 16,
-    }}>
+    <div
+      style={{
+        background: 'var(--white)',
+        borderRadius: 16,
+        padding: 20,
+        boxShadow: 'var(--shadow)',
+        borderLeft: `4px solid ${color}`,
+        borderTop: `4px solid ${color}`,
+        borderRight: 'none',
+        borderBottom: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 16,
+        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: 'default',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+        e.currentTarget.style.transform = 'translateY(-2px)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = 'var(--shadow)';
+        e.currentTarget.style.transform = 'translateY(0)';
+      }}
+    >
+      {/* Icon circle */}
       <div style={{
-        width: 48, height: 48, borderRadius: 12, background: color + '15',
+        width: 48, height: 48, borderRadius: '50%',
+        background: bgColor,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
       }}>
         <Icon size={24} color={color} />
       </div>
+
+      {/* Text content */}
       <div>
-        <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 2 }}>{title}</p>
-        <p style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{value}</p>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: 'var(--text-light)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          marginBottom: 4,
+        }}>
+          {title}
+        </p>
+        <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>
+          {value}
+        </p>
       </div>
     </div>
   );
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Dashboard Page
+   ═══════════════════════════════════════════════════════════════ */
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -105,11 +152,15 @@ export default function AdminDashboard() {
   }, []);
 
   const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: '#F39C12', confirmed: '#3498DB', preparing: '#9B59B6',
-      shipped: '#2ECC71', delivered: '#27AE60', cancelled: '#E94560',
+    const colors: Record<string, { bg: string; text: string }> = {
+      pending:    { bg: 'var(--warning-light)',  text: '#856404' },
+      confirmed:  { bg: 'var(--info-light)',     text: '#0C5460' },
+      preparing:  { bg: '#E8DAEF',              text: '#6C3483' },
+      shipped:    { bg: 'var(--success-light)',  text: '#155724' },
+      delivered:  { bg: 'var(--success-light)',  text: '#1B7A42' },
+      cancelled:  { bg: 'var(--danger-light)',   text: '#CC3333' },
     };
-    return colors[status] || '#7F8C8D';
+    return colors[status] || { bg: 'var(--input-bg)', text: 'var(--text-secondary)' };
   };
 
   const getStatusLabel = (status: string) => {
@@ -122,86 +173,176 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
+      {/* ── Welcome Section ── */}
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
           Dashboard
         </h1>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
+        <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
           Bienvenido, {user?.name || 'Admin'}
         </p>
+        <div style={{
+          height: 1,
+          background: 'var(--border)',
+          marginTop: 16,
+          borderRadius: 1,
+        }} />
       </div>
 
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-          <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 80 }}>
+          <div style={{
+            width: 36, height: 36,
+            border: '3px solid var(--border)',
+            borderTopColor: 'var(--primary)',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+          }} />
         </div>
       ) : (
         <>
-          {/* Stats */}
+          {/* ── Stats Grid: 2 cols mobile, 3 tablet, 5 desktop ── */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 16,
-            marginBottom: 24,
-          }}>
-            <StatCard title="Total pedidos" value={stats?.totalOrders ?? '0'} icon={ShoppingBag} color="#E94560" />
-            <StatCard title="Ingresos" value={formatPrice(stats?.revenue ?? 0)} icon={DollarSign} color="#2ECC71" />
-            <StatCard title="Pedidos hoy" value={stats?.todayOrders ?? '0'} icon={TrendingUp} color="#F39C12" />
-            <StatCard title="Clientes" value={stats?.totalUsers ?? '0'} icon={Users} color="#3498DB" />
-            <StatCard title="Productos" value={stats?.totalProducts ?? '0'} icon={Package} color="#9B59B6" />
+            marginBottom: 28,
+          }}
+            className="admin-stats-grid"
+          >
+            <StatCard
+              title="Total pedidos"
+              value={stats?.totalOrders ?? '0'}
+              icon={ShoppingBag}
+              color="#FF6B35"
+              bgColor="#FFF0E9"
+            />
+            <StatCard
+              title="Ingresos"
+              value={formatPrice(stats?.revenue ?? 0)}
+              icon={DollarSign}
+              color="#00B894"
+              bgColor="#E8FBF5"
+            />
+            <StatCard
+              title="Pedidos hoy"
+              value={stats?.todayOrders ?? '0'}
+              icon={TrendingUp}
+              color="#54A0FF"
+              bgColor="#E8F1FF"
+            />
+            <StatCard
+              title="Clientes"
+              value={stats?.totalUsers ?? '0'}
+              icon={Users}
+              color="#FDCB6E"
+              bgColor="#FFF9E6"
+            />
+            <StatCard
+              title="Productos"
+              value={stats?.totalProducts ?? '0'}
+              icon={Package}
+              color="#A29BFE"
+              bgColor="#F0EDFF"
+            />
           </div>
 
-          {/* Recent Orders */}
+          {/* ── Recent Orders Table ── */}
           <div style={{
-            background: 'var(--white)', borderRadius: 12, padding: 20,
+            background: 'var(--white)',
+            borderRadius: 16,
+            padding: 20,
             boxShadow: 'var(--shadow)',
           }}>
-            <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>
+            <h2 style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: 'var(--text)',
+              marginBottom: 16,
+            }}>
               Pedidos recientes
             </h2>
+
             {recentOrders.length === 0 ? (
-              <p style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 20 }}>
+              <p style={{
+                textAlign: 'center',
+                color: 'var(--text-secondary)',
+                padding: '32px 20px',
+                fontSize: 14,
+              }}>
                 No hay pedidos aún
               </p>
             ) : (
               <div className="table-responsive">
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid var(--border)' }}>
-                      <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Pedido</th>
-                      <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Fecha</th>
-                      <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Cliente</th>
-                      <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Total</th>
-                      <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Estado</th>
+                    <tr>
+                      {['Pedido', 'Fecha', 'Cliente', 'Total', 'Estado'].map((h) => (
+                        <th
+                          key={h}
+                          style={{
+                            textAlign: 'left',
+                            padding: '10px 12px',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: 'var(--text-light)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            background: 'var(--input-bg)',
+                            borderRadius: 0,
+                          }}
+                        >
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {recentOrders.map((order: any) => (
-                      <tr key={order.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                        <td style={{ padding: '10px 12px', fontSize: 13, fontWeight: 500 }}>
-                          #{String(order.id).slice(-8).toUpperCase()}
-                        </td>
-                        <td style={{ padding: '10px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>
-                          {formatDate(order.createdAt || order.created_at)}
-                        </td>
-                        <td style={{ padding: '10px 12px', fontSize: 13 }}>
-                          {order.user?.name || order.userName || order.customerName || 'N/A'}
-                        </td>
-                        <td style={{ padding: '10px 12px', fontSize: 13, fontWeight: 600 }}>
-                          {formatPrice(order.total || order.totalAmount || 0)}
-                        </td>
-                        <td style={{ padding: '10px 12px' }}>
-                          <span style={{
-                            padding: '4px 10px', borderRadius: 12, fontSize: 12, fontWeight: 600,
-                            background: getStatusColor(order.status || order.estado || 'pending') + '20',
-                            color: getStatusColor(order.status || order.estado || 'pending'),
-                          }}>
-                            {getStatusLabel(order.status || order.estado || 'pending')}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {recentOrders.map((order: any) => {
+                      const status = order.status || order.estado || 'pending';
+                      const sc = getStatusColor(status);
+                      return (
+                        <tr
+                          key={order.id}
+                          style={{
+                            borderBottom: '1px solid var(--border)',
+                            transition: 'background 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--input-bg)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <td style={{ padding: '12px', fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>
+                            #{String(order.id).slice(-8).toUpperCase()}
+                          </td>
+                          <td style={{ padding: '12px', fontSize: 13, color: 'var(--text-secondary)' }}>
+                            {formatDate(order.createdAt || order.created_at)}
+                          </td>
+                          <td style={{ padding: '12px', fontSize: 13, color: 'var(--text)' }}>
+                            {order.user?.name || order.userName || order.customerName || 'N/A'}
+                          </td>
+                          <td style={{ padding: '12px', fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+                            {formatPrice(order.total || order.totalAmount || 0)}
+                          </td>
+                          <td style={{ padding: '12px' }}>
+                            <span style={{
+                              display: 'inline-block',
+                              padding: '4px 12px',
+                              borderRadius: 'var(--radius-full)',
+                              fontSize: 12,
+                              fontWeight: 600,
+                              background: sc.bg,
+                              color: sc.text,
+                            }}>
+                              {getStatusLabel(status)}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -209,6 +350,21 @@ export default function AdminDashboard() {
           </div>
         </>
       )}
+
+      {/* ── Responsive stats grid media queries ── */}
+      <style>{`
+        @media (min-width: 768px) {
+          .admin-stats-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+          /* On tablet, last 2 items span centering */
+        }
+        @media (min-width: 1024px) {
+          .admin-stats-grid {
+            grid-template-columns: repeat(5, 1fr) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

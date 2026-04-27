@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2, ShoppingCart, LogOut } from 'lucide-react';
+import { Trash2, ShoppingCart, ShoppingBag } from 'lucide-react';
 import Header from '@/components/Header';
 
 import { formatPrice, getProductImage, showToast } from '@/lib/utils';
@@ -104,19 +104,44 @@ export default function CartPage() {
         }
       />
 
-      <div style={{ flex: 1, padding: '16px 16px 24px', maxWidth: 900, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: '16px 16px 120px', maxWidth: 900, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
         {cart.length === 0 ? (
-          <div className="animate-fade-in" style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
-            <p style={{ fontSize: 64, marginBottom: 12 }}>🛒</p>
-            <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Tu carrito está vacío</p>
-            <p style={{ fontSize: 14, marginBottom: 20 }}>Agrega productos para comenzar</p>
+          <div className="animate-fade-in" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{
+              width: 90, height: 90, borderRadius: '50%',
+              background: 'var(--primary-light)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 16,
+            }}>
+              <ShoppingCart size={40} color="var(--primary)" />
+            </div>
+            <p style={{
+              fontSize: 20, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+            }}>
+              Tu carrito está vacío
+            </p>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24 }}>
+              Agrega productos para comenzar
+            </p>
             <button
               onClick={() => router.push('/home')}
               style={{
-                padding: '12px 24px', borderRadius: 8, background: 'var(--accent)',
-                color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+                padding: '13px 32px',
+                borderRadius: 'var(--radius-full)',
+                background: 'var(--primary-gradient)',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 700,
+                fontSize: 15,
+                boxShadow: 'var(--shadow-accent)',
+                transition: 'all 0.25s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
               }}
             >
+              <ShoppingBag size={18} />
               Explorar productos
             </button>
           </div>
@@ -128,13 +153,17 @@ export default function CartPage() {
                 <div
                   key={item.id}
                   style={{
-                    background: 'var(--white)', borderRadius: 12, padding: 12,
-                    display: 'flex', gap: 12, boxShadow: 'var(--shadow)',
+                    background: 'var(--white)',
+                    borderRadius: 14,
+                    padding: 14,
+                    display: 'flex',
+                    gap: 14,
+                    boxShadow: 'var(--shadow)',
                   }}
                 >
                   {/* Image */}
                   <div style={{
-                    width: 80, height: 80, borderRadius: 8, background: 'var(--input-bg)',
+                    width: 72, height: 72, borderRadius: 10, background: 'var(--input-bg)',
                     overflow: 'hidden', flexShrink: 0,
                   }}>
                     {image ? (
@@ -155,25 +184,30 @@ export default function CartPage() {
                       }}>
                         {item.name}
                       </h3>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)', marginTop: 2 }}>
+                      <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)', marginTop: 2 }}>
                         {formatPrice(item.price * (item.quantity || 1))}
                       </p>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       {/* Quantity controls */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 0, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border)' }}>
+                      <div style={{
+                        display: 'flex', alignItems: 'center',
+                        borderRadius: 8, overflow: 'hidden',
+                        border: '1.5px solid var(--border)',
+                      }}>
                         <button
                           onClick={() => updateQuantity(item.id, -1)}
                           style={{
-                            width: 32, height: 32, background: 'var(--input-bg)', border: 'none',
+                            width: 34, height: 34, background: 'var(--input-bg)', border: 'none',
                             cursor: 'pointer', fontSize: 18, fontWeight: 600, color: 'var(--text)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            transition: 'background 0.15s ease',
                           }}
                         >
                           −
                         </button>
                         <span style={{
-                          width: 36, textAlign: 'center', fontSize: 14, fontWeight: 600,
+                          width: 36, textAlign: 'center', fontSize: 14, fontWeight: 700,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {item.quantity}
@@ -181,9 +215,10 @@ export default function CartPage() {
                         <button
                           onClick={() => updateQuantity(item.id, 1)}
                           style={{
-                            width: 32, height: 32, background: 'var(--input-bg)', border: 'none',
+                            width: 34, height: 34, background: 'var(--input-bg)', border: 'none',
                             cursor: 'pointer', fontSize: 18, fontWeight: 600, color: 'var(--text)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            transition: 'background 0.15s ease',
                           }}
                         >
                           +
@@ -191,7 +226,11 @@ export default function CartPage() {
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', padding: 4 }}
+                        style={{
+                          background: 'none', border: 'none',
+                          color: 'var(--danger)', cursor: 'pointer', padding: 4,
+                          transition: 'opacity 0.15s ease',
+                        }}
                         aria-label="Eliminar"
                       >
                         <Trash2 size={18} />
@@ -209,31 +248,47 @@ export default function CartPage() {
       {cart.length > 0 && (
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: 'var(--white)', borderTop: '1px solid var(--border)',
-          padding: '16px', boxShadow: '0 -2px 8px rgba(0,0,0,0.08)', zIndex: 50,
+          background: 'var(--white)',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: 18,
+          boxShadow: 'var(--shadow-xl)',
+          zIndex: 50,
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, maxWidth: 900, margin: '0 auto' }}>
+            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
               Total ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})
             </span>
-            <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)' }}>
+            <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)' }}>
               {formatPrice(total)}
             </span>
           </div>
-          <button
-            onClick={placeOrder}
-            style={{
-              width: '100%', padding: '14px', borderRadius: 12,
-              background: 'var(--accent)', color: 'white',
-              fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}
-          >
-            Realizar pedido
-          </button>
+          <div style={{ maxWidth: 900, margin: '0 auto' }}>
+            <button
+              onClick={placeOrder}
+              style={{
+                width: '100%',
+                height: 50,
+                borderRadius: 12,
+                background: 'var(--primary-gradient)',
+                color: 'white',
+                fontSize: 16,
+                fontWeight: 700,
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                boxShadow: 'var(--shadow-accent)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              Realizar pedido
+            </button>
+          </div>
         </div>
       )}
-
     </div>
   );
 }

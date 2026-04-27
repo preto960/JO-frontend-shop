@@ -26,17 +26,17 @@ export default function Header({ title, showBack, showLogout = true, showSetting
     <>
       <header
         style={{
-          background: 'var(--primary)',
+          background: 'var(--primary-gradient)',
           color: 'var(--white)',
           padding: '0 16px',
-          height: '56px',
+          height: 60,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
         }}
       >
         {/* Left section */}
@@ -46,66 +46,102 @@ export default function Header({ title, showBack, showLogout = true, showSetting
           display: 'flex',
           alignItems: 'center',
           gap: 4,
+          zIndex: 1,
         }}>
           {!showBack && (
             <button
               onClick={() => setMenuOpen(true)}
               style={{
-                background: 'none',
+                background: 'rgba(255,255,255,0.15)',
                 border: 'none',
                 color: 'var(--white)',
                 cursor: 'pointer',
-                padding: 4,
+                padding: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 36,
-                height: 36,
-                borderRadius: 8,
+                width: 40,
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
               }}
               aria-label="Abrir menú"
             >
-              <Menu size={24} />
+              <Menu size={22} />
             </button>
           )}
           {showBack && (
             <button
               onClick={onBack || (() => router.back())}
               style={{
-                background: 'none',
+                background: 'rgba(255,255,255,0.15)',
                 border: 'none',
                 color: 'var(--white)',
                 cursor: 'pointer',
-                padding: 4,
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
               }}
               aria-label="Volver"
             >
-              <ArrowLeft size={24} />
+              <ArrowLeft size={22} />
             </button>
           )}
         </div>
 
-        <h1 style={{ fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{title}</h1>
+        {/* Center title */}
+        <h1 style={{ fontSize: 18, fontWeight: 700, textAlign: 'center', letterSpacing: '-0.2px', zIndex: 1 }}>{title}</h1>
 
         {/* Right section */}
-        <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, alignItems: 'center', zIndex: 1 }}>
           {canShowSettings && (
             <button
               onClick={() => router.push('/admin/users')}
-              style={{ background: 'none', border: 'none', color: 'var(--white)', cursor: 'pointer', padding: 4 }}
+              style={{
+                background: 'rgba(255,255,255,0.15)',
+                border: 'none',
+                color: 'var(--white)',
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
+              }}
               aria-label="Configuración"
             >
-              <Settings size={22} />
+              <Settings size={20} />
             </button>
           )}
           {rightAction}
           {showLogout && (
             <button
               onClick={logout}
-              style={{ background: 'none', border: 'none', color: 'var(--white)', cursor: 'pointer', padding: 4 }}
+              style={{
+                background: 'rgba(255,255,255,0.15)',
+                border: 'none',
+                color: 'var(--white)',
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
+              }}
               aria-label="Cerrar sesión"
             >
-              <LogOut size={22} />
+              <LogOut size={20} />
             </button>
           )}
         </div>

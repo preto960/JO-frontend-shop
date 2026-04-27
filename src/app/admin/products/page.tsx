@@ -7,6 +7,63 @@ import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
 import { formatPrice, getProductImage, showToast, debounce } from '@/lib/utils';
 
+const styles = {
+  primaryGradient: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+  overlay: {
+    position: 'fixed' as const, inset: 0, background: 'rgba(26,29,41,0.6)',
+    backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 1000, padding: 16,
+  },
+  modal: {
+    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    maxWidth: 480, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
+    boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
+  },
+  newBtn: {
+    padding: '10px 20px', borderRadius: 10, border: 'none',
+    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    display: 'flex', alignItems: 'center', gap: 6,
+    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    transition: 'all 0.2s ease',
+  },
+  searchInput: {
+    paddingLeft: 40, paddingRight: 16, background: '#FFFFFF',
+    borderRadius: 10, height: 44, border: '1px solid var(--border)',
+    boxShadow: 'var(--shadow)', fontSize: 14, color: 'var(--text)',
+  },
+  tableCard: {
+    background: '#FFFFFF', borderRadius: 14,
+    boxShadow: 'var(--shadow)', overflow: 'hidden',
+  },
+  editBtn: {
+    width: 34, height: 34, borderRadius: '50%', border: 'none',
+    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.2s ease',
+  },
+  deleteBtn: {
+    width: 34, height: 34, borderRadius: '50%', border: 'none',
+    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.2s ease',
+  },
+  saveBtn: {
+    padding: '10px 20px', borderRadius: 10, border: 'none',
+    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    transition: 'all 0.2s ease',
+  },
+  cancelBtn: {
+    padding: '10px 20px', borderRadius: 10,
+    border: '2px solid var(--border)', background: '#FFFFFF',
+    color: 'var(--text)', cursor: 'pointer', fontSize: 14,
+    transition: 'all 0.2s ease',
+  },
+};
+
 export default function AdminProductsPage() {
   const { isMultiStore } = useConfig();
   const [products, setProducts] = useState<any[]>([]);
@@ -124,46 +181,51 @@ export default function AdminProductsPage() {
   );
 
   return (
-    <div style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Productos</h1>
-        <button onClick={openCreate} style={{
-          padding: '10px 20px', borderRadius: 8, background: 'var(--accent)',
-          color: 'white', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 6,
-        }}>
+        <button
+          onClick={openCreate}
+          style={styles.newBtn}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+        >
           <Plus size={18} /> Nuevo producto
         </button>
       </div>
 
       {/* Search */}
       <div style={{ position: 'relative', marginBottom: 20 }}>
-        <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+        <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
         <input
           type="text" placeholder="Buscar productos..." defaultValue={search}
           onChange={(e) => debouncedSearch(e.target.value)}
-          style={{ paddingLeft: 40, paddingRight: 16, background: 'var(--white)', borderRadius: 10, height: 44 }}
+          style={styles.searchInput}
         />
       </div>
 
       {/* Products table */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-          <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div style={{
+            width: 36, height: 36,
+            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            borderRadius: '50%', animation: 'spin 1s linear infinite',
+          }} />
         </div>
       ) : (
-        <div style={{ background: 'var(--white)', borderRadius: 12, boxShadow: 'var(--shadow)', overflow: 'hidden' }}>
+        <div style={styles.tableCard}>
           <div className="table-responsive">
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--input-bg)' }}>
-                  <th style={{ textAlign: 'left', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Producto</th>
-                  <th style={{ textAlign: 'left', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Precio</th>
-                  <th style={{ textAlign: 'left', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Stock</th>
-                  <th style={{ textAlign: 'left', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Categoría</th>
-                  {isMultiStore && <th style={{ textAlign: 'left', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Tienda</th>}
-                  <th style={{ textAlign: 'right', padding: '12px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Acciones</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Producto</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Precio</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stock</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Categoría</th>
+                  {isMultiStore && <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tienda</th>}
+                  <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,47 +233,52 @@ export default function AdminProductsPage() {
                   const catName = typeof product.category === 'object' ? (product.category.name || product.category.nombre) : '';
                   const storeName = typeof product.store === 'object' ? (product.store.name || product.store.nombre) : '';
                   return (
-                    <tr key={product.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <tr key={product.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.15s ease' }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--input-bg)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <td style={{ padding: '14px 16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                           <div style={{
-                            width: 40, height: 40, borderRadius: 8, background: 'var(--input-bg)',
+                            width: 42, height: 42, borderRadius: 10, background: 'var(--input-bg)',
                             overflow: 'hidden', flexShrink: 0,
                           }}>
                             {getProductImage(product) ? (
                               <img src={getProductImage(product)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)', fontSize: 16 }}>📦</div>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)', fontSize: 18 }}>📦</div>
                             )}
                           </div>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
+                          <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>
                             {product.name || product.nombre}
                           </span>
                         </div>
                       </td>
-                      <td style={{ padding: '12px', fontSize: 13, fontWeight: 600, color: 'var(--accent)' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#FF6B35' }}>
                         {formatPrice(product.price)}
                       </td>
-                      <td style={{ padding: '12px', fontSize: 13, color: product.stock <= 0 ? 'var(--accent)' : 'var(--text)' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, color: product.stock <= 0 ? '#FF6B6B' : 'var(--text)' }}>
                         {product.stock !== undefined ? product.stock : 'N/A'}
                       </td>
-                      <td style={{ padding: '12px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
-                      {isMultiStore && <td style={{ padding: '12px', fontSize: 13, color: 'var(--text-secondary)' }}>{storeName || 'N/A'}</td>}
-                      <td style={{ padding: '12px', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
-                          <button onClick={() => openEdit(product)} style={{
-                            width: 32, height: 32, borderRadius: 6, border: 'none',
-                            background: '#3498DB15', color: '#3498DB', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}>
-                            <Edit2 size={14} />
+                      <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
+                      {isMultiStore && <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{storeName || 'N/A'}</td>}
+                      <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                          <button
+                            onClick={() => openEdit(product)}
+                            style={styles.editBtn}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                          >
+                            <Edit2 size={15} />
                           </button>
-                          <button onClick={() => setDeleteModal(product)} style={{
-                            width: 32, height: 32, borderRadius: 6, border: 'none',
-                            background: '#E9456015', color: '#E94560', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}>
-                            <Trash2 size={14} />
+                          <button
+                            onClick={() => setDeleteModal(product)}
+                            style={styles.deleteBtn}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                          >
+                            <Trash2 size={15} />
                           </button>
                         </div>
                       </td>
@@ -222,51 +289,84 @@ export default function AdminProductsPage() {
             </table>
           </div>
           {products.length === 0 && (
-            <p style={{ textAlign: 'center', padding: 30, color: 'var(--text-secondary)' }}>No hay productos</p>
+            <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+              <p style={{ fontSize: 48, marginBottom: 12 }}>📦</p>
+              <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay productos</p>
+              <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Crea tu primer producto para empezar</p>
+            </div>
           )}
         </div>
       )}
 
       {/* Create/Edit Modal */}
-      <div style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-        display: modalOpen ? 'flex' : 'none', alignItems: 'center', justifyContent: 'center',
-        zIndex: 1000, padding: 16,
-      }} onClick={() => setModalOpen(false)}>
-        <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={{
-          background: 'var(--white)', borderRadius: 16, padding: 24,
-          maxWidth: 480, width: '100%', maxHeight: '90vh', overflowY: 'auto',
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700 }}>{editingProduct ? 'Editar producto' : 'Nuevo producto'}</h2>
-            <button onClick={() => setModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}><X size={20} /></button>
+      <div
+        style={{ ...styles.overlay, display: modalOpen ? 'flex' : 'none' }}
+        onClick={() => setModalOpen(false)}
+      >
+        <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingProduct ? 'Editar producto' : 'Nuevo producto'}</h2>
+            <button
+              onClick={() => setModalOpen(false)}
+              style={{
+                width: 32, height: 32, borderRadius: '50%', border: 'none',
+                background: 'var(--input-bg)', color: 'var(--text-secondary)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <X size={16} />
+            </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Nombre *</label>
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nombre del producto" />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Nombre *</label>
+              <input
+                value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Nombre del producto"
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+              />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Descripción</label>
-              <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Descripción" rows={3} style={{ resize: 'vertical' }} />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Descripción</label>
+              <textarea
+                value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Descripción" rows={3}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none', resize: 'vertical' }}
+              />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Precio *</label>
-                <input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0.00" />
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Precio *</label>
+                <input
+                  type="number" step="0.01" value={form.price}
+                  onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0.00"
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Stock</label>
-                <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} placeholder="0" />
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Stock</label>
+                <input
+                  type="number" value={form.stock}
+                  onChange={(e) => setForm({ ...form, stock: e.target.value })} placeholder="0"
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                />
               </div>
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>URL de imagen</label>
-              <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://..." />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>URL de imagen</label>
+              <input
+                value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })}
+                placeholder="https://..."
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+              />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Categoría</label>
-              <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Categoría</label>
+              <select
+                value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+              >
                 <option value="">Seleccionar categoría</option>
                 {categories.map((cat: any) => (
                   <option key={cat.id} value={cat.id}>{cat.name || cat.nombre}</option>
@@ -275,8 +375,11 @@ export default function AdminProductsPage() {
             </div>
             {isMultiStore && (
               <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Tienda</label>
-                <select value={form.storeId} onChange={(e) => setForm({ ...form, storeId: e.target.value })}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Tienda</label>
+                <select
+                  value={form.storeId} onChange={(e) => setForm({ ...form, storeId: e.target.value })}
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                >
                   <option value="">Seleccionar tienda</option>
                   {stores.map((store: any) => (
                     <option key={store.id} value={store.id}>{store.name || store.nombre}</option>
@@ -285,12 +388,16 @@ export default function AdminProductsPage() {
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 20 }}>
-            <button onClick={() => setModalOpen(false)} style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--white)', color: 'var(--text)', cursor: 'pointer', fontWeight: 500 }}>Cancelar</button>
-            <button onClick={handleSave} disabled={saving} style={{
-              padding: '10px 20px', borderRadius: 8, border: 'none',
-              background: saving ? 'var(--accent-light)' : 'var(--accent)', color: 'white', cursor: 'pointer', fontWeight: 600,
-            }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 24 }}>
+            <button onClick={() => setModalOpen(false)} style={styles.cancelBtn}>Cancelar</button>
+            <button
+              onClick={handleSave} disabled={saving}
+              style={{
+                ...styles.saveBtn,
+                opacity: saving ? 0.7 : 1,
+                background: saving ? '#FDCB6E' : styles.saveBtn.background,
+              }}
+            >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
@@ -303,7 +410,7 @@ export default function AdminProductsPage() {
         title="Eliminar producto"
         message={`¿Estás seguro de eliminar "${deleteModal?.name || 'este producto'}"?`}
         confirmText="Eliminar"
-        confirmColor="var(--accent)"
+        confirmColor="#FF6B6B"
         onConfirm={handleDelete}
         onCancel={() => setDeleteModal(null)}
       />

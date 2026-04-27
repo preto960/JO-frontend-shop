@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, ClipboardList } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import Header from '@/components/Header';
 
@@ -66,10 +66,18 @@ export default function OrdersPage() {
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
             style={{
-              padding: '8px 16px', borderRadius: 20, border: 'none', fontSize: 13, fontWeight: 500,
-              whiteSpace: 'nowrap', cursor: 'pointer', transition: 'all 0.2s',
-              background: activeTab === tab.value ? 'var(--accent)' : 'var(--input-bg)',
-              color: activeTab === tab.value ? 'white' : 'var(--text)',
+              height: 36,
+              padding: '0 18px',
+              borderRadius: 'var(--radius-full)',
+              border: 'none',
+              fontSize: 13,
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              transition: 'all 0.25s ease',
+              background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--input-bg)',
+              color: activeTab === tab.value ? '#fff' : 'var(--text-secondary)',
+              boxShadow: activeTab === tab.value ? 'var(--shadow-accent)' : 'none',
             }}
           >
             {tab.label}
@@ -81,13 +89,30 @@ export default function OrdersPage() {
       <div style={{ padding: '16px 16px 24px', maxWidth: 900, margin: '0 auto' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-            <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{
+              width: 32, height: 32,
+              border: '3px solid var(--border)',
+              borderTopColor: 'var(--primary)',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+            }} />
           </div>
         ) : orders.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
-            <p style={{ fontSize: 48, marginBottom: 12 }}>📋</p>
-            <p style={{ fontSize: 16, fontWeight: 500 }}>No hay pedidos</p>
-            <p style={{ fontSize: 13, marginTop: 4 }}>
+          <div className="animate-fade-in" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{
+              width: 80, height: 80, borderRadius: '50%',
+              background: 'var(--primary-light)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 16,
+            }}>
+              <ClipboardList size={36} color="var(--primary)" />
+            </div>
+            <p style={{
+              fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+            }}>
+              No hay pedidos
+            </p>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
               {activeTab ? 'No tienes pedidos con este estado' : 'Realiza tu primer pedido'}
             </p>
           </div>
@@ -103,14 +128,27 @@ export default function OrdersPage() {
                   key={order.id}
                   className="animate-fade-in"
                   style={{
-                    background: 'var(--white)', borderRadius: 12, padding: 16,
+                    background: 'var(--white)',
+                    borderRadius: 14,
+                    padding: 16,
                     boxShadow: 'var(--shadow)',
+                    transition: 'box-shadow 0.25s ease',
+                    cursor: 'default',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-md)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow)';
                   }}
                 >
                   {/* Order header */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                     <div>
-                      <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 2 }}>
+                      <p style={{
+                        fontSize: 13, fontWeight: 600, color: 'var(--text)',
+                        marginBottom: 2,
+                      }}>
                         Pedido #{String(order.id).slice(-8).toUpperCase()}
                       </p>
                       <p style={{ fontSize: 12, color: 'var(--text-light)' }}>
@@ -120,7 +158,10 @@ export default function OrdersPage() {
                     <span
                       className={getStatusClass(status)}
                       style={{
-                        padding: '4px 10px', borderRadius: 12, fontSize: 12, fontWeight: 600,
+                        padding: '4px 12px',
+                        borderRadius: 'var(--radius-full)',
+                        fontSize: 12,
+                        fontWeight: 600,
                       }}
                     >
                       {getStatusLabel(status)}
@@ -128,11 +169,14 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Items summary */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    paddingTop: 12, borderTop: '1px solid var(--border)',
+                  }}>
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                       {items.length} {items.length === 1 ? 'artículo' : 'artículos'}
                     </p>
-                    <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
+                    <p style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>
                       {formatPrice(total)}
                     </p>
                   </div>
