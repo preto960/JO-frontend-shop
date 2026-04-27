@@ -7,7 +7,7 @@ import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import Header from '@/components/Header';
-import BottomNav from '@/components/BottomNav';
+
 import ProductCard from '@/components/ProductCard';
 import { showToast, debounce } from '@/lib/utils';
 
@@ -91,7 +91,7 @@ export default function HomePage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title="JO-Shop" showLogout />
 
-      <div style={{ padding: '16px 16px 80px' }}>
+      <div style={{ padding: '16px 16px 24px' }}>
         {/* Search bar */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
           <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
@@ -184,7 +184,6 @@ export default function HomePage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

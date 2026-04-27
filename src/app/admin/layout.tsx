@@ -37,8 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         marginLeft: 0,
         minHeight: '100vh',
         background: 'var(--background)',
-        paddingBottom: 64,
-      }} className="lg:ml-[240px] lg:pb-0">
+      }} className="lg:ml-[260px]">
         {children}
       </main>
     </>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2, ShoppingCart, LogOut } from 'lucide-react';
 import Header from '@/components/Header';
-import BottomNav from '@/components/BottomNav';
+
 import { formatPrice, getProductImage, showToast } from '@/lib/utils';
 
 interface CartItem {
@@ -104,7 +104,7 @@ export default function CartPage() {
         }
       />
 
-      <div style={{ flex: 1, padding: '16px 16px 160px', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: '16px 16px 24px', overflowY: 'auto' }}>
         {cart.length === 0 ? (
           <div className="animate-fade-in" style={{ textAlign: 'center', padding: 60, color: 'var(--text-secondary)' }}>
             <p style={{ fontSize: 64, marginBottom: 12 }}>🛒</p>
@@ -208,7 +208,7 @@ export default function CartPage() {
       {/* Footer with total */}
       {cart.length > 0 && (
         <div style={{
-          position: 'fixed', bottom: 64, left: 0, right: 0,
+          position: 'fixed', bottom: 0, left: 0, right: 0,
           background: 'var(--white)', borderTop: '1px solid var(--border)',
           padding: '16px', boxShadow: '0 -2px 8px rgba(0,0,0,0.08)', zIndex: 50,
         }}>
@@ -234,7 +234,6 @@ export default function CartPage() {
         </div>
       )}
 
-      <BottomNav />
     </div>
   );
 }

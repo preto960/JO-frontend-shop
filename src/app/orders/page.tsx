@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import Header from '@/components/Header';
-import BottomNav from '@/components/BottomNav';
+
 import { getStatusLabel, getStatusColor, getStatusClass, formatPrice, formatDate } from '@/lib/utils';
 
 const STATUS_TABS = [
@@ -78,7 +78,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders list */}
-      <div style={{ padding: '16px 16px 80px' }}>
+      <div style={{ padding: '16px 16px 24px' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
             <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
@@ -143,7 +143,6 @@ export default function OrdersPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

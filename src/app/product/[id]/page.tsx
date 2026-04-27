@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import api from '@/lib/api';
 import Header from '@/components/Header';
-import BottomNav from '@/components/BottomNav';
+
 import { formatPrice, getProductImage, showToast } from '@/lib/utils';
 
 export default function ProductDetailPage() {
@@ -59,7 +59,7 @@ export default function ProductDetailPage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title={name} showBack onBack={() => router.push('/home')} showLogout={false} />
 
-      <div style={{ padding: '0 0 80px' }}>
+      <div style={{ padding: '0 0 24px' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
             <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
@@ -148,7 +148,6 @@ export default function ProductDetailPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

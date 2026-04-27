@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
-import BottomNav from '@/components/BottomNav';
+
 import { getInitials, showToast } from '@/lib/utils';
 
 export default function ProfilePage() {
@@ -45,7 +45,7 @@ export default function ProfilePage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title="Mi Perfil" showLogout={false} />
 
-      <div style={{ padding: '16px 16px 80px' }}>
+      <div style={{ padding: '16px 16px 24px' }}>
         {/* Avatar section */}
         <div className="animate-fade-in" style={{
           background: 'var(--white)', borderRadius: 16, padding: 24,
@@ -210,7 +210,6 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <BottomNav />
     </div>
   );
 }
