@@ -33,7 +33,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('joshop_auth');
-        window.location.href = '/login';
+        window.location.href = '/';
       }
     }
     return Promise.reject(error.response?.data || error);

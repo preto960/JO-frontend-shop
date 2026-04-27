@@ -104,11 +104,6 @@ export default function HomePage() {
   );
 
   const addToCart = (product: any) => {
-    if (!user) {
-      router.push('/login');
-      localStorage.setItem('joshop_redirect_after_login', '/');
-      return;
-    }
     try {
       const cart: any[] = JSON.parse(localStorage.getItem('joshop_cart') || '[]');
       const idx = cart.findIndex((item: any) => item.id === product.id);
@@ -172,51 +167,44 @@ export default function HomePage() {
         <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>JO-Shop</h1>
 
         {/* Right section */}
-        <div style={{ position: 'relative', display: 'flex', gap: 8, zIndex: 1 }}>
+        <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
+          <button
+            ref={cartBtnRef}
+            onClick={() => setCartOpen(!cartOpen)}
+            style={{
+              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+              cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative',
+            }}
+            aria-label="Carrito"
+          >
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span style={{
+                position: 'absolute', top: 2, right: 2,
+                background: '#FF6B6B', color: 'white',
+                fontSize: 10, fontWeight: 700,
+                minWidth: 16, height: 16, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '0 4px',
+              }}>
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
+          </button>
           {isLoggedIn ? (
-            <>
-              <button
-                ref={cartBtnRef}
-                onClick={() => setCartOpen(!cartOpen)}
-                style={{
-                  background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                  cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  position: 'relative',
-                }}
-                aria-label="Carrito"
-              >
-                <ShoppingCart size={20} />
-                {cartCount > 0 && (
-                  <span style={{
-                    position: 'absolute', top: 2, right: 2,
-                    background: '#FF6B6B', color: 'white',
-                    fontSize: 10, fontWeight: 700,
-                    minWidth: 16, height: 16, borderRadius: 8,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    padding: '0 4px',
-                  }}>
-                    {cartCount > 9 ? '9+' : cartCount}
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={logout}
-                style={{
-                  background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                  cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-                aria-label="Cerrar sesión"
-              >
-                <LogOut size={20} />
-              </button>
-              <CartDropdown
-                isOpen={cartOpen}
-                onClose={() => setCartOpen(false)}
-                anchorRef={cartBtnRef}
-              />
-            </>
+            <button
+              onClick={logout}
+              style={{
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+              aria-label="Cerrar sesión"
+            >
+              <LogOut size={20} />
+            </button>
           ) : (
             <button
               onClick={() => router.push('/login')}
@@ -230,6 +218,11 @@ export default function HomePage() {
               <LogIn size={20} />
             </button>
           )}
+          <CartDropdown
+            isOpen={cartOpen}
+            onClose={() => setCartOpen(false)}
+            anchorRef={cartBtnRef}
+          />
         </div>
       </header>
 
@@ -458,7 +451,7 @@ export default function HomePage() {
                 <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
                   <ProductCard
                     product={product}
-                    onAddToCart={isLoggedIn ? addToCart : undefined}
+                    onAddToCart={addToCart}
                     onClick={(p) => router.push(`/product/${p.id}`)}
                   />
                 </div>
@@ -504,7 +497,7 @@ export default function HomePage() {
                 <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
                   <ProductCard
                     product={product}
-                    onAddToCart={isLoggedIn ? addToCart : undefined}
+                    onAddToCart={addToCart}
                     onClick={(p) => router.push(`/product/${p.id}`)}
                   />
                 </div>
@@ -557,8 +550,8 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Login hint for non-logged-in users */}
-        {!isLoggedIn && (
+        {/* Hint for non-logged-in users about checkout requiring login */}
+        {!isLoggedIn && cartCount > 0 && (
           <div style={{
             background: 'var(--primary-light)', borderRadius: 12,
             padding: '12px 16px', marginBottom: 16,
@@ -566,7 +559,7 @@ export default function HomePage() {
           }}>
             <User size={18} color="var(--primary)" />
             <p style={{ fontSize: 13, color: 'var(--text)' }}>
-              <span>Inicia sesión para agregar productos al carrito y realizar pedidos</span>
+              <span>Inicia sesión para completar tu compra</span>
             </p>
             <button
               onClick={() => router.push('/login')}
@@ -654,7 +647,7 @@ export default function HomePage() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={isLoggedIn ? addToCart : undefined}
+                onAddToCart={addToCart}
                 onClick={(p) => router.push(`/product/${p.id}`)}
               />
             ))}

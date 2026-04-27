@@ -190,7 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('joshop_auth');
     setToken(null);
     setUser(null);
-    window.location.href = '/login';
+    window.location.href = '/';
   }, []);
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
