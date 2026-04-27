@@ -27,7 +27,7 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      let url = '/users';
+      let url = '/auth/users';
       if (search) url += `?search=${encodeURIComponent(search)}`;
       const res = await api.get(url);
       setUsers(extractData(res));
@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
 
   const fetchRoles = async () => {
     try {
-      const res = await api.get('/roles');
+      const res = await api.get('/auth/roles');
       setRoles(extractData(res));
     } catch { /* ignore */ }
   };
@@ -87,10 +87,10 @@ export default function AdminUsersPage() {
       if (form.storeIds.length > 0) payload.storeIds = form.storeIds;
 
       if (editingUser) {
-        await api.put(`/users/${editingUser.id}`, payload);
+        await api.put(`/auth/users/${editingUser.id}`, payload);
         showToast('Usuario actualizado', 'success');
       } else {
-        await api.post('/users', payload);
+        await api.post('/auth/users', payload);
         showToast('Usuario creado', 'success');
       }
       setModalOpen(false);
@@ -105,7 +105,7 @@ export default function AdminUsersPage() {
   const handleDelete = async () => {
     if (!deleteModal) return;
     try {
-      await api.delete(`/users/${deleteModal.id}`);
+      await api.delete(`/auth/users/${deleteModal.id}`);
       showToast('Usuario eliminado', 'success');
       fetchUsers();
     } catch (err: any) {

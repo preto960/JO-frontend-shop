@@ -33,7 +33,7 @@ export default function AdminRolesPage() {
   const fetchRoles = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/roles');
+      const res = await api.get('/auth/roles');
       setRoles(extractData(res));
     } catch { /* ignore */ }
     finally { setLoading(false); }
@@ -79,10 +79,10 @@ export default function AdminRolesPage() {
     try {
       const payload = { name: form.name, description: form.description, permissions: form.permissions };
       if (editingRole) {
-        await api.put(`/roles/${editingRole.id}`, payload);
+        await api.put(`/auth/roles/${editingRole.id}`, payload);
         showToast('Rol actualizado', 'success');
       } else {
-        await api.post('/roles', payload);
+        await api.post('/auth/roles', payload);
         showToast('Rol creado', 'success');
       }
       setModalOpen(false);
@@ -97,7 +97,7 @@ export default function AdminRolesPage() {
   const handleDelete = async () => {
     if (!deleteModal) return;
     try {
-      await api.delete(`/roles/${deleteModal.id}`);
+      await api.delete(`/auth/roles/${deleteModal.id}`);
       showToast('Rol eliminado', 'success');
       fetchRoles();
     } catch (err: any) {

@@ -24,6 +24,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Track viewport size for responsive behavior
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     if (!isLoading && (!user || (!isAdmin && !isEditor))) {
@@ -59,129 +68,130 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <>
-      {/* Mobile: AppHeader with hamburger menu */}
-      <div className="lg:hidden">
-        <AppHeader />
-      </div>
+      {/* Mobile: AppHeader with hamburger menu (always shown on mobile) */}
+      {!isDesktop && <AppHeader />}
 
-      {/* Desktop sidebar */}
-      <aside
-        className="hidden lg:flex"
-        style={{
-          position: 'fixed', left: 0, top: 0, bottom: 0,
-          width: collapsed ? 72 : 260,
-          background: 'var(--primary)', color: 'var(--white)',
-          transition: 'width 0.3s', flexDirection: 'column',
-          zIndex: 200, overflow: 'hidden',
-        }}
-      >
-        {/* Logo */}
-        <div style={{ padding: '20px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, minHeight: 56 }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: '50%', background: 'var(--accent)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 700, fontSize: 16, flexShrink: 0,
-          }}>
-            JO
-          </div>
-          {!collapsed && (
-            <div>
-              <span style={{ fontWeight: 700, fontSize: 16, whiteSpace: 'nowrap' }}>JO-Shop</span>
-              <p style={{ fontSize: 11, opacity: 0.7 }}>Admin Panel</p>
+      {/* Desktop sidebar (only shown on desktop) */}
+      {isDesktop && (
+        <aside
+          style={{
+            position: 'fixed', left: 0, top: 0, bottom: 0,
+            width: collapsed ? 72 : 260,
+            background: 'var(--primary)', color: 'var(--white)',
+            transition: 'width 0.3s', flexDirection: 'column',
+            zIndex: 200, overflow: 'hidden',
+            display: 'flex',
+          }}
+        >
+          {/* Logo */}
+          <div style={{ padding: '20px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, minHeight: 56 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%', background: 'var(--accent)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, fontSize: 16, flexShrink: 0,
+            }}>
+              JO
             </div>
-          )}
-        </div>
+            {!collapsed && (
+              <div>
+                <span style={{ fontWeight: 700, fontSize: 16, whiteSpace: 'nowrap' }}>JO-Shop</span>
+                <p style={{ fontSize: 11, opacity: 0.7 }}>{user?.name || 'Admin'}</p>
+              </div>
+            )}
+          </div>
 
-        {/* Nav items */}
-        <div style={{ flex: 1, padding: '8px', overflowY: 'auto' }}>
-          {filteredNavItems.map((item) => {
-            const isActive = pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.path}
-                onClick={() => router.push(item.path)}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                  padding: '12px', borderRadius: 10, border: 'none',
-                  background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
-                  color: 'var(--white)', cursor: 'pointer', marginBottom: 4,
-                  transition: 'background 0.2s', whiteSpace: 'nowrap',
-                  fontSize: 14, fontWeight: isActive ? 600 : 400,
-                }}
-                onMouseEnter={(e) => { if (!isActive) (e.currentTarget.style.background = 'rgba(255,255,255,0.08)'); }}
-                onMouseLeave={(e) => { if (!isActive) (e.currentTarget.style.background = 'transparent'); }}
-                title={collapsed ? item.label : undefined}
-              >
-                <Icon size={20} style={{ flexShrink: 0 }} />
-                {!collapsed && <span>{item.label}</span>}
-              </button>
-            );
-          })}
-        </div>
+          {/* Nav items */}
+          <div style={{ flex: 1, padding: '8px', overflowY: 'auto' }}>
+            {filteredNavItems.map((item) => {
+              const isActive = pathname === item.path;
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.path}
+                  onClick={() => router.push(item.path)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px', borderRadius: 10, border: 'none',
+                    background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
+                    color: 'var(--white)', cursor: 'pointer', marginBottom: 4,
+                    transition: 'background 0.2s', whiteSpace: 'nowrap',
+                    fontSize: 14, fontWeight: isActive ? 600 : 400,
+                  }}
+                  onMouseEnter={(e) => { if (!isActive) (e.currentTarget.style.background = 'rgba(255,255,255,0.08)'); }}
+                  onMouseLeave={(e) => { if (!isActive) (e.currentTarget.style.background = 'transparent'); }}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <Icon size={20} style={{ flexShrink: 0 }} />
+                  {!collapsed && <span>{item.label}</span>}
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Footer: logout + collapse */}
-        <div style={{ padding: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <button
-            onClick={logout}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px',
-              borderRadius: 8, border: 'none', background: 'transparent',
-              color: 'var(--white)', cursor: 'pointer', marginBottom: 4, fontSize: 14,
-            }}
-          >
-            <LogOut size={20} />
-            {!collapsed && <span>Cerrar sesión</span>}
-          </button>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '8px', borderRadius: 8, border: 'none',
-              background: 'rgba(255,255,255,0.08)', color: 'var(--white)', cursor: 'pointer',
-            }}
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </button>
-        </div>
-      </aside>
+          {/* Footer: logout + collapse */}
+          <div style={{ padding: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <button
+              onClick={logout}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px',
+                borderRadius: 8, border: 'none', background: 'transparent',
+                color: 'var(--white)', cursor: 'pointer', marginBottom: 4, fontSize: 14,
+              }}
+            >
+              <LogOut size={20} />
+              {!collapsed && <span>Cerrar sesión</span>}
+            </button>
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '8px', borderRadius: 8, border: 'none',
+                background: 'rgba(255,255,255,0.08)', color: 'var(--white)', cursor: 'pointer',
+              }}
+            >
+              {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </button>
+          </div>
+        </aside>
+      )}
 
-      {/* Desktop: header bar at top */}
-      <header
-        className="hidden lg:flex"
-        style={{
-          position: 'fixed', top: 0,
-          left: collapsed ? 72 : 260, right: 0,
-          height: '56px', background: 'var(--white)',
-          borderBottom: '1px solid var(--border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 24px', zIndex: 100,
-          boxShadow: 'var(--shadow)',
-          transition: 'left 0.3s',
-        }}
-      >
-        <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>JO-Shop Admin</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{user?.name || 'Admin'}</span>
-          <button
-            onClick={logout}
-            style={{ background: 'none', border: 'none', color: 'var(--text)', cursor: 'pointer', padding: 4 }}
-            aria-label="Cerrar sesión"
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+      {/* Desktop: header bar at top (only shown on desktop) */}
+      {isDesktop && (
+        <header
+          style={{
+            position: 'fixed', top: 0,
+            left: collapsed ? 72 : 260, right: 0,
+            height: '56px', background: 'var(--white)',
+            borderBottom: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '0 24px', zIndex: 100,
+            boxShadow: 'var(--shadow)',
+            transition: 'left 0.3s',
+          }}
+        >
+          <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>JO-Shop</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{user?.name || 'Admin'}</span>
+            <button
+              onClick={logout}
+              style={{ background: 'none', border: 'none', color: 'var(--text)', cursor: 'pointer', padding: 4 }}
+              aria-label="Cerrar sesión"
+            >
+              <LogOut size={20} />
+            </button>
+          </div>
+        </header>
+      )}
 
       {/* Main content */}
       <main style={{
         minHeight: '100vh',
         background: 'var(--background)',
-        paddingTop: '56px',
-      }} className="lg:pt-[56px] lg:pl-[260px]" >
-        <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
-          {children}
-        </div>
+        paddingTop: isDesktop ? '56px' : '56px',
+        paddingLeft: isDesktop ? (collapsed ? 72 : 260) : 0,
+        transition: 'padding-left 0.3s',
+      }}>
+        {children}
       </main>
     </>
   );

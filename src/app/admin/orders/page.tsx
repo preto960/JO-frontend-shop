@@ -42,7 +42,7 @@ export default function AdminOrdersPage() {
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     try {
-      await api.put(`/orders/${orderId}`, { status: newStatus });
+      await api.put(`/orders/${orderId}/status`, { status: newStatus });
       showToast('Estado actualizado', 'success');
       fetchOrders();
     } catch (err: any) {

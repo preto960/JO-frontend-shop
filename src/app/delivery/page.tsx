@@ -15,22 +15,26 @@ export default function DeliveryPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/orders?status=confirmed,shipped');
-      const all = extractData(res);
-      // Available: confirmed orders not assigned to delivery
-      const available = all.filter((o: any) => o.status === 'confirmed');
-      // My orders: orders assigned to current delivery person (shipped)
-      const mine = all.filter((o: any) => o.status === 'shipped');
-      setOrders(available);
-      setMyOrders(mine);
-    } catch {
-      // Try fetching all orders
+      // Try /orders/available endpoint first (mobile app uses this)
       try {
-        const res = await api.get('/orders');
-        const all = extractData(res);
-        setOrders(all.filter((o: any) => o.status === 'confirmed'));
-        setMyOrders(all.filter((o: any) => o.status === 'shipped'));
-      } catch { /* ignore */ }
+        const res = await api.get('/orders/available');
+        const available = extractData(res);
+        setOrders(available);
+      } catch {
+        // Fallback: filter confirmed orders from /orders
+        const res = await api.get('/orders?status=confirmed');
+        setOrders(extractData(res));
+      }
+      // Fetch my assigned orders (shipped)
+      try {
+        const res = await api.get('/orders?status=shipped');
+        setMyOrders(extractData(res));
+      } catch {
+        setMyOrders([]);
+      }
+    } catch {
+      setOrders([]);
+      setMyOrders([]);
     } finally {
       setLoading(false);
     }
@@ -40,7 +44,8 @@ export default function DeliveryPage() {
 
   const acceptOrder = async (order: any) => {
     try {
-      await api.put(`/orders/${order.id}`, { status: 'shipped' });
+      // Mobile app uses POST /orders/:id/accept
+      await api.post(`/orders/${order.id}/accept`);
       showToast('Pedido aceptado', 'success');
       fetchOrders();
     } catch (err: any) {
@@ -50,7 +55,7 @@ export default function DeliveryPage() {
 
   const deliverOrder = async (order: any) => {
     try {
-      await api.put(`/orders/${order.id}`, { status: 'delivered' });
+      await api.put(`/orders/${order.id}/status`, { status: 'delivered' });
       showToast('Pedido entregado', 'success');
       fetchOrders();
     } catch (err: any) {

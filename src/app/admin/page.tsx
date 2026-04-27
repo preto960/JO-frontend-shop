@@ -42,41 +42,59 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch orders for stats
-        const ordersRes = await api.get('/orders');
-        const orders = extractData(ordersRes);
-        const today = new Date().toDateString();
-        const todayOrders = orders.filter((o: any) => {
-          const d = new Date(o.createdAt || o.created_at);
-          return d.toDateString() === today;
-        });
-
-        const totalRevenue = orders
-          .filter((o: any) => o.status !== 'cancelled')
-          .reduce((sum: number, o: any) => sum + (o.total || o.totalAmount || 0), 0);
-
-        setStats({
-          totalOrders: orders.length,
-          revenue: totalRevenue,
-          todayOrders: todayOrders.length,
-        });
-
-        // Recent orders (last 10)
-        const sorted = [...orders].sort((a: any, b: any) => {
-          return new Date(b.createdAt || b.created_at).getTime() - new Date(a.createdAt || a.created_at).getTime();
-        });
-        setRecentOrders(sorted.slice(0, 10));
-
-        // Try to fetch users and products counts
+        // Try backend dashboard endpoint first
         try {
-          const usersRes = await api.get('/users');
+          const dashRes = await api.get('/orders/stats/dashboard');
+          if (dashRes) {
+            setStats({
+              totalOrders: dashRes.totalOrders || dashRes.total_orders || 0,
+              revenue: dashRes.totalRevenue || dashRes.total_revenue || 0,
+              todayOrders: dashRes.todayOrders || dashRes.today_orders || 0,
+              totalUsers: dashRes.totalUsers || dashRes.total_users || 0,
+              totalProducts: dashRes.totalProducts || dashRes.total_products || 0,
+            });
+          }
+        } catch {
+          // Fallback: calculate from orders
+          try {
+            const ordersRes = await api.get('/orders');
+            const orders = extractData(ordersRes);
+            const today = new Date().toDateString();
+            const todayOrders = orders.filter((o: any) => {
+              const d = new Date(o.createdAt || o.created_at);
+              return d.toDateString() === today;
+            });
+            const totalRevenue = orders
+              .filter((o: any) => o.status !== 'cancelled')
+              .reduce((sum: number, o: any) => sum + (o.total || o.totalAmount || 0), 0);
+            setStats({
+              totalOrders: orders.length,
+              revenue: totalRevenue,
+              todayOrders: todayOrders.length,
+            });
+          } catch { /* ignore */ }
+        }
+
+        // Fetch recent orders
+        try {
+          const ordersRes = await api.get('/orders');
+          const orders = extractData(ordersRes);
+          const sorted = [...orders].sort((a: any, b: any) => {
+            return new Date(b.createdAt || b.created_at).getTime() - new Date(a.createdAt || a.created_at).getTime();
+          });
+          setRecentOrders(sorted.slice(0, 10));
+        } catch { /* ignore */ }
+
+        // Fetch user and product counts if not from dashboard
+        try {
+          const usersRes = await api.get('/auth/users');
           const productsRes = await api.get('/products');
           setStats((prev: any) => ({
             ...prev,
-            totalUsers: extractData(usersRes).length,
-            totalProducts: extractData(productsRes).length,
+            totalUsers: prev.totalUsers || extractData(usersRes).length,
+            totalProducts: prev.totalProducts || extractData(productsRes).length,
           }));
-        } catch { /* ignore if endpoints not available */ }
+        } catch { /* ignore */ }
       } catch {
         // ignore
       } finally {
