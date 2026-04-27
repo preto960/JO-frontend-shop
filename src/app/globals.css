@@ -106,6 +106,48 @@ html, body {
   scrollbar-width: none;
 }
 
+/* ═══ Scroll Container — visible thin scrollbar ═══ */
+.scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--input-bg);
+  border-radius: 2px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--text-light);
+  border-radius: 2px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ═══ Scroll Arrow Buttons ═══ */
+.scroll-arrow-btn {
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+}
+
+.scroll-container:hover ~ .scroll-arrow-btn,
+.scroll-arrow-btn:hover {
+  opacity: 1;
+}
+
+.scroll-arrow-btn:hover {
+  transform: translateY(-50%) scale(1.1) !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.18) !important;
+}
+
+/* Always show arrows on touch devices */
+@media (hover: none) {
+  .scroll-arrow-btn {
+    opacity: 0.7;
+  }
+}
+
 /* ═══ Status Badges ═══ */
 .status-pending { background-color: #FFF3CD; color: #856404; }
 .status-confirmed { background-color: #D1ECF1; color: #0C5460; }

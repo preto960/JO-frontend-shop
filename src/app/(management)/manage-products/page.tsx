@@ -70,6 +70,7 @@ export default function AdminProductsPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -82,16 +83,57 @@ export default function AdminProductsPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setFetchError('');
       let url = '/products';
-      if (search) url += `?search=${encodeURIComponent(search)}`;
+      const params: string[] = [];
+      if (search) params.push(`search=${encodeURIComponent(search)}`);
+      // Add pagination to ensure products are returned
+      params.push('page=1');
+      params.push('limit=100');
+      if (params.length) url += '?' + params.join('&');
       const res = await api.get(url);
+      console.log('[manage-products] API response:', JSON.stringify(res).slice(0, 500));
       const extracted = extractData(res);
-      setProducts(Array.isArray(extracted) ? extracted : []);
+      console.log('[manage-products] Extracted products count:', Array.isArray(extracted) ? extracted.length : 'not array', extracted);
+      if (Array.isArray(extracted) && extracted.length > 0) {
+        setProducts(extracted);
+      } else {
+        // Fallback: try to find products in nested response structures
+        const fallback = tryExtractProducts(res);
+        if (Array.isArray(fallback) && fallback.length > 0) {
+          setProducts(fallback);
+        } else {
+          setProducts([]);
+        }
+      }
     } catch (err: any) {
-      console.error('Error fetching products:', err);
+      console.error('[manage-products] Error fetching products:', err);
+      setFetchError(err?.message || 'Error de conexion');
+      showToast('Error al cargar productos', 'error');
       setProducts([]);
     }
     finally { setLoading(false); }
+  };
+
+  // Deep fallback to find products in any response structure
+  const tryExtractProducts = (data: any): any[] => {
+    if (!data) return [];
+    if (Array.isArray(data) && data.length > 0 && data[0]?.name) return data;
+    if (Array.isArray(data) && data.length > 0 && data[0]?.id) return data;
+    if (typeof data === 'object') {
+      for (const key of Object.keys(data)) {
+        if (key === 'pagination' || key === 'meta' || key === 'message') continue;
+        const val = data[key];
+        if (Array.isArray(val) && val.length > 0 && (val[0]?.name || val[0]?.id || val[0]?.price !== undefined)) {
+          return val;
+        }
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          const nested = tryExtractProducts(val);
+          if (nested.length > 0) return nested;
+        }
+      }
+    }
+    return [];
   };
 
   const fetchCategories = async () => {
@@ -219,6 +261,23 @@ export default function AdminProductsPage() {
             border: '3px solid var(--border)', borderTopColor: '#FF6B35',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
+        </div>
+      ) : fetchError && products.length === 0 ? (
+        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
+          <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Error al cargar productos</p>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>{fetchError}</p>
+          <button
+            onClick={fetchProducts}
+            style={{
+              padding: '10px 24px', borderRadius: 10, border: 'none',
+              background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+              color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+              boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+            }}
+          >
+            Reintentar
+          </button>
         </div>
       ) : (
         <div style={styles.tableCard}>

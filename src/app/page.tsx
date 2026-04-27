@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search, PackageSearch, ShoppingCart, Star, TrendingUp,
-  Percent, ChevronRight, Truck, Shield, Clock, Sparkles,
+  Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, Sparkles,
   Menu, LogIn, LogOut, User,
 } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
@@ -302,9 +302,10 @@ export default function HomePage() {
             CATEGORY PILLS
            ═══════════════════════════════════════════ */}
         {categories.length > 0 && !search && (
-          <div className="animate-fade-in scrollbar-hide" style={{
+          <div className="animate-fade-in" style={{
             display: 'flex', gap: 8, marginBottom: 24,
             overflowX: 'auto', paddingBottom: 4,
+            paddingRight: 4,
           }}>
             <button
               onClick={() => setSelectedCategory('')}
@@ -443,19 +444,57 @@ export default function HomePage() {
                 </h3>
               </div>
             </div>
-            <div className="scrollbar-hide" style={{
-              display: 'flex', gap: 14,
-              overflowX: 'auto', paddingBottom: 8,
-            }}>
-              {bestSellers.map((product: any) => (
-                <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={addToCart}
-                    onClick={(p) => router.push(`/product/${p.id}`)}
-                  />
-                </div>
-              ))}
+            <div style={{ position: 'relative' }}>
+              <div
+                ref={(el: HTMLDivElement | null) => {
+                  if (el) (window as any).__bestsellersScroll = el;
+                }}
+                className="scroll-container" data-scroll="bestsellers" style={{
+                  display: 'flex', gap: 14,
+                  overflowX: 'auto', paddingBottom: 8,
+                  paddingRight: 16,
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch',
+                  scrollSnapType: 'x mandatory',
+                }}>
+                {bestSellers.map((product: any) => (
+                  <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0, scrollSnapAlign: 'start' }}>
+                    <ProductCard
+                      product={product}
+                      onAddToCart={addToCart}
+                      onClick={(p) => router.push(`/product/${p.id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => { const el = (window as any).__bestsellersScroll; if (el) el.scrollBy({ left: -220, behavior: 'smooth' }); }}
+                className="scroll-arrow-btn scroll-arrow-left"
+                style={{
+                  position: 'absolute', left: -6, top: '50%', transform: 'translateY(-50%)',
+                  width: 32, height: 32, borderRadius: '50%', border: 'none',
+                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
+                }}
+                aria-label="Anterior"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => { const el = (window as any).__bestsellersScroll; if (el) el.scrollBy({ left: 220, behavior: 'smooth' }); }}
+                className="scroll-arrow-btn scroll-arrow-right"
+                style={{
+                  position: 'absolute', right: -6, top: '50%', transform: 'translateY(-50%)',
+                  width: 32, height: 32, borderRadius: '50%', border: 'none',
+                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
+                }}
+                aria-label="Siguiente"
+              >
+                <ChevronRight size={18} />
+              </button>
             </div>
           </div>
         )}
@@ -489,19 +528,57 @@ export default function HomePage() {
                 Precios especiales
               </span>
             </div>
-            <div className="scrollbar-hide" style={{
-              display: 'flex', gap: 14,
-              overflowX: 'auto', paddingBottom: 8,
-            }}>
-              {offerProducts.map((product: any) => (
-                <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={addToCart}
-                    onClick={(p) => router.push(`/product/${p.id}`)}
-                  />
-                </div>
-              ))}
+            <div style={{ position: 'relative' }}>
+              <div
+                ref={(el: HTMLDivElement | null) => {
+                  if (el) (window as any).__offersScroll = el;
+                }}
+                className="scroll-container" data-scroll="offers" style={{
+                  display: 'flex', gap: 14,
+                  overflowX: 'auto', paddingBottom: 8,
+                  paddingRight: 16,
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch',
+                  scrollSnapType: 'x mandatory',
+                }}>
+                {offerProducts.map((product: any) => (
+                  <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0, scrollSnapAlign: 'start' }}>
+                    <ProductCard
+                      product={product}
+                      onAddToCart={addToCart}
+                      onClick={(p) => router.push(`/product/${p.id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => { const el = (window as any).__offersScroll; if (el) el.scrollBy({ left: -220, behavior: 'smooth' }); }}
+                className="scroll-arrow-btn scroll-arrow-left"
+                style={{
+                  position: 'absolute', left: -6, top: '50%', transform: 'translateY(-50%)',
+                  width: 32, height: 32, borderRadius: '50%', border: 'none',
+                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
+                }}
+                aria-label="Anterior"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => { const el = (window as any).__offersScroll; if (el) el.scrollBy({ left: 220, behavior: 'smooth' }); }}
+                className="scroll-arrow-btn scroll-arrow-right"
+                style={{
+                  position: 'absolute', right: -6, top: '50%', transform: 'translateY(-50%)',
+                  width: 32, height: 32, borderRadius: '50%', border: 'none',
+                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
+                }}
+                aria-label="Siguiente"
+              >
+                <ChevronRight size={18} />
+              </button>
             </div>
           </div>
         )}
@@ -634,10 +711,9 @@ export default function HomePage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 16,
-            overflow: 'hidden',
           }}>
             <style>{`
-              .products-grid > div { min-width: 0; overflow: hidden; }
+              .products-grid > div { min-width: 0; }
               @media (min-width: 768px) {
                 .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
               }
