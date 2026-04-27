@@ -76,10 +76,10 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
     // Admin or Editor
     if (isAdmin || isEditor) {
       const items: any[] = [
-        { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+        { path: '/home', label: 'Inicio', icon: Home },
       ];
       if (canViewModule('products') || isAdmin) {
-        items.push({ path: '/admin/products', label: 'Productos', icon: Package });
+        items.push({ path: '/admin/products', label: 'Gestionar Productos', icon: Package });
       }
       if (canViewModule('categories') || isAdmin) {
         items.push({ path: '/admin/categories', label: 'Categorías', icon: Tag });

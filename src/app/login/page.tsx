@@ -15,9 +15,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const redirectByRole = () => {
-    if (isAdmin || isEditor) {
-      router.replace('/admin');
-    } else if (isDelivery) {
+    if (isDelivery) {
       router.replace('/delivery');
     } else {
       router.replace('/home');

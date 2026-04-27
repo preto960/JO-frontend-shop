@@ -14,9 +14,7 @@ export default function HomePage() {
       router.replace('/login');
       return;
     }
-    if (isAdmin || isEditor) {
-      router.replace('/admin');
-    } else if (isDelivery) {
+    if (isDelivery) {
       router.replace('/delivery');
     } else {
       router.replace('/home');

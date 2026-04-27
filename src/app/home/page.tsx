@@ -2,17 +2,24 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, PackageSearch } from 'lucide-react';
+import {
+  Search, PackageSearch, ShoppingCart, Star, TrendingUp,
+  Percent, ChevronRight, Truck, Shield, Clock, Sparkles,
+} from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import Header from '@/components/Header';
-
 import ProductCard from '@/components/ProductCard';
-import { showToast, debounce } from '@/lib/utils';
+import { showToast, debounce, formatPrice } from '@/lib/utils';
+
+/* ═══════════════════════════════════════════════════════════════
+   Landing Page — E-commerce JO-Shop
+   Vista principal para todos los roles (customer, admin, editor)
+   ═══════════════════════════════════════════════════════════════ */
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, isAdmin, isEditor } = useAuth();
   const { isMultiStore } = useConfig();
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
@@ -87,47 +94,103 @@ export default function HomePage() {
     }
   };
 
+  // Products with price > 0 — simulate "offers" (lowest prices)
+  const offerProducts = [...products]
+    .filter((p) => (p.oldPrice || p.originalPrice || p.compareAtPrice) || p.price < 15)
+    .sort((a, b) => (a.price || 0) - (b.price || 0))
+    .slice(0, 6);
+
+  // Simulate "best sellers" — first 6 products
+  const bestSellers = [...products].slice(0, 6);
+
+  const hasActiveFilters = search || selectedCategory || selectedStore;
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header title="JO-Shop" showLogout />
 
-      <div style={{ padding: '16px 16px 24px', maxWidth: 1200, margin: '0 auto' }}>
-        {/* Search bar */}
-        <div style={{ position: 'relative', marginBottom: 16 }}>
-          <Search size={18} style={{
-            position: 'absolute', left: 16, top: '50%',
-            transform: 'translateY(-50%)', color: 'var(--text-light)',
-            pointerEvents: 'none',
-          }} />
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            defaultValue={search}
-            onChange={(e) => debouncedSearch(e.target.value)}
-            style={{
-              paddingLeft: 44,
-              paddingRight: 16,
-              background: 'var(--white)',
-              borderRadius: 'var(--radius-full)',
-              height: 48,
-              border: 'none',
-              boxShadow: 'var(--shadow-md)',
-              fontSize: 15,
-            }}
-          />
-        </div>
+      {/* ═══════════════════════════════════════════
+          HERO BANNER
+         ═══════════════════════════════════════════ */}
+      <div style={{
+        background: 'var(--primary-gradient)',
+        padding: '28px 16px 32px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Decorative elements */}
+        <div style={{
+          position: 'absolute', top: '-40px', right: '-40px',
+          width: 160, height: 160, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.08)',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-30px', left: '-30px',
+          width: 120, height: 120, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.06)',
+        }} />
+        <div style={{
+          position: 'absolute', top: '30%', right: '20%',
+          width: 50, height: 50, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.05)',
+        }} />
 
-        {/* Category pills */}
-        {categories.length > 0 && (
-          <div className="scrollbar-hide" style={{
-            display: 'flex', gap: 8, marginBottom: 16,
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto' }}>
+          <div className="animate-fade-in">
+            <h2 style={{
+              fontSize: 26, fontWeight: 800, color: 'white', marginBottom: 6,
+              textShadow: '0 1px 4px rgba(0,0,0,0.1)',
+            }}>
+              Bienvenido{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
+            </h2>
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.9)', marginBottom: 20 }}>
+              Descubre los mejores productos y haz tu pedido
+            </p>
+          </div>
+
+          {/* Search bar */}
+          <div className="animate-fade-in" style={{ position: 'relative' }}>
+            <Search size={18} style={{
+              position: 'absolute', left: 16, top: '50%',
+              transform: 'translateY(-50%)', color: 'var(--text-light)',
+              pointerEvents: 'none', zIndex: 1,
+            }} />
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              defaultValue={search}
+              onChange={(e) => debouncedSearch(e.target.value)}
+              style={{
+                paddingLeft: 44,
+                paddingRight: 16,
+                background: 'rgba(255,255,255,0.95)',
+                borderRadius: 'var(--radius-full)',
+                height: 50,
+                border: 'none',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                fontSize: 15,
+                color: 'var(--text)',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '20px 16px 32px', maxWidth: 1200, margin: '0 auto' }}>
+
+        {/* ═══════════════════════════════════════════
+            CATEGORY PILLS
+           ═══════════════════════════════════════════ */}
+        {categories.length > 0 && !search && (
+          <div className="animate-fade-in scrollbar-hide" style={{
+            display: 'flex', gap: 8, marginBottom: 24,
             overflowX: 'auto', paddingBottom: 4,
           }}>
             <button
               onClick={() => setSelectedCategory('')}
               style={{
-                height: 36,
-                padding: '0 18px',
+                height: 38,
+                padding: '0 20px',
                 borderRadius: 'var(--radius-full)',
                 border: 'none',
                 fontSize: 13,
@@ -147,8 +210,8 @@ export default function HomePage() {
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id === selectedCategory ? '' : cat.id)}
                 style={{
-                  height: 36,
-                  padding: '0 18px',
+                  height: 38,
+                  padding: '0 20px',
                   borderRadius: 'var(--radius-full)',
                   border: 'none',
                   fontSize: 13,
@@ -169,7 +232,7 @@ export default function HomePage() {
 
         {/* Store filter */}
         {isMultiStore && stores.length > 0 && (
-          <div style={{ marginBottom: 16 }}>
+          <div style={{ marginBottom: 20 }}>
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
@@ -182,6 +245,7 @@ export default function HomePage() {
                 border: '2px solid var(--border)',
                 padding: '0 36px 0 14px',
                 boxShadow: 'var(--shadow)',
+                maxWidth: 300,
               }}
             >
               <option value="">Todas las tiendas</option>
@@ -194,11 +258,186 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Products grid */}
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+        {/* ═══════════════════════════════════════════
+            FEATURES STRIP
+           ═══════════════════════════════════════════ */}
+        {!search && !selectedCategory && !selectedStore && (
+          <div className="animate-fade-in" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 12,
+            marginBottom: 28,
+          }}>
+            {[
+              { icon: Truck, label: 'Envio rapido', color: '#FF6B35', bg: '#FFF0E9' },
+              { icon: Shield, label: 'Pago seguro', color: '#00B894', bg: '#E8FBF5' },
+              { icon: Clock, label: 'Soporte 24/7', color: '#54A0FF', bg: '#E8F1FF' },
+            ].map((f) => (
+              <div key={f.label} style={{
+                background: 'var(--white)',
+                borderRadius: 'var(--radius)',
+                padding: '14px 12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                boxShadow: 'var(--shadow)',
+              }}>
+                <div style={{
+                  width: 38, height: 38, borderRadius: '50%',
+                  background: f.bg, display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <f.icon size={18} color={f.color} />
+                </div>
+                <span style={{
+                  fontSize: 12, fontWeight: 600, color: 'var(--text)',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                }}>
+                  {f.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════
+            BEST SELLERS SECTION (only when no filters)
+           ═══════════════════════════════════════════ */}
+        {!search && !selectedCategory && !selectedStore && bestSellers.length > 0 && (
+          <div className="animate-slide-up" style={{ marginBottom: 32 }}>
             <div style={{
-              width: 32, height: 32,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: 16,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: '#FFF0E9', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <TrendingUp size={16} color="#FF6B35" />
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                  Mas vendidos
+                </h3>
+              </div>
+            </div>
+            <div className="scrollbar-hide" style={{
+              display: 'flex', gap: 14,
+              overflowX: 'auto', paddingBottom: 8,
+            }}>
+              {bestSellers.map((product: any) => (
+                <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
+                  <ProductCard
+                    product={product}
+                    onAddToCart={addToCart}
+                    onClick={(p) => router.push(`/product/${p.id}`)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════
+            OFFERS SECTION (only when no filters and offers exist)
+           ═══════════════════════════════════════════ */}
+        {!search && !selectedCategory && !selectedStore && offerProducts.length > 0 && (
+          <div className="animate-slide-up" style={{ marginBottom: 32 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: 16,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: '#FFE8E8', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Percent size={16} color="#FF6B6B" />
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                  Ofertas
+                </h3>
+              </div>
+              <span style={{
+                fontSize: 12, fontWeight: 600, color: '#FF6B6B',
+                background: '#FFE8E8', padding: '4px 12px',
+                borderRadius: 'var(--radius-full)',
+              }}>
+                Precios especiales
+              </span>
+            </div>
+            <div className="scrollbar-hide" style={{
+              display: 'flex', gap: 14,
+              overflowX: 'auto', paddingBottom: 8,
+            }}>
+              {offerProducts.map((product: any) => (
+                <div key={product.id} style={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
+                  <ProductCard
+                    product={product}
+                    onAddToCart={addToCart}
+                    onClick={(p) => router.push(`/product/${p.id}`)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════
+            SECTION TITLE — All Products or Search Results
+           ═══════════════════════════════════════════ */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 16,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'var(--primary-light)', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Sparkles size={16} color="var(--primary)" />
+            </div>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+              {hasActiveFilters
+                ? `Resultados${search ? ` de "${search}"` : ''} (${products.length})`
+                : 'Todos los productos'
+              }
+            </h3>
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              onClick={() => {
+                setSelectedCategory('');
+                setSelectedStore('');
+                setSearch('');
+                // Clear search input
+                const input = document.querySelector('input[placeholder="Buscar productos..."]') as HTMLInputElement;
+                if (input) input.value = '';
+              }}
+              style={{
+                fontSize: 13, fontWeight: 600, color: 'var(--primary)',
+                background: 'var(--primary-light)', padding: '6px 14px',
+                borderRadius: 'var(--radius-full)', border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+
+        {/* ═══════════════════════════════════════════
+            PRODUCTS GRID
+           ═══════════════════════════════════════════ */}
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
+            <div style={{
+              width: 36, height: 36,
               border: '3px solid var(--border)',
               borderTopColor: 'var(--primary)',
               borderRadius: '50%',
@@ -221,10 +460,16 @@ export default function HomePage() {
               No se encontraron productos
             </p>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 20 }}>
-              Intenta con otra búsqueda o categoría
+              Intenta con otra busqueda o categoria
             </p>
             <button
-              onClick={() => { setSelectedCategory(''); setSearch(''); }}
+              onClick={() => {
+                setSelectedCategory('');
+                setSelectedStore('');
+                setSearch('');
+                const input = document.querySelector('input[placeholder="Buscar productos..."]') as HTMLInputElement;
+                if (input) input.value = '';
+              }}
               style={{
                 padding: '12px 28px',
                 borderRadius: 'var(--radius-full)',
@@ -267,6 +512,37 @@ export default function HomePage() {
         )}
       </div>
 
+      {/* ═══════════════════════════════════════════
+          FOOTER
+         ═══════════════════════════════════════════ */}
+      {!search && !selectedCategory && (
+        <footer style={{
+          background: 'var(--white)',
+          borderTop: '1px solid var(--border)',
+          padding: '24px 16px',
+          textAlign: 'center',
+        }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            marginBottom: 8,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'var(--primary-gradient)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 800, fontSize: 12, color: 'white',
+            }}>
+              JO
+            </div>
+            <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
+              JO-Shop
+            </span>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--text-light)' }}>
+            Tu tienda en linea - Todos los derechos reservados
+          </p>
+        </footer>
+      )}
     </div>
   );
 }
