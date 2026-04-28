@@ -24,24 +24,36 @@ interface User {
   phone?: string;
   birthdate?: string;
   twoFactorEnabled?: boolean;
+  twoFactorType?: 'email' | 'totp' | null;
+  hasBackupCodes?: boolean;
   storeId?: string;
   stores?: any[];
+}
+
+interface TotpSetupResult {
+  secret: string;
+  qrCode: string;
+  otpauthUrl: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string; error?: string }>;
-  verifyOtp: (email: string, code: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string; twoFactorType?: string; error?: string }>;
+  verifyOtp: (email: string, code: string, type?: string) => Promise<boolean>;
   resendOtpCode: (email: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<any>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
-  // 2FA functions
+  // 2FA Email functions (Option A)
   send2FACode: (action: 'enable' | 'disable') => Promise<{ message: string } | null>;
   verify2FASetup: (code: string, action: 'enable' | 'disable') => Promise<boolean>;
+  // 2FA TOTP functions (Option B)
+  setupTOTP: () => Promise<TotpSetupResult>;
+  enableTOTP: (code: string) => Promise<{ backupCodes: string[] }>;
+  getBackupCodes: () => Promise<string[]>;
   // Role helpers
   userRole: string;
   isAdmin: boolean;
@@ -140,7 +152,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Check for 2FA
       if (res.requiresOtp || res.data?.requiresOtp) {
-        return { requiresOtp: true, email: res.email || res.data?.email || email };
+        return {
+          requiresOtp: true,
+          email: res.email || res.data?.email || email,
+          twoFactorType: res.twoFactorType || res.data?.twoFactorType || 'email',
+        };
       }
 
       const u = extractUser(res);
@@ -161,8 +177,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const verifyOtp = useCallback(async (email: string, code: string) => {
-    const res = await api.post('/auth/login-verify', { email, code });
+  const verifyOtp = useCallback(async (email: string, code: string, type?: string) => {
+    const res = await api.post('/auth/login-verify', { email, code, type: type || 'email' });
     const u = extractUser(res);
     const t = extractToken(res);
     const rt = extractRefreshToken(res);
@@ -212,6 +228,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(err?.message || 'Código inválido');
     }
   }, [token]);
+
+  // ─── 2FA TOTP Functions (Option B - Authenticator App) ─────────────
+  const setupTOTP = useCallback(async () => {
+    const res = await api.get('/auth/2fa/totp/setup');
+    return {
+      secret: res.secret,
+      qrCode: res.qrCode,
+      otpauthUrl: res.otpauthUrl,
+    };
+  }, []);
+
+  const enableTOTP = useCallback(async (code: string) => {
+    const res = await api.post('/auth/2fa/totp/enable', { code });
+    const u = extractUser(res);
+    if (u) {
+      setUser(prev => {
+        const updated = { ...prev, ...u } as User;
+        localStorage.setItem('joshop_auth', JSON.stringify({ user: updated, token }));
+        return updated;
+      });
+    }
+    return {
+      backupCodes: res.backupCodes || [],
+    };
+  }, [token]);
+
+  const getBackupCodes = useCallback(async () => {
+    const res = await api.get('/auth/2fa/backup-codes');
+    return res.backupCodes || [];
+  }, []);
 
   const register = useCallback(async (name: string, email: string, password: string) => {
     const res = await api.post('/auth/register', { name, email, password });
@@ -288,7 +334,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider value={{
       user, token, isLoading,
       login, verifyOtp, resendOtpCode, register, logout, updateProfile, refreshProfile,
-      send2FACode, verify2FASetup,
+      send2FACode, verify2FASetup, setupTOTP, enableTOTP, getBackupCodes,
       userRole, isAdmin, isEditor, isDelivery, isCustomer,
       hasPermission, canViewModule,
     }}>

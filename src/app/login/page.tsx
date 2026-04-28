@@ -1,19 +1,25 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { showToast } from '@/lib/utils';
-import { ArrowLeft, ShieldCheck, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  // 2FA state
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
+  const [otpTwoFactorType, setOtpTwoFactorType] = useState<string>('email');
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [resendTimer, setResendTimer] = useState(0);
   const [resendLoading, setResendLoading] = useState(false);
+  // Backup code state
+  const [useBackupCode, setUseBackupCode] = useState(false);
+  const [backupCodeInput, setBackupCodeInput] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { login, verifyOtp, resendOtpCode, isDelivery, isLoading, user } = useAuth();
   const router = useRouter();
@@ -44,10 +50,10 @@ export default function LoginPage() {
 
   // Auto-focus first OTP input when switching to OTP view
   useEffect(() => {
-    if (otpEmail && inputRefs.current[0]) {
+    if (otpEmail && !useBackupCode && inputRefs.current[0]) {
       setTimeout(() => inputRefs.current[0]?.focus(), 100);
     }
-  }, [otpEmail]);
+  }, [otpEmail, useBackupCode]);
 
   const redirectByRole = () => {
     const savedRedirect = localStorage.getItem('joshop_redirect_after_login');
@@ -74,7 +80,12 @@ export default function LoginPage() {
       const result = await login(email, password);
       if (result.requiresOtp) {
         setOtpEmail(result.email || email);
-        setResendTimer(60); // Start 60s countdown
+        setOtpTwoFactorType(result.twoFactorType || 'email');
+        setUseBackupCode(false);
+        setBackupCodeInput('');
+        if (result.twoFactorType !== 'totp') {
+          setResendTimer(60); // Only for email, TOTP has no resend
+        }
       } else if (result.error) {
         showToast(result.error, 'error');
       } else {
@@ -88,12 +99,10 @@ export default function LoginPage() {
   };
 
   const handleOtpChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return; // Only digits
+    if (!/^\d*$/.test(value)) return;
     const newCode = [...otpCode];
-    newCode[index] = value.slice(-1); // Take only last digit
+    newCode[index] = value.slice(-1);
     setOtpCode(newCode);
-
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -119,13 +128,39 @@ export default function LoginPage() {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (useBackupCode) {
+      if (!backupCodeInput.trim()) {
+        showToast('Ingresa un código de recuperación', 'error');
+        return;
+      }
+      setLoading(true);
+      try {
+        const success = await verifyOtp(otpEmail!, backupCodeInput.trim(), 'backup');
+        if (success) {
+          showToast('Verificación exitosa', 'success');
+          redirectByRole();
+        } else {
+          showToast('Código de recuperación inválido', 'error');
+          setBackupCodeInput('');
+        }
+      } catch (err: any) {
+        showToast(err?.message || 'Código inválido', 'error');
+        setBackupCodeInput('');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (codeString.length !== 6) {
       showToast('Ingresa el código completo de 6 dígitos', 'error');
       return;
     }
     setLoading(true);
     try {
-      const success = await verifyOtp(otpEmail!, codeString);
+      // Send the correct type for verification
+      const verifyType = otpTwoFactorType === 'totp' ? 'totp' : 'email';
+      const success = await verifyOtp(otpEmail!, codeString, verifyType);
       if (success) {
         showToast('Verificación exitosa', 'success');
         redirectByRole();
@@ -165,8 +200,11 @@ export default function LoginPage() {
 
   const handleBackToLogin = () => {
     setOtpEmail(null);
+    setOtpTwoFactorType('email');
     setOtpCode(['', '', '', '', '', '']);
     setResendTimer(0);
+    setUseBackupCode(false);
+    setBackupCodeInput('');
   };
 
   const formatTime = (seconds: number) => {
@@ -174,6 +212,8 @@ export default function LoginPage() {
     const s = seconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
+
+  const isTOTP = otpTwoFactorType === 'totp';
 
   return (
     <div style={{
@@ -194,7 +234,6 @@ export default function LoginPage() {
         position: 'relative',
         overflow: 'hidden',
       }} className="hidden lg:flex">
-        {/* Decorative circles */}
         <div style={{
           position: 'absolute', top: '-80px', left: '-80px',
           width: 220, height: 220, borderRadius: '50%',
@@ -211,7 +250,6 @@ export default function LoginPage() {
           background: 'rgba(255,255,255,0.1)',
         }} />
 
-        {/* Logo */}
         <div className="animate-fade-in" style={{
           width: 100, height: 100, borderRadius: '50%',
           background: 'rgba(255,255,255,0.2)',
@@ -223,46 +261,18 @@ export default function LoginPage() {
           <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>JO</span>
         </div>
 
-        <h1 style={{
-          fontSize: 32, fontWeight: 800, color: '#fff',
-          marginBottom: 8, textAlign: 'center',
-          textShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#fff', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           JO-Shop
         </h1>
-        <p style={{
-          fontSize: 18, color: 'rgba(255,255,255,0.9)',
-          fontWeight: 500, marginBottom: 40, textAlign: 'center',
-        }}>
+        <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center' }}>
           Tu tienda en línea
         </p>
 
-        {/* Decorative food icons */}
         <div style={{ display: 'flex', gap: 20, fontSize: 36 }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 64, height: 64, borderRadius: 16,
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(6px)',
-          }}>🍕</span>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 64, height: 64, borderRadius: 16,
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(6px)',
-          }}>🍔</span>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 64, height: 64, borderRadius: 16,
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(6px)',
-          }}>🥗</span>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 64, height: 64, borderRadius: 16,
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(6px)',
-          }}>🛒</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🍕</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🍔</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🥗</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🛒</span>
         </div>
       </div>
 
@@ -283,37 +293,15 @@ export default function LoginPage() {
           boxShadow: 'var(--shadow-xl)',
         }}>
           {/* Mobile Logo */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 8,
-          }} className="lg:hidden">
-            <div style={{
-              width: 72, height: 72, borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 12,
-              boxShadow: 'var(--shadow-accent)',
-            }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:hidden">
+            <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
               <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>JO</span>
             </div>
           </div>
 
           {/* Desktop Logo (small) */}
-          <div style={{
-            display: 'none',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 8,
-          }} className="lg:flex">
-            <div style={{
-              width: 64, height: 64, borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 12,
-              boxShadow: 'var(--shadow-accent)',
-            }}>
+          <div style={{ display: 'none', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:flex">
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
               <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>JO</span>
             </div>
           </div>
@@ -322,104 +310,26 @@ export default function LoginPage() {
             <>
               {/* ── LOGIN FORM ── */}
               <div style={{ textAlign: 'center', marginBottom: 28 }}>
-                <h1 style={{
-                  fontSize: 26, fontWeight: 700, color: 'var(--text)',
-                  marginBottom: 4,
-                }}>
-                  Bienvenido de vuelta
-                </h1>
-                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
-                  Inicia sesión en tu cuenta JO-Shop
-                </p>
+                <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Bienvenido de vuelta</h1>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Inicia sesión en tu cuenta JO-Shop</p>
               </div>
 
               <form onSubmit={handleLogin}>
-                {/* Email */}
                 <div style={{ marginBottom: 18 }}>
-                  <label style={{
-                    display: 'block', fontSize: 13, fontWeight: 600,
-                    color: 'var(--text)', marginBottom: 7,
-                  }}>
-                    Correo electrónico
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                    autoComplete="email"
-                    style={{
-                      height: 46,
-                      borderRadius: 10,
-                      border: '2px solid var(--border)',
-                      padding: '0 14px',
-                      fontSize: 15,
-                      background: 'var(--white)',
-                      width: '100%',
-                      boxSizing: 'border-box',
-                    }}
-                  />
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 7 }}>Correo electrónico</label>
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com" autoComplete="email"
+                    style={{ height: 46, borderRadius: 10, border: '2px solid var(--border)', padding: '0 14px', fontSize: 15, background: 'var(--white)', width: '100%', boxSizing: 'border-box' }} />
                 </div>
 
-                {/* Password */}
                 <div style={{ marginBottom: 26 }}>
-                  <label style={{
-                    display: 'block', fontSize: 13, fontWeight: 600,
-                    color: 'var(--text)', marginBottom: 7,
-                  }}>
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    style={{
-                      height: 46,
-                      borderRadius: 10,
-                      border: '2px solid var(--border)',
-                      padding: '0 14px',
-                      fontSize: 15,
-                      background: 'var(--white)',
-                      width: '100%',
-                      boxSizing: 'border-box',
-                    }}
-                  />
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 7 }}>Contraseña</label>
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"
+                    style={{ height: 46, borderRadius: 10, border: '2px solid var(--border)', padding: '0 14px', fontSize: 15, background: 'var(--white)', width: '100%', boxSizing: 'border-box' }} />
                 </div>
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    width: '100%',
-                    height: 46,
-                    borderRadius: 10,
-                    background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-                    color: 'white',
-                    fontSize: 16,
-                    fontWeight: 700,
-                    border: 'none',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 10,
-                    boxShadow: loading ? 'none' : 'var(--shadow-accent)',
-                    opacity: loading ? 0.8 : 1,
-                    transition: 'all 0.25s ease',
-                  }}
-                >
-                  {loading && (
-                    <div style={{
-                      width: 18, height: 18,
-                      border: '2.5px solid rgba(255,255,255,0.3)',
-                      borderTopColor: 'white',
-                      borderRadius: '50%',
-                      animation: 'spin 0.8s linear infinite',
-                    }} />
-                  )}
+                <button type="submit" disabled={loading}
+                  style={{ width: '100%', height: 46, borderRadius: 10, background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1, transition: 'all 0.25s ease' }}>
+                  {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                   {loading ? 'Ingresando...' : 'Iniciar sesión'}
                 </button>
               </form>
@@ -428,171 +338,121 @@ export default function LoginPage() {
             <>
               {/* ── 2FA VERIFICATION ── */}
               <div style={{ textAlign: 'center', marginBottom: 24 }}>
-                {/* Shield icon */}
                 <div style={{
                   width: 64, height: 64, borderRadius: '50%',
-                  background: 'var(--info-light)',
+                  background: isTOTP ? 'rgba(59,130,246,0.1)' : 'var(--info-light)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   margin: '0 auto 16px',
                 }}>
-                  <ShieldCheck size={32} style={{ color: 'var(--info)' }} />
+                  {isTOTP
+                    ? <Smartphone size={32} style={{ color: '#3B82F6' }} />
+                    : <ShieldCheck size={32} style={{ color: 'var(--info)' }} />
+                  }
                 </div>
-                <h1 style={{
-                  fontSize: 24, fontWeight: 700, color: 'var(--text)',
-                  marginBottom: 8,
-                }}>
+                <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>
                   Verificación en dos pasos
                 </h1>
-                <p style={{
-                  fontSize: 14, color: 'var(--text-secondary)',
-                  lineHeight: 1.6,
-                }}>
-                  Se envió un código de 6 dígitos a
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  {isTOTP
+                    ? 'Ingresa el código de 6 dígitos de tu aplicación authenticator'
+                    : 'Se envió un código de 6 dígitos a'
+                  }
                 </p>
-                <p style={{
-                  fontSize: 15, fontWeight: 700, color: 'var(--text)',
-                  marginTop: 4,
-                }}>
-                  {otpEmail}
-                </p>
+                {!isTOTP && (
+                  <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginTop: 4 }}>{otpEmail}</p>
+                )}
               </div>
 
               {/* Back button */}
-              <button
-                onClick={handleBackToLogin}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  fontSize: 13, color: 'var(--text-secondary)',
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  marginBottom: 20, padding: 0,
-                }}
-              >
-                <ArrowLeft size={16} />
-                Volver al inicio de sesión
+              <button onClick={handleBackToLogin}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 20, padding: 0 }}>
+                <ArrowLeft size={16} /> Volver al inicio de sesión
               </button>
 
-              <form onSubmit={handleVerifyOtp}>
-                {/* 6-digit OTP inputs */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  gap: 8,
-                  marginBottom: 24,
-                }}
-                  onPaste={handleOtpPaste}
-                >
-                  {otpCode.map((digit, index) => (
-                    <input
-                      key={index}
-                      ref={(el) => { inputRefs.current[index] = el; }}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleOtpChange(index, e.target.value)}
-                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      style={{
-                        width: 48,
-                        height: 56,
-                        borderRadius: 12,
-                        border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`,
-                        background: digit ? 'var(--primary-light)' : 'var(--white)',
-                        textAlign: 'center',
-                        fontSize: 24,
-                        fontWeight: 700,
-                        color: 'var(--text)',
-                        outline: 'none',
-                        transition: 'all 0.2s ease',
-                        boxShadow: digit ? '0 0 0 3px rgba(255,107,53,0.1)' : 'none',
-                      }}
-                    />
-                  ))}
-                </div>
-
-                {/* Verify button */}
+              {/* Toggle: Use backup code */}
+              <div style={{ marginBottom: 20 }}>
                 <button
-                  type="submit"
-                  disabled={loading || codeString.length !== 6}
-                  style={{
-                    width: '100%',
-                    height: 46,
-                    borderRadius: 10,
-                    background: (loading || codeString.length !== 6)
-                      ? 'var(--primary-hover)'
-                      : 'var(--primary-gradient)',
-                    color: 'white',
-                    fontSize: 16,
-                    fontWeight: 700,
-                    border: 'none',
-                    cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 10,
-                    boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)',
-                    opacity: (loading || codeString.length !== 6) ? 0.7 : 1,
-                    transition: 'all 0.25s ease',
-                  }}
+                  onClick={() => { setUseBackupCode(!useBackupCode); setOtpCode(['', '', '', '', '', '']); }}
+                  style={{ fontSize: 13, fontWeight: 600, color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
                 >
-                  {loading && (
-                    <div style={{
-                      width: 18, height: 18,
-                      border: '2.5px solid rgba(255,255,255,0.3)',
-                      borderTopColor: 'white',
-                      borderRadius: '50%',
-                      animation: 'spin 0.8s linear infinite',
-                    }} />
-                  )}
-                  {loading ? 'Verificando...' : 'Verificar código'}
+                  <KeyRound size={14} />
+                  {useBackupCode ? 'Usar código authenticator' : 'Usar código de recuperación'}
                 </button>
+              </div>
+
+              <form onSubmit={handleVerifyOtp}>
+                {!useBackupCode ? (
+                  <>
+                    {/* 6-digit OTP inputs */}
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 24 }} onPaste={handleOtpPaste}>
+                      {otpCode.map((digit, index) => (
+                        <input key={index} ref={(el) => { inputRefs.current[index] = el; }} type="text" inputMode="numeric" maxLength={1} value={digit}
+                          onChange={(e) => handleOtpChange(index, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                          style={{ width: 48, height: 56, borderRadius: 12, border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`, background: digit ? 'var(--primary-light)' : 'var(--white)', textAlign: 'center', fontSize: 24, fontWeight: 700, color: 'var(--text)', outline: 'none', transition: 'all 0.2s ease', boxShadow: digit ? '0 0 0 3px rgba(255,107,53,0.1)' : 'none' }} />
+                      ))}
+                    </div>
+
+                    {/* Verify button */}
+                    <button type="submit" disabled={loading || codeString.length !== 6}
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || codeString.length !== 6) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)', opacity: (loading || codeString.length !== 6) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
+                      {loading ? 'Verificando...' : 'Verificar código'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {/* Backup code input */}
+                    <div style={{ marginBottom: 24 }}>
+                      <input type="text" value={backupCodeInput} onChange={(e) => setBackupCodeInput(e.target.value)} placeholder="XXXX-XXXX-XXXX" autoComplete="off"
+                        style={{ width: '100%', height: 50, borderRadius: 10, border: '2px solid var(--border)', padding: '0 16px', fontSize: 18, fontWeight: 600, letterSpacing: 1, textAlign: 'center', background: 'var(--white)', boxSizing: 'border-box', outline: 'none' }} />
+                      <p style={{ fontSize: 12, color: 'var(--text-light)', textAlign: 'center', marginTop: 8 }}>
+                        Ingresa uno de tus códigos de recuperación de 12 caracteres
+                      </p>
+                    </div>
+
+                    <button type="submit" disabled={loading || !backupCodeInput.trim()}
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || !backupCodeInput.trim()) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || !backupCodeInput.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || !backupCodeInput.trim()) ? 'none' : 'var(--shadow-accent)', opacity: (loading || !backupCodeInput.trim()) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
+                      {loading ? 'Verificando...' : 'Verificar código de recuperación'}
+                    </button>
+                  </>
+                )}
               </form>
 
-              {/* Resend code */}
-              <div style={{ textAlign: 'center', marginTop: 20 }}>
-                <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>
-                  ¿No recibiste el código?
-                </p>
-                {resendTimer > 0 ? (
-                  <span style={{
-                    fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  }}>
-                    Reenviar en {formatTime(resendTimer)}
-                  </span>
-                ) : (
-                  <button
-                    onClick={handleResendCode}
-                    disabled={resendLoading}
-                    style={{
-                      fontSize: 14, fontWeight: 700, color: 'var(--primary)',
-                      background: 'none', border: 'none', cursor: resendLoading ? 'not-allowed' : 'pointer',
-                      display: 'inline-flex', alignItems: 'center', gap: 6,
-                      opacity: resendLoading ? 0.6 : 1,
-                    }}
-                  >
-                    {resendLoading && (
-                      <RefreshCw size={14} style={{ animation: 'spin 0.8s linear infinite' }} />
-                    )}
-                    Reenviar código
-                  </button>
-                )}
-              </div>
+              {/* Resend code (only for email type) */}
+              {!isTOTP && !useBackupCode && (
+                <div style={{ textAlign: 'center', marginTop: 20 }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>¿No recibiste el código?</p>
+                  {resendTimer > 0 ? (
+                    <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      Reenviar en {formatTime(resendTimer)}
+                    </span>
+                  ) : (
+                    <button onClick={handleResendCode} disabled={resendLoading}
+                      style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)', background: 'none', border: 'none', cursor: resendLoading ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: resendLoading ? 0.6 : 1 }}>
+                      {resendLoading && <RefreshCw size={14} style={{ animation: 'spin 0.8s linear infinite' }} />}
+                      Reenviar código
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* TOTP hint */}
+              {isTOTP && !useBackupCode && (
+                <div style={{ textAlign: 'center', marginTop: 20 }}>
+                  <p style={{ fontSize: 12, color: 'var(--text-light)', lineHeight: 1.6 }}>
+                    Abre Google Authenticator, Authy u otra app compatible y busca el código correspondiente a <strong>JO-Shop</strong>.
+                  </p>
+                </div>
+              )}
             </>
           )}
 
           {/* Register link */}
           {!otpEmail && (
             <div style={{ textAlign: 'center', marginTop: 24 }}>
-              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
-                ¿No tienes cuenta?{' '}
-              </span>
-              <a href="/register" style={{
-                fontSize: 14, color: 'var(--primary)',
-                fontWeight: 700, textDecoration: 'none',
-                transition: 'color 0.2s ease',
-              }}>
-                Regístrate
-              </a>
+              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>¿No tienes cuenta? </span>
+              <a href="/register" style={{ fontSize: 14, color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', transition: 'color 0.2s ease' }}>Regístrate</a>
             </div>
           )}
         </div>
