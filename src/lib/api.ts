@@ -30,7 +30,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res.data,
   async (error) => {
-    if (error.response?.status === 401) {
+    // Only redirect on 401 if it's NOT a login attempt
+    // (login returns 401 for bad credentials, we don't want to redirect there)
+    const isLoginAttempt = error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/login-verify');
+    if (error.response?.status === 401 && !isLoginAttempt) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('joshop_auth');
         window.location.href = '/';

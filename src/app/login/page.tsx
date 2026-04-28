@@ -15,8 +15,23 @@ export default function LoginPage() {
   const [resendTimer, setResendTimer] = useState(0);
   const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const { login, verifyOtp, resendOtpCode, isDelivery } = useAuth();
+  const { login, verifyOtp, resendOtpCode, isDelivery, isLoading, user } = useAuth();
   const router = useRouter();
+
+  // If already logged in, redirect away from login
+  useEffect(() => {
+    if (!isLoading && user) {
+      const savedRedirect = localStorage.getItem('joshop_redirect_after_login');
+      if (savedRedirect) {
+        localStorage.removeItem('joshop_redirect_after_login');
+        router.replace(savedRedirect);
+      } else if (isDelivery) {
+        router.replace('/deliveries');
+      } else {
+        router.replace('/');
+      }
+    }
+  }, [isLoading, user, isDelivery, router]);
 
   // Countdown timer for resend button
   useEffect(() => {

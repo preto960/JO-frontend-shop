@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import { Shield, ShieldCheck, ShieldOff, User, LogOut, Edit3, Check, Mail, Phone, Calendar, ArrowLeft, RefreshCw, Lock, Unlock } from 'lucide-react';
@@ -9,7 +10,8 @@ import { getInitials, showToast, getRoleLabel, getRoleBadgeColor } from '@/lib/u
 type TwoFactorStep = 'idle' | 'confirming' | 'verifying';
 
 export default function ProfilePage() {
-  const { user, updateProfile, logout, userRole, refreshProfile, send2FACode, verify2FASetup } = useAuth();
+  const { user, isLoading, updateProfile, logout, userRole, refreshProfile, send2FACode, verify2FASetup } = useAuth();
+  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [phone, setPhone] = useState(user?.phone || '');
   const [birthdate, setBirthdate] = useState(user?.birthdate || '');
@@ -160,12 +162,25 @@ export default function ProfilePage() {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
+  // Protect route
+  useEffect(() => {
+    if (!isLoading && !user) router.replace('/login');
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      </div>
+    );
+  }
+
   const roleColor = getRoleBadgeColor(userRole);
   const isEnabled = user?.twoFactorEnabled ?? false;
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      <Header title="Mi Perfil" showLogout={false} />
+      <Header title="Mi Perfil" showLogout={true} />
 
       <div style={{ padding: '16px 16px 32px', maxWidth: 600, margin: '0 auto' }}>
         {/* Avatar card */}

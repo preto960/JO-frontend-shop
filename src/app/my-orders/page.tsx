@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { RefreshCw, ClipboardList } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 
 import { getStatusLabel, getStatusColor, getStatusClass, formatPrice, formatDate } from '@/lib/utils';
@@ -21,6 +23,21 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('');
+  const { isLoading, user } = useAuth();
+  const router = useRouter();
+
+  // Protect route
+  useEffect(() => {
+    if (!isLoading && !user) router.replace('/login');
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
+  }
 
   const fetchOrders = async () => {
     try {
@@ -44,7 +61,7 @@ export default function OrdersPage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       <Header
         title="Mis Pedidos"
-        showLogout={false}
+        showLogout={true}
         rightAction={
           <button
             onClick={fetchOrders}
