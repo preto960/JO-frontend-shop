@@ -463,7 +463,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      <Header title="Mi Perfil" showLogout={false} />
+      <Header title="Mi Perfil" showLogout={true} />
 
       <div style={{ padding: '16px 16px 32px', maxWidth: 600, margin: '0 auto' }}>
         {/* ─── Avatar Card ─── */}
@@ -832,13 +832,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* ─── Logout ─── */}
-        {renderCard(
-          <button onClick={logout}
-            style={{ width: '100%', padding: '16px', borderRadius: 16, background: 'var(--white)', color: 'var(--danger)', fontSize: 15, fontWeight: 700, border: '2px solid var(--danger)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-            <LogOut size={20} /> Cerrar sesión
-          </button>
-        )}
+
       </div>
     </div>
   );
