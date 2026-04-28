@@ -1,49 +1,53 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import api, { extractItem } from '@/lib/api';
+import api from '@/lib/api';
 import { showToast } from '@/lib/utils';
 
-interface Config {
-  id?: string;
-  key: string;
-  value: string;
+interface ShopConfig {
+  multi_store: string;
+  shop_name: string;
+  shop_logo_url: string;
+  primary_color: string;
+  accent_color: string;
+  [key: string]: string;
 }
 
 interface ConfigContextType {
-  config: Config | null;
+  config: ShopConfig;
   isMultiStore: boolean;
   isLoading: boolean;
   isSaving: boolean;
   refresh: () => Promise<void>;
   updateConfig: (settings: Record<string, string>) => Promise<void>;
+  uploadLogo: (file: File) => Promise<string>;
+  deleteLogo: () => Promise<void>;
 }
+
+const defaultConfig: ShopConfig = {
+  multi_store: 'false',
+  shop_name: 'JO-Shop',
+  shop_logo_url: '',
+  primary_color: '#FF6B35',
+  accent_color: '#E94560',
+};
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
 export function ConfigProvider({ children }: { children: React.ReactNode }) {
-  const [config, setConfig] = useState<Config | null>(null);
+  const [config, setConfig] = useState<ShopConfig>(defaultConfig);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchConfig = useCallback(async () => {
     try {
-      const res = await api.get('/config');
-      const items = extractItem(res);
-      // Config might come as an array of {key, value} pairs
-      if (Array.isArray(items)) {
-        const multiStore = items.find((c: any) => c.key === 'multi_store');
-        if (multiStore) setConfig(multiStore);
-      } else if (items && items.key) {
-        setConfig(items);
-      } else if (items) {
-        // Could be an object with multi_store property
-        if (items.multi_store !== undefined) {
-          setConfig({ key: 'multi_store', value: String(items.multi_store) });
-        }
+      const data = await api.get('/config');
+      // data is a flat object { multi_store: "true", shop_name: "...", ... }
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        setConfig(prev => ({ ...prev, ...data }));
       }
     } catch {
-      // Config endpoint might not exist yet
+      // Config endpoint might not be available
     } finally {
       setIsLoading(false);
     }
@@ -53,21 +57,49 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsSaving(true);
       await api.put('/config', { settings });
-      // Immediately update local state
-      setConfig((prev) => {
-        const updated: Config = prev ? { ...prev } : { key: 'multi_store', value: 'false' };
-        for (const [key, value] of Object.entries(settings)) {
-          if (key === 'multi_store') {
-            updated.key = 'multi_store';
-            updated.value = value;
-          }
-        }
-        return updated;
-      });
+      setConfig(prev => ({ ...prev, ...settings }));
       showToast('Configuracion actualizada', 'success');
     } catch (err: any) {
       console.error('Error updating config:', err);
-      showToast(err?.message || 'Error al guardar configuracion', 'error');
+      showToast(err?.error || err?.message || 'Error al guardar configuracion', 'error');
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  }, []);
+
+  const uploadLogo = useCallback(async (file: File): Promise<string> => {
+    try {
+      setIsSaving(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('/config/upload-logo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const url = res?.url || res?.data?.url;
+      if (url) {
+        setConfig(prev => ({ ...prev, shop_logo_url: url }));
+      }
+      showToast('Logo actualizado', 'success');
+      return url;
+    } catch (err: any) {
+      console.error('Error uploading logo:', err);
+      showToast(err?.error || err?.message || 'Error al subir logo', 'error');
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  }, []);
+
+  const deleteLogo = useCallback(async () => {
+    try {
+      setIsSaving(true);
+      await api.delete('/config/upload-logo');
+      setConfig(prev => ({ ...prev, shop_logo_url: '' }));
+      showToast('Logo eliminado', 'success');
+    } catch (err: any) {
+      console.error('Error deleting logo:', err);
+      showToast(err?.error || err?.message || 'Error al eliminar logo', 'error');
       throw err;
     } finally {
       setIsSaving(false);
@@ -78,10 +110,10 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     fetchConfig();
   }, [fetchConfig]);
 
-  const isMultiStore = config?.value === 'true' || config?.value === true as any;
+  const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
 
   return (
-    <ConfigContext.Provider value={{ config, isMultiStore, isLoading, isSaving, refresh: fetchConfig, updateConfig }}>
+    <ConfigContext.Provider value={{ config, isMultiStore, isLoading, isSaving, refresh: fetchConfig, updateConfig, uploadLogo, deleteLogo }}>
       {children}
     </ConfigContext.Provider>
   );
