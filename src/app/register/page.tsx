@@ -10,9 +10,20 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const router = useRouter();
+
+  // Password strength
+  const passwordRules = [
+    { label: 'Al menos 6 caracteres', met: password.length >= 6 },
+    { label: 'Una letra mayúscula', met: /[A-Z]/.test(password) },
+    { label: 'Un número', met: /[0-9]/.test(password) },
+    { label: 'Las contraseñas coinciden', met: password.length > 0 && confirmPassword.length > 0 && password === confirmPassword },
+  ];
+  const allRulesMet = passwordRules.every(r => r.met);
+  const rulesToShow = password.length > 0 ? passwordRules : passwordRules.slice(0, 3);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,22 +267,75 @@ export default function RegisterPage() {
               }}>
                 Contraseña
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-                autoComplete="new-password"
-                style={{
-                  height: 46,
-                  borderRadius: 10,
-                  border: '2px solid var(--border)',
-                  padding: '0 14px',
-                  fontSize: 15,
-                  background: 'var(--white)',
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  autoComplete="new-password"
+                  style={{
+                    height: 46,
+                    borderRadius: 10,
+                    border: `2px solid ${allRulesMet && password.length > 0 ? 'var(--success)' : password.length > 0 ? 'var(--primary)' : 'var(--border)'}`,
+                    padding: '0 40px 0 14px',
+                    fontSize: 15,
+                    background: 'var(--white)',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{
+                  position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer', padding: 4,
+                  color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {showPassword
+                      ? <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></>
+                      : <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>
+                    }
+                  </svg>
+                </button>
+              </div>
             </div>
+
+            {/* Password Rules Indicator */}
+            {password.length > 0 && (
+              <div style={{ marginBottom: 16, animation: 'fadeSlideIn 0.2s ease' }}>
+                <div style={{
+                  display: 'flex', flexDirection: 'column', gap: 6,
+                  padding: '12px 14px', borderRadius: 10,
+                  background: allRulesMet ? 'rgba(34,197,94,0.06)' : 'rgba(255,107,53,0.06)',
+                  border: `1px solid ${allRulesMet ? 'rgba(34,197,94,0.15)' : 'rgba(255,107,53,0.15)'}`,
+                }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: allRulesMet ? 'var(--success)' : 'var(--primary)', marginBottom: 2 }}>
+                    {allRulesMet ? 'Contraseña válida' : 'Requisitos de contraseña:'}
+                  </p>
+                  {passwordRules.slice(0, 3).map((rule, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{
+                        width: 16, height: 16, borderRadius: '50%',
+                        background: rule.met ? 'var(--success)' : 'var(--border)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'background 0.2s ease',
+                      }}>
+                        {rule.met && (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </div>
+                      <span style={{ fontSize: 12, color: rule.met ? 'var(--success)' : 'var(--text-secondary)', fontWeight: rule.met ? 600 : 400, transition: 'color 0.2s ease' }}>
+                        {rule.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Confirm Password */}
             <div style={{ marginBottom: 26 }}>
@@ -281,21 +345,45 @@ export default function RegisterPage() {
               }}>
                 Confirmar contraseña
               </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu contraseña"
-                autoComplete="new-password"
-                style={{
-                  height: 46,
-                  borderRadius: 10,
-                  border: '2px solid var(--border)',
-                  padding: '0 14px',
-                  fontSize: 15,
-                  background: 'var(--white)',
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repite tu contraseña"
+                  autoComplete="new-password"
+                  style={{
+                    height: 46,
+                    borderRadius: 10,
+                    border: `2px solid ${confirmPassword.length > 0 && password === confirmPassword ? 'var(--success)' : confirmPassword.length > 0 && password !== confirmPassword ? '#EF4444' : 'var(--border)'}`,
+                    padding: '0 40px 0 14px',
+                    fontSize: 15,
+                    background: 'var(--white)',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                />
+                {confirmPassword.length > 0 && password !== confirmPassword && (
+                  <div style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#EF4444' }}>No coinciden</span>
+                  </div>
+                )}
+                {confirmPassword.length > 0 && password === confirmPassword && (
+                  <div style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Submit */}
