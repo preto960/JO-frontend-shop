@@ -97,6 +97,9 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       if (isAdmin) {
         items.push({ path: '/manage-users', label: 'Usuarios', icon: Users });
       }
+      if (isAdmin) {
+        items.push({ path: '/settings', label: 'Configuracion', icon: Settings });
+      }
       return items;
     }
 
