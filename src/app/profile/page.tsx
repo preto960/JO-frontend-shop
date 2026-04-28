@@ -463,7 +463,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      <Header title="Mi Perfil" showLogout={true} />
+      <Header title="Mi Perfil" showLogout={false} />
 
       <div style={{ padding: '16px 16px 32px', maxWidth: 600, margin: '0 auto' }}>
         {/* ─── Avatar Card ─── */}
