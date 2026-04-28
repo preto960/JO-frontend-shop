@@ -34,10 +34,14 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string; error?: string }>;
   verifyOtp: (email: string, code: string) => Promise<boolean>;
+  resendOtpCode: (email: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<any>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
+  // 2FA functions
+  send2FACode: (action: 'enable' | 'disable') => Promise<{ message: string } | null>;
+  verify2FASetup: (code: string, action: 'enable' | 'disable') => Promise<boolean>;
   // Role helpers
   userRole: string;
   isAdmin: boolean;
@@ -172,6 +176,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   }, []);
 
+  const resendOtpCode = useCallback(async (email: string) => {
+    try {
+      await api.post('/auth/2fa/resend-code', { email });
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  // ─── 2FA Setup Functions ─────────────────────────────────────────────
+  const send2FACode = useCallback(async (action: 'enable' | 'disable') => {
+    try {
+      const res = await api.post('/auth/2fa/send-code', { action });
+      return { message: res?.message || 'Código enviado' };
+    } catch (err: any) {
+      throw new Error(err?.message || 'Error al enviar código');
+    }
+  }, []);
+
+  const verify2FASetup = useCallback(async (code: string, action: 'enable' | 'disable') => {
+    try {
+      const res = await api.post('/auth/2fa/verify-setup', { code, action });
+      const u = extractUser(res);
+      if (u) {
+        setUser(prev => {
+          const updated = { ...prev, ...u } as User;
+          localStorage.setItem('joshop_auth', JSON.stringify({ user: updated, token }));
+          return updated;
+        });
+        return true;
+      }
+      return false;
+    } catch (err: any) {
+      throw new Error(err?.message || 'Código inválido');
+    }
+  }, [token]);
+
   const register = useCallback(async (name: string, email: string, password: string) => {
     const res = await api.post('/auth/register', { name, email, password });
     const u = extractUser(res);
@@ -246,7 +287,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user, token, isLoading,
-      login, verifyOtp, register, logout, updateProfile, refreshProfile,
+      login, verifyOtp, resendOtpCode, register, logout, updateProfile, refreshProfile,
+      send2FACode, verify2FASetup,
       userRole, isAdmin, isEditor, isDelivery, isCustomer,
       hasPermission, canViewModule,
     }}>
