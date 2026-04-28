@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Trash2, ShoppingCart, ShoppingBag } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice, getProductImage, showToast } from '@/lib/utils';
+import Header from '@/components/Header';
 
 interface CartItem {
   id: string;
@@ -69,39 +70,7 @@ export default function CartPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)', display: 'flex', flexDirection: 'column' }}>
-      {/* Simple public header */}
-      <header style={{
-        background: 'var(--primary-gradient)', color: 'var(--white)',
-        padding: '0 16px', height: 60, display: 'flex',
-        alignItems: 'center', justifyContent: 'center',
-        position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
-      }}>
-        <div style={{ position: 'absolute', left: 16 }}>
-          <button
-            onClick={() => router.push('/')}
-            style={{
-              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-              cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            <ShoppingCart size={22} />
-          </button>
-        </div>
-        <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>Mi Carrito</h1>
-        <div style={{ position: 'absolute', right: 16, zIndex: 1 }}>
-          {cart.length > 0 && (
-            <button
-              onClick={clearCart}
-              style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', cursor: 'pointer', width: 40, height: 40, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              aria-label="Vaciar carrito"
-            >
-              <Trash2 size={20} />
-            </button>
-          )}
-        </div>
-      </header>
+      <Header title="Mi Carrito" />
 
       <div style={{ flex: 1, padding: '16px 16px 120px', maxWidth: 900, margin: '0 auto', width: '100%', overflowY: 'auto' }}>
         {cart.length === 0 ? (
