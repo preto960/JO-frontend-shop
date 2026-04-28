@@ -27,7 +27,9 @@ interface SidebarMenuProps {
 
 export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
   const { user, logout, isAdmin, isEditor, isDelivery, canViewModule } = useAuth();
-  const { isMultiStore } = useConfig();
+  const { config, isMultiStore } = useConfig();
+  const shopName = config.shop_name || 'JO-Shop';
+  const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
   const pathname = usePathname();
   const [cartCount, setCartCount] = useState(0);
@@ -170,24 +172,28 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           color: 'var(--white)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              fontSize: 15,
-              color: 'white',
-              boxShadow: '0 4px 12px rgba(255,107,53,0.4)',
-              letterSpacing: '0.5px',
-            }}>
-              JO
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{
+                width: 44,
+                height: 44,
+                borderRadius: '50%',
+                background: 'var(--primary-gradient)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 15,
+                color: 'white',
+                boxShadow: '0 4px 12px rgba(255,107,53,0.4)',
+                letterSpacing: '0.5px',
+              }}>
+                {shopName.substring(0, 2).toUpperCase()}
+              </div>
+            )}
             <div>
-              <p style={{ fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px' }}>JO-Shop</p>
+              <p style={{ fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px' }}>{shopName}</p>
               <p style={{ fontSize: 12, opacity: 0.7, marginTop: 1 }}>
                 {user?.name || 'Usuario'}
               </p>

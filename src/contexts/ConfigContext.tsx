@@ -110,6 +110,28 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     fetchConfig();
   }, [fetchConfig]);
 
+  // ─── Sync config colors to CSS custom properties ─────────────
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (config.primary_color) {
+      root.style.setProperty('--primary', config.primary_color);
+      root.style.setProperty('--primary-hover', config.primary_color);
+      root.style.setProperty('--primary-light', config.primary_color + '1A');
+      root.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${config.primary_color} 0%, ${config.primary_color}CC 100%)`);
+      root.style.setProperty('--shadow-accent', `0 4px 14px ${config.primary_color}4D`);
+    }
+
+    if (config.accent_color) {
+      root.style.setProperty('--accent', config.accent_color);
+      root.style.setProperty('--accent-light', config.accent_color);
+    }
+
+    if (config.shop_name && config.shop_name !== 'JO-Shop') {
+      document.title = config.shop_name;
+    }
+  }, [config.primary_color, config.accent_color, config.shop_name]);
+
   const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
 
   return (

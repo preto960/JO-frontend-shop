@@ -3,12 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
 import { LogOut, Menu, ShoppingBag, ShoppingCart } from 'lucide-react';
 import SidebarMenu from '@/components/SidebarMenu';
 import CartDropdown from '@/components/CartDropdown';
 
 export default function AppHeader() {
   const { logout, isEditor, user } = useAuth();
+  const { config } = useConfig();
+  const shopName = config.shop_name || 'JO-Shop';
+  const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -86,8 +90,14 @@ export default function AppHeader() {
 
         {/* Center: Logo + Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, zIndex: 1 }}>
-          <ShoppingBag size={22} strokeWidth={2.5} />
-          <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.3px' }}>JO-Shop</h1>
+          {shopLogoUrl ? (
+            <img src={shopLogoUrl} alt={shopName} style={{ height: 30, width: 'auto', objectFit: 'contain' }} />
+          ) : (
+            <>
+              <ShoppingBag size={22} strokeWidth={2.5} />
+              <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.3px' }}>{shopName}</h1>
+            </>
+          )}
         </div>
 
         {/* Right: cart dropdown + logout */}
