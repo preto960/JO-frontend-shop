@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import {
   Settings, Store, Globe, Shield, Info, RefreshCw,
   ExternalLink, Palette, Upload, Trash2, Type, Image, Check, X, ImageIcon, Plus,
-  Edit3, Clock, Link, Pencil, Eye, EyeOff, Save,
+  Clock, Link, Eye, EyeOff, Save, MoreVertical,
 } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -407,11 +407,21 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
   const [modalDuration, setModalDuration] = useState(4);
   const [modalLink, setModalLink] = useState('');
 
-  // Edit state per banner
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editDuration, setEditDuration] = useState(4);
-  const [editLink, setEditLink] = useState('');
-  const [editSaving, setEditSaving] = useState(false);
+  // Inline edit state per banner — duration & link are always visible
+  const [localDurations, setLocalDurations] = useState<Record<number, string>>({});
+  const [localLinks, setLocalLinks] = useState<Record<number, string>>({});
+  const [savingId, setSavingId] = useState<number | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  const getDurationText = (banner: any) => localDurations[banner.id] ?? String(banner.duration || 4);
+  const getLinkText = (banner: any) => localLinks[banner.id] ?? (banner.link || '');
+  const hasChanges = (banner: any) => {
+    const dur = localDurations[banner.id];
+    const lnk = localLinks[banner.id];
+    return (dur !== undefined && dur !== String(banner.duration || 4)) || (lnk !== undefined && lnk !== (banner.link || ''));
+  };
+  const setDuration = (id: number, val: string) => setLocalDurations(prev => ({ ...prev, [id]: val }));
+  const setLink = (id: number, val: string) => setLocalLinks(prev => ({ ...prev, [id]: val }));
 
   // Load banners from /banners/all
   const loadBanners = React.useCallback(async () => {
@@ -516,35 +526,31 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
     }
   };
 
-  // ── Edit helpers ──
-  const startEdit = (banner: any) => {
-    setEditingId(banner.id);
-    setEditDuration(banner.duration || 4);
-    setEditLink(banner.link || '');
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-  };
-
-  const saveEdit = async (id: number) => {
-    setEditSaving(true);
+  // ── Inline save helper ──
+  const saveBanner = async (banner: any) => {
+    const durText = localDurations[banner.id];
+    const lnkText = localLinks[banner.id];
+    if (durText === undefined && lnkText === undefined) return;
+    const durNum = durText !== undefined ? Number(durText) : banner.duration || 4;
+    const linkVal = lnkText !== undefined ? lnkText : banner.link || '';
+    setSavingId(banner.id);
     try {
       const formData = new FormData();
-      formData.append('duration', String(editDuration));
-      formData.append('link', editLink.trim());
-      const res: any = await api.put(`/banners/${id}`, formData, {
+      formData.append('duration', String(Math.min(30, Math.max(4, durNum))));
+      formData.append('link', linkVal.trim());
+      const res: any = await api.put(`/banners/${banner.id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (res?.banner) {
-        setBanners(prev => prev.map(b => b.id === id ? res.banner : b));
+        setBanners(prev => prev.map(b => b.id === banner.id ? res.banner : b));
+        setLocalDurations(prev => { const n = { ...prev }; delete n[banner.id]; return n; });
+        setLocalLinks(prev => { const n = { ...prev }; delete n[banner.id]; return n; });
         showToast('Banner actualizado', 'success');
-        setEditingId(null);
       }
     } catch {
       showToast('No se pudo actualizar', 'error');
     } finally {
-      setEditSaving(false);
+      setSavingId(null);
     }
   };
 
@@ -607,86 +613,141 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
               <p style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center' }}>Cargando banners...</p>
             ) : banners.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {banners.map((banner) => (
+                {banners.map((banner) => {
+                  const changed = hasChanges(banner);
+                  return (
                   <div key={banner.id} style={{
-                    display: 'flex', alignItems: 'center', gap: 12, padding: 12, borderRadius: 10,
+                    display: 'flex', flexDirection: 'column', gap: 10, padding: 14, borderRadius: 10,
                     background: banner.active ? 'var(--input-bg)' : '#F5F5F5',
-                    border: editingId === banner.id ? '2px solid var(--primary)' : '2px solid transparent',
+                    border: changed ? '2px solid #F39C12' : '2px solid transparent',
                     opacity: banner.active ? 1 : 0.6, transition: 'all 0.2s ease',
                   }}>
-                    {/* Thumbnail */}
-                    <img src={banner.imageUrl} alt={`Banner ${banner.sortOrder}`}
-                      style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
+                    {/* Top row: thumbnail + info + action buttons */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <img src={banner.imageUrl} alt={`Banner ${banner.sortOrder}`}
+                        style={{ width: 120, height: 68, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
 
-                    {/* Info / Edit fields */}
-                    {editingId === banner.id ? (
-                      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Clock size={14} /> Duracion:</label>
-                          <DurationInput value={editDuration} onChange={setEditDuration} compact />
-                        </div>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Link size={14} /> Enlace:</label>
-                          <input type="url" value={editLink} onChange={e => setEditLink(e.target.value)}
-                            placeholder="https://ejemplo.com (opcional)"
-                            style={{ ...inputStyle, height: 36, fontSize: 13 }} />
-                        </div>
-                        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                          <button onClick={cancelEdit} style={{ padding: '6px 14px', borderRadius: 8, border: '2px solid var(--border)', background: 'var(--input-bg)', color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <X size={14} /> Cancelar
-                          </button>
-                          <button onClick={() => saveEdit(banner.id)} disabled={editSaving}
-                            style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: 'var(--primary-gradient)', color: 'white', fontSize: 12, fontWeight: 600, cursor: editSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: 4, opacity: editSaving ? 0.6 : 1 }}>
-                            {editSaving ? <div style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Save size={14} />}
-                            {editSaving ? 'Guardando...' : 'Guardar'}
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
                           Banner {banner.sortOrder}
                           <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 400, marginLeft: 6 }}>
                             {banner.mediaType === 'video' ? 'Video' : 'Imagen'}
                           </span>
-                          <span style={{ fontSize: 11, color: '#F39C12', fontWeight: 600, marginLeft: 6 }}>
-                            <Clock size={11} style={{ verticalAlign: -1, marginRight: 2 }} />{banner.duration}s
-                          </span>
                           {!banner.active && <span style={{ fontSize: 10, color: '#EF4444', fontWeight: 600, marginLeft: 6, background: '#FDE8EC', padding: '1px 6px', borderRadius: 4 }}>Inactivo</span>}
                         </p>
-                        {banner.link && (
-                          <p style={{ fontSize: 11, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 4 }}>
-                            <Link size={10} style={{ verticalAlign: -1, marginRight: 3 }} />{banner.link}
-                          </p>
-                        )}
                         <p style={{ fontSize: 10, color: 'var(--text-light)', margin: 0 }}>
                           {banner.active ? 'Visible en el carrusel' : 'Oculto del carrusel'}
                         </p>
                       </div>
-                    )}
 
-                    {/* Action buttons (only when not editing) */}
-                    {editingId !== banner.id && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0 }}>
-                        <button onClick={() => toggleBannerActive(banner)} disabled={isSaving}
-                          style={{ padding: 6, borderRadius: 8, border: 'none', background: banner.active ? '#E8F8F5' : '#FFF3E0', color: banner.active ? '#00B894' : '#F39C12', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                          title={banner.active ? 'Desactivar banner' : 'Activar banner'}>
-                          {banner.active ? <Eye size={16} /> : <EyeOff size={16} />}
+                      {/* Three-dot menu */}
+                      <div ref={(el) => {
+                        if (el) {
+                          const handler = (e: MouseEvent) => {
+                            if (!el.contains(e.target as Node)) setOpenMenuId(null);
+                          };
+                          document.addEventListener('mousedown', handler);
+                          return () => document.removeEventListener('mousedown', handler);
+                        }
+                      }} style={{ position: 'relative', flexShrink: 0 }}>
+                        <button
+                          onClick={() => setOpenMenuId(openMenuId === banner.id ? null : banner.id)}
+                          style={{
+                            width: 32, height: 32, borderRadius: 8, border: 'none',
+                            background: 'var(--input-bg)', color: 'var(--text-secondary)',
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}
+                        >
+                          <MoreVertical size={18} />
                         </button>
-                        <button onClick={() => startEdit(banner)} disabled={isSaving}
-                          style={{ padding: 6, borderRadius: 8, border: 'none', background: '#E8F1FF', color: '#54A0FF', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                          title="Editar banner">
-                          <Pencil size={16} />
-                        </button>
-                        <button onClick={() => handleRemove(banner.id)} disabled={isSaving}
-                          style={{ padding: 6, borderRadius: 8, border: 'none', background: '#FDE8EC', color: '#EF4444', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                          title="Eliminar banner">
-                          <Trash2 size={16} />
-                        </button>
+                        {openMenuId === banner.id && (
+                          <div style={{
+                            position: 'absolute', top: 'calc(100% + 4px)', right: 0, zIndex: 50,
+                            background: 'white', borderRadius: 10, border: '2px solid var(--border)',
+                            boxShadow: '0 8px 30px rgba(0,0,0,0.12)', overflow: 'hidden', minWidth: 160,
+                          }}>
+                            <button onClick={() => { toggleBannerActive(banner); setOpenMenuId(null); }}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                                padding: '10px 14px', border: 'none', background: 'transparent',
+                                cursor: 'pointer', fontSize: 13, fontWeight: 500, color: 'var(--text)',
+                                textAlign: 'left',
+                              }}
+                              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--input-bg)'; }}
+                              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                            >
+                              {banner.active ? <EyeOff size={16} color="#F39C12" /> : <Eye size={16} color="#00B894" />}
+                              {banner.active ? 'Desactivar' : 'Activar'}
+                            </button>
+                            <button onClick={() => { handleRemove(banner.id); setOpenMenuId(null); }}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                                padding: '10px 14px', border: 'none', background: 'transparent',
+                                cursor: 'pointer', fontSize: 13, fontWeight: 500, color: '#EF4444',
+                                textAlign: 'left',
+                              }}
+                              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#FFF5F5'; }}
+                              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                            >
+                              <Trash2 size={16} color="#EF4444" /> Eliminar
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
+
+                    {/* Bottom row: Duration + Link — always visible and editable */}
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                      {/* Duration */}
+                      <div style={{ minWidth: 140 }}>
+                        <label style={{ ...labelStyle, marginBottom: 4 }}><Clock size={13} /> Duracion (seg)</label>
+                        <DurationInput
+                          value={Number(getDurationText(banner))}
+                          onChange={(v) => setDuration(banner.id, String(v))}
+                          compact
+                        />
+                      </div>
+
+                      {/* Link */}
+                      <div style={{ flex: 1, minWidth: 180 }}>
+                        <label style={{ ...labelStyle, marginBottom: 4 }}><Link size={13} /> Enlace</label>
+                        <input
+                          type="url"
+                          value={getLinkText(banner)}
+                          onChange={e => setLink(banner.id, e.target.value)}
+                          placeholder="https://ejemplo.com"
+                          style={{ ...inputStyle, height: 36, fontSize: 13 }}
+                        />
+                      </div>
+
+                      {/* Save button — appears only when there are changes */}
+                      <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 0 }}>
+                        {changed && (
+                          <button
+                            onClick={() => saveBanner(banner)}
+                            disabled={savingId === banner.id}
+                            style={{
+                              height: 36, padding: '0 16px', borderRadius: 8, border: 'none',
+                              background: savingId === banner.id ? '#F39C12' : 'linear-gradient(135deg, #F39C12, #E67E22)',
+                              color: 'white', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
+                              cursor: savingId === banner.id ? 'wait' : 'pointer',
+                              display: 'flex', alignItems: 'center', gap: 6,
+                              opacity: savingId === banner.id ? 0.6 : 1,
+                              boxShadow: '0 4px 14px rgba(243,156,18,0.3)',
+                            }}
+                          >
+                            {savingId === banner.id ? (
+                              <><div style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />Guardando...</>
+                            ) : (
+                              <><Save size={14} />Guardar</>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
