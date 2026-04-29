@@ -91,7 +91,7 @@ export default function AppHeader() {
         {/* Center: Logo + Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, zIndex: 1 }}>
           {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ height: 80, width: 'auto', objectFit: 'contain' }} />
           ) : (
             <>
               <ShoppingBag size={26} strokeWidth={2.5} />

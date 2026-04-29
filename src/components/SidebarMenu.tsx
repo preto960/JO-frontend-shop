@@ -173,18 +173,18 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <div style={{
-                width: 52,
-                height: 52,
+                width: 80,
+                height: 80,
                 borderRadius: '50%',
                 background: 'var(--primary-gradient)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
-                fontSize: 17,
+                fontSize: 24,
                 color: 'white',
                 boxShadow: 'var(--shadow-accent)',
                 letterSpacing: '0.5px',

@@ -107,7 +107,7 @@ export default function RegisterPage() {
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
         {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
           ) : (
             <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
@@ -175,16 +175,16 @@ export default function RegisterPage() {
             marginBottom: 8,
           }} className="lg:hidden">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{
-                width: 72, height: 72, borderRadius: '50%',
+                width: 80, height: 80, borderRadius: '50%',
                 background: 'var(--primary-gradient)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginBottom: 12,
                 boxShadow: 'var(--shadow-accent)',
               }}>
-                <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 800, fontSize: 30, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -197,16 +197,16 @@ export default function RegisterPage() {
             marginBottom: 8,
           }} className="lg:flex">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{
-                width: 64, height: 64, borderRadius: '50%',
+                width: 80, height: 80, borderRadius: '50%',
                 background: 'var(--primary-gradient)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginBottom: 12,
                 boxShadow: 'var(--shadow-accent)',
               }}>
-                <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 800, fontSize: 28, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>

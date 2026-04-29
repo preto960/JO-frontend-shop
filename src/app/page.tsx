@@ -167,7 +167,7 @@ export default function HomePage() {
 
         {/* Center title */}
         {shopLogoUrl ? (
-          <img src={shopLogoUrl} alt={shopName} style={{ height: 30, width: 'auto', objectFit: 'contain', zIndex: 1 }} />
+          <img src={shopLogoUrl} alt={shopName} style={{ height: 80, width: 'auto', objectFit: 'contain', zIndex: 1 }} />
         ) : (
           <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>{shopName}</h1>
         )}
@@ -754,13 +754,13 @@ export default function HomePage() {
             marginBottom: 8,
           }}>
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <div style={{
-                width: 32, height: 32, borderRadius: '50%',
+                width: 80, height: 80, borderRadius: '50%',
                 background: 'var(--primary-gradient)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 800, fontSize: 12, color: 'white',
+                fontWeight: 800, fontSize: 22, color: 'white',
               }}>
                 {shopName.slice(0, 2).toUpperCase()}
               </div>

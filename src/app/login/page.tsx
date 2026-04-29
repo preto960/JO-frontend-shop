@@ -263,7 +263,7 @@ export default function LoginPage() {
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
           {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
           ) : (
             <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
@@ -303,10 +303,10 @@ export default function LoginPage() {
           {/* Mobile Logo */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:hidden">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 88, height: 88, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 34, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
+                <span style={{ fontWeight: 800, fontSize: 30, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
