@@ -133,6 +133,27 @@ export default function HomePage() {
 
   const hasActiveFilters = search || selectedCategory || selectedStore;
 
+  // ─── Banners de publicidad ────────────────────────────────────────────
+  const bannersEnabled = config.banners_enabled === 'true' || config.banners_enabled === true;
+  const banners: {image?: string; url?: string; link?: string}[] = (() => {
+    if (!bannersEnabled) return [];
+    try {
+      const data = config.banners_data;
+      if (!data) return [];
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
+  })();
+  const [currentBanner, setCurrentBanner] = React.useState(0);
+
+  React.useEffect(() => {
+    if (banners.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentBanner(prev => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
   const { logout } = useAuth();
   const isLoggedIn = !!user;
 
@@ -304,6 +325,98 @@ export default function HomePage() {
       </div>
 
       <div style={{ padding: '20px 16px 32px', maxWidth: 1200, margin: '0 auto' }}>
+
+        {/* ═══════════════════════════════════════════
+            BANNER CAROUSEL (publicidad)
+           ═══════════════════════════════════════════ */}
+        {banners.length > 0 && !hasActiveFilters && (
+          <div className="animate-fade-in" style={{
+            position: 'relative',
+            borderRadius: 16,
+            overflow: 'hidden',
+            height: 180,
+            marginBottom: 24,
+            background: 'var(--input-bg)',
+          }}>
+            {banners.map((banner, idx) => (
+              <div
+                key={`banner-${idx}`}
+                style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                  opacity: idx === currentBanner ? 1 : 0,
+                  transition: 'opacity 0.5s ease-in-out',
+                  zIndex: idx === currentBanner ? 1 : 0,
+                }}
+              >
+                {banner.link ? (
+                  <a href={banner.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
+                    <img
+                      src={banner.image || banner.url}
+                      alt={`Banner ${idx + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </a>
+                ) : (
+                  <img
+                    src={banner.image || banner.url}
+                    alt={`Banner ${idx + 1}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                )}
+              </div>
+            ))}
+            {banners.length > 1 && (
+              <>
+                <button
+                  onClick={() => setCurrentBanner(prev => (prev - 1 + banners.length) % banners.length)}
+                  style={{
+                    position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 10, width: 34, height: 34, borderRadius: '50%',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'white',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={() => setCurrentBanner(prev => (prev + 1) % banners.length)}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 10, width: 34, height: 34, borderRadius: '50%',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'white',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                  aria-label="Siguiente"
+                >
+                  <ChevronRight size={20} />
+                </button>
+                <div style={{
+                  position: 'absolute', bottom: 10, left: 0, right: 0,
+                  display: 'flex', justifyContent: 'center', gap: 6, zIndex: 10,
+                }}>
+                  {banners.map((_, idx) => (
+                    <button
+                      key={`dot-${idx}`}
+                      onClick={() => setCurrentBanner(idx)}
+                      style={{
+                        width: idx === currentBanner ? 20 : 7,
+                        height: 7,
+                        borderRadius: 4,
+                        border: 'none',
+                        background: idx === currentBanner ? 'white' : 'rgba(255,255,255,0.5)',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        padding: 0,
+                      }}
+                      aria-label={`Ir al banner ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* ═══════════════════════════════════════════
             CATEGORY PILLS

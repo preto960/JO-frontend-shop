@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import {
   Settings, Store, Globe, Shield, Info, RefreshCw,
-  ExternalLink, Palette, Upload, Trash2, Type, Image, Check, X,
+  ExternalLink, Palette, Upload, Trash2, Type, Image, Check, X, ImageIcon, Plus,
 } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -313,6 +313,13 @@ export default function SettingsPage() {
       )}
 
       {/* ═══════════════════════════════════════════
+          BANNERS SECTION (admin-only)
+         ═══════════════════════════════════════════ */}
+      {isAdmin && (
+        <BannersSection config={config} updateConfig={updateConfig} isSaving={isSaving} />
+      )}
+
+      {/* ═══════════════════════════════════════════
           BACKEND SERVER SECTION (admin-only)
          ═══════════════════════════════════════════ */}
       {isAdmin && (
@@ -380,6 +387,145 @@ function SectionHeader({ icon: Icon, iconColor, iconBg, title, description }: { 
       <div>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{title}</h2>
         <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 1 }}>{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function BannersSection({ config, updateConfig, isSaving }: { config: any; updateConfig: (s: Record<string, string>) => Promise<void>; isSaving: boolean }) {
+  const [bannersEnabled, setBannersEnabled] = useState(
+    config.banners_enabled === 'true' || config.banners_enabled === true
+  );
+  const [banners, setBanners] = useState<{image?: string; url?: string; link?: string}[]>([]);
+  const [bannerUploading, setBannerUploading] = useState(false);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    setBannersEnabled(config.banners_enabled === 'true' || config.banners_enabled === true);
+    try {
+      const data = config.banners_data;
+      if (!data) { setBanners([]); return; }
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      setBanners(Array.isArray(parsed) ? parsed : []);
+    } catch { setBanners([]); }
+  }, [config.banners_enabled, config.banners_data]);
+
+  const handleToggle = async (value: boolean) => {
+    setBannersEnabled(value);
+    try {
+      await updateConfig({ banners_enabled: String(value), banners_data: value ? JSON.stringify(banners) : '' });
+    } catch {
+      setBannersEnabled(!value);
+    }
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('Maximo 2MB por banner', 'error'); return; }
+    setBannerUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res: any = await api.post('/config/upload-banner', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const url = res?.url || res?.data?.url;
+      if (url) {
+        const newBanners = [...banners, { image: url, link: '' }];
+        setBanners(newBanners);
+        await updateConfig({ banners_data: JSON.stringify(newBanners) });
+        if (!bannersEnabled) {
+          setBannersEnabled(true);
+          await updateConfig({ banners_enabled: 'true' });
+        }
+        showToast('Banner agregado', 'success');
+      }
+    } catch {
+      showToast('No se pudo subir el banner', 'error');
+    } finally {
+      setBannerUploading(false);
+      if (bannerInputRef.current) bannerInputRef.current.value = '';
+    }
+  };
+
+  const handleRemove = async (index: number) => {
+    const newBanners = banners.filter((_, i) => i !== index);
+    setBanners(newBanners);
+    try {
+      await updateConfig({ banners_data: JSON.stringify(newBanners) });
+      try { await api.delete('/config/upload-banner', { data: { url: banners[index].image } }); } catch {}
+      showToast('Banner eliminado', 'success');
+    } catch {
+      setBanners(banners);
+      showToast('No se pudo eliminar', 'error');
+    }
+  };
+
+  return (
+    <div className="animate-fade-in" style={{ marginBottom: 24 }}>
+      <SectionHeader icon={ImageIcon} iconColor="#F39C12" iconBg="#FEF3E2" title="Banners de Publicidad" description="Configura los banners del carrusel en la pagina principal" />
+      <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 20, boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Banners activos</p>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              {bannersEnabled ? 'Los banners se muestran como carrusel en la pagina principal.' : 'Los banners estan ocultos.'}
+            </p>
+          </div>
+          <button onClick={() => handleToggle(!bannersEnabled)} disabled={isSaving}
+            style={{
+              width: 52, height: 28, borderRadius: 14, border: 'none',
+              background: bannersEnabled ? '#F39C12' : '#DFE4EA',
+              cursor: isSaving ? 'wait' : 'pointer', position: 'relative', transition: 'all 0.3s ease',
+              opacity: isSaving ? 0.6 : 1, flexShrink: 0,
+            }}>
+            <div style={{ position: 'absolute', top: 3, left: bannersEnabled ? 27 : 3, width: 22, height: 22, borderRadius: '50%', background: '#FFFFFF', boxShadow: '0 1px 4px rgba(0,0,0,0.2)', transition: 'left 0.3s ease' }} />
+          </button>
+        </div>
+
+        {bannersEnabled && (
+          <>
+            {/* Banner list */}
+            {banners.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {banners.map((banner, idx) => (
+                  <div key={`banner-${idx}`} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 10, borderRadius: 10, background: 'var(--input-bg)' }}>
+                    <img src={banner.image || banner.url} alt={`Banner ${idx + 1}`} style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>Banner {idx + 1}</p>
+                      <p style={{ fontSize: 11, color: 'var(--text-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{banner.image || banner.url}</p>
+                    </div>
+                    <button onClick={() => handleRemove(idx)} disabled={isSaving}
+                      style={{ padding: 6, borderRadius: 8, border: 'none', background: '#FDE8EC', color: '#EF4444', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      title="Eliminar banner">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add banner button */}
+            <input ref={bannerInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} style={{ display: 'none' }} />
+            <button onClick={() => bannerInputRef.current?.click()} disabled={bannerUploading || isSaving}
+              style={{
+                padding: '14px 16px', borderRadius: 10,
+                border: '2px dashed var(--primary)', background: 'var(--primary-light)',
+                color: 'var(--primary)', fontSize: 14, fontWeight: 600, cursor: (bannerUploading || isSaving) ? 'wait' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                opacity: (bannerUploading || isSaving) ? 0.6 : 1, transition: 'all 0.2s ease',
+              }}>
+              {bannerUploading ? (
+                <><div style={{ width: 16, height: 16, border: '2px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Subiendo...</>
+              ) : (
+                <><Plus size={18} /> Agregar banner</>
+              )}
+            </button>
+            <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 2MB por banner. Se muestra como carrusel en el inicio.</p>
+          </>
+        )}
       </div>
     </div>
   );
