@@ -237,7 +237,7 @@ export default function AdminProductsPage() {
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Productos</h1>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button
-            onClick={() => router.push('/manage-batches')}
+            onClick={() => router.push('/product-batches')}
             style={{
               ...styles.newBtn,
               background: '#FF6B6B',
