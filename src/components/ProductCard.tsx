@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShoppingCart, ShoppingBag } from 'lucide-react';
+import { ShoppingCart, ShoppingBag, Percent } from 'lucide-react';
 import { formatPrice, getProductImage } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -15,6 +15,9 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
   const price = product.price ?? product.precio ?? 0;
   const name = product.name || product.nombre || 'Sin nombre';
   const description = product.description || product.descripcion || '';
+  const discount = product.discountPercent ?? product.discount_percent ?? 0;
+  const hasDiscount = discount > 0;
+  const discountedPrice = hasDiscount ? price * (1 - discount / 100) : price;
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -92,6 +95,22 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             Agotado
           </div>
         )}
+        {hasDiscount && (
+          <div style={{
+            position: 'absolute', top: 10, right: 10,
+            background: '#FF6B6B',
+            color: 'white',
+            fontSize: 12,
+            fontWeight: 700,
+            padding: '4px 10px',
+            borderRadius: 'var(--radius-full)',
+            display: 'flex', alignItems: 'center', gap: 3,
+            boxShadow: '0 2px 8px rgba(255,107,107,0.4)',
+          }}>
+            <Percent size={11} strokeWidth={2.5} />
+            {discount}%
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -115,9 +134,16 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
           {description}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
-          <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)', letterSpacing: '-0.3px' }}>
-            {formatPrice(price)}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {hasDiscount && (
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', textDecoration: 'line-through' }}>
+                {formatPrice(price)}
+              </span>
+            )}
+            <span style={{ fontSize: 18, fontWeight: 700, color: hasDiscount ? '#FF6B6B' : 'var(--primary)', letterSpacing: '-0.3px' }}>
+              {formatPrice(discountedPrice)}
+            </span>
+          </div>
           {(product.stock === undefined || product.stock > 0) && (
             <button
               onClick={handleAdd}
