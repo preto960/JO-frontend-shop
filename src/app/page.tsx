@@ -134,7 +134,7 @@ export default function HomePage() {
   const hasActiveFilters = search || selectedCategory || selectedStore;
 
   // ─── Banners de publicidad ────────────────────────────────────────────
-  const bannersEnabled = config.banners_enabled === 'true' || config.banners_enabled === true;
+  const bannersEnabled = config.banners_enabled === 'true';
   const banners: {image?: string; url?: string; link?: string}[] = (() => {
     if (!bannersEnabled) return [];
     try {
