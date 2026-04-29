@@ -143,10 +143,11 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <header style={{
         background: 'var(--primary-gradient)', color: 'var(--white)',
-        padding: '0 16px', height: 60, display: 'flex',
+        padding: '0 16px', height: 100, display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         position: 'sticky', top: 0, zIndex: 100,
         boxShadow: 'var(--shadow-accent)',
+        borderRadius: '0 0 16px 16px',
       }}>
         {/* Left section */}
         <div style={{ position: 'absolute', left: 16, display: 'flex', gap: 4, zIndex: 1 }}>
@@ -155,12 +156,12 @@ export default function HomePage() {
               onClick={() => setMenuOpen(true)}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               aria-label="Abrir menú"
             >
-              <Menu size={22} />
+              <Menu size={24} />
             </button>
           )}
         </div>
@@ -179,13 +180,13 @@ export default function HomePage() {
             onClick={() => setCartOpen(!cartOpen)}
             style={{
               background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-              cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+              cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative',
             }}
             aria-label="Carrito"
           >
-            <ShoppingCart size={20} />
+            <ShoppingCart size={22} />
             {cartCount > 0 && (
               <span style={{
                 position: 'absolute', top: 2, right: 2,
@@ -204,24 +205,24 @@ export default function HomePage() {
               onClick={logout}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               aria-label="Cerrar sesión"
             >
-              <LogOut size={20} />
+              <LogOut size={22} />
             </button>
           ) : (
             <button
               onClick={() => router.push('/login')}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
+                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               aria-label="Iniciar sesión"
             >
-              <LogIn size={20} />
+              <LogIn size={22} />
             </button>
           )}
           <CartDropdown
