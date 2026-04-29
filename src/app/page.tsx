@@ -325,7 +325,7 @@ export default function HomePage() {
           background: 'rgba(255,255,255,0.05)',
         }} />
 
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ position: 'relative', zIndex: 1 }}>
           <div className="animate-fade-in">
             <h2 style={{
               fontSize: 26, fontWeight: 800, color: 'white', marginBottom: 6,
@@ -366,7 +366,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div style={{ padding: '20px 16px 32px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ padding: '20px 16px 32px' }}>
 
         {/* ═══════════════════════════════════════════
             BANNER CAROUSEL (publicidad)
