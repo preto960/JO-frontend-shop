@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import {
   Settings, Store, Globe, Shield, Info, RefreshCw,
   ExternalLink, Palette, Upload, Trash2, Type, Image, Check, X, ImageIcon, Plus,
+  Edit3, Clock, Link, Pencil, Eye, EyeOff, Save,
 } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -399,6 +400,19 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
   const [bannerUploading, setBannerUploading] = useState(false);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
+  // Upload modal state
+  const [showModal, setShowModal] = useState(false);
+  const [modalFile, setModalFile] = useState<File | null>(null);
+  const [modalPreview, setModalPreview] = useState<string | null>(null);
+  const [modalDuration, setModalDuration] = useState(4);
+  const [modalLink, setModalLink] = useState('');
+
+  // Edit state per banner
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editDuration, setEditDuration] = useState(4);
+  const [editLink, setEditLink] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
+
   // Load banners from /banners/all
   const loadBanners = React.useCallback(async () => {
     try {
@@ -429,26 +443,65 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
     }
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ── Modal helpers ──
+  const openModal = () => {
+    setModalFile(null);
+    setModalPreview(null);
+    setModalDuration(4);
+    setModalLink('');
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalFile(null);
+    setModalPreview(null);
+    if (bannerInputRef.current) bannerInputRef.current.value = '';
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('Maximo 5MB por banner', 'error'); return; }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Maximo 5MB por banner', 'error');
+      if (bannerInputRef.current) bannerInputRef.current.value = '';
+      return;
+    }
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm'];
+    if (!allowed.includes(file.type)) {
+      showToast('Formato no soportado', 'error');
+      if (bannerInputRef.current) bannerInputRef.current.value = '';
+      return;
+    }
+    setModalFile(file);
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      setModalPreview(url);
+    } else if (file.type.startsWith('video/')) {
+      setModalPreview('__video__');
+    }
+  };
+
+  const handleModalUpload = async () => {
+    if (!modalFile) { showToast('Selecciona un archivo', 'error'); return; }
     setBannerUploading(true);
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', modalFile);
+      formData.append('duration', String(modalDuration));
+      if (modalLink.trim()) formData.append('link', modalLink.trim());
       const res: any = await api.post('/banners', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (res?.banner) {
         setBanners(prev => [...prev, res.banner]);
         showToast('Banner agregado', 'success');
+        closeModal();
       }
     } catch {
       showToast('No se pudo subir el banner', 'error');
     } finally {
       setBannerUploading(false);
-      if (bannerInputRef.current) bannerInputRef.current.value = '';
     }
   };
 
@@ -461,6 +514,67 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
       loadBanners();
       showToast('No se pudo eliminar', 'error');
     }
+  };
+
+  // ── Edit helpers ──
+  const startEdit = (banner: any) => {
+    setEditingId(banner.id);
+    setEditDuration(banner.duration || 4);
+    setEditLink(banner.link || '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+  };
+
+  const saveEdit = async (id: number) => {
+    setEditSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append('duration', String(editDuration));
+      formData.append('link', editLink.trim());
+      const res: any = await api.put(`/banners/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (res?.banner) {
+        setBanners(prev => prev.map(b => b.id === id ? res.banner : b));
+        showToast('Banner actualizado', 'success');
+        setEditingId(null);
+      }
+    } catch {
+      showToast('No se pudo actualizar', 'error');
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const toggleBannerActive = async (banner: any) => {
+    const newActive = !banner.active;
+    setBanners(prev => prev.map(b => b.id === banner.id ? { ...b, active: newActive } : b));
+    try {
+      const formData = new FormData();
+      formData.append('active', String(newActive));
+      const res: any = await api.put(`/banners/${banner.id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (res?.banner) {
+        setBanners(prev => prev.map(b => b.id === banner.id ? res.banner : b));
+      }
+    } catch {
+      setBanners(prev => prev.map(b => b.id === banner.id ? { ...b, active: !newActive } : b));
+      showToast('No se pudo cambiar estado', 'error');
+    }
+  };
+
+  // ── Shared input style ──
+  const inputStyle: React.CSSProperties = {
+    height: 42, borderRadius: 10, border: '2px solid var(--border)', padding: '0 12px',
+    fontSize: 14, width: '100%', boxSizing: 'border-box', outline: 'none',
+    background: 'var(--input-bg)', color: 'var(--text)',
+  };
+  const labelStyle: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600,
+    color: 'var(--text)', marginBottom: 6,
   };
 
   return (
@@ -494,47 +608,215 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
             ) : banners.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {banners.map((banner) => (
-                  <div key={banner.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 10, borderRadius: 10, background: 'var(--input-bg)' }}>
-                    <img src={banner.imageUrl} alt={`Banner ${banner.sortOrder}`} style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
-                        Banner {banner.sortOrder}
-                        <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 400, marginLeft: 6 }}>
-                          {banner.mediaType === 'video' ? 'Video' : 'Imagen'} - {banner.duration}s
-                        </span>
-                      </p>
-                      {banner.link && <p style={{ fontSize: 11, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{banner.link}</p>}
-                    </div>
-                    <button onClick={() => handleRemove(banner.id)} disabled={isSaving}
-                      style={{ padding: 6, borderRadius: 8, border: 'none', background: '#FDE8EC', color: '#EF4444', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                      title="Eliminar banner">
-                      <Trash2 size={16} />
-                    </button>
+                  <div key={banner.id} style={{
+                    display: 'flex', alignItems: 'center', gap: 12, padding: 12, borderRadius: 10,
+                    background: banner.active ? 'var(--input-bg)' : '#F5F5F5',
+                    border: editingId === banner.id ? '2px solid var(--primary)' : '2px solid transparent',
+                    opacity: banner.active ? 1 : 0.6, transition: 'all 0.2s ease',
+                  }}>
+                    {/* Thumbnail */}
+                    <img src={banner.imageUrl} alt={`Banner ${banner.sortOrder}`}
+                      style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
+
+                    {/* Info / Edit fields */}
+                    {editingId === banner.id ? (
+                      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Clock size={14} /> Duracion (s):</label>
+                          <input type="number" min={1} max={60} value={editDuration}
+                            onChange={e => setEditDuration(Math.max(1, Math.min(60, parseInt(e.target.value) || 1)))}
+                            style={{ ...inputStyle, width: 80, height: 36, fontSize: 13 }} />
+                        </div>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Link size={14} /> Enlace:</label>
+                          <input type="url" value={editLink} onChange={e => setEditLink(e.target.value)}
+                            placeholder="https://ejemplo.com (opcional)"
+                            style={{ ...inputStyle, height: 36, fontSize: 13 }} />
+                        </div>
+                        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                          <button onClick={cancelEdit} style={{ padding: '6px 14px', borderRadius: 8, border: '2px solid var(--border)', background: 'var(--input-bg)', color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <X size={14} /> Cancelar
+                          </button>
+                          <button onClick={() => saveEdit(banner.id)} disabled={editSaving}
+                            style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: 'var(--primary-gradient)', color: 'white', fontSize: 12, fontWeight: 600, cursor: editSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: 4, opacity: editSaving ? 0.6 : 1 }}>
+                            {editSaving ? <div style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Save size={14} />}
+                            {editSaving ? 'Guardando...' : 'Guardar'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
+                          Banner {banner.sortOrder}
+                          <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 400, marginLeft: 6 }}>
+                            {banner.mediaType === 'video' ? 'Video' : 'Imagen'}
+                          </span>
+                          <span style={{ fontSize: 11, color: '#F39C12', fontWeight: 600, marginLeft: 6 }}>
+                            <Clock size={11} style={{ verticalAlign: -1, marginRight: 2 }} />{banner.duration}s
+                          </span>
+                          {!banner.active && <span style={{ fontSize: 10, color: '#EF4444', fontWeight: 600, marginLeft: 6, background: '#FDE8EC', padding: '1px 6px', borderRadius: 4 }}>Inactivo</span>}
+                        </p>
+                        {banner.link && (
+                          <p style={{ fontSize: 11, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 4 }}>
+                            <Link size={10} style={{ verticalAlign: -1, marginRight: 3 }} />{banner.link}
+                          </p>
+                        )}
+                        <p style={{ fontSize: 10, color: 'var(--text-light)', margin: 0 }}>
+                          {banner.active ? 'Visible en el carrusel' : 'Oculto del carrusel'}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Action buttons (only when not editing) */}
+                    {editingId !== banner.id && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0 }}>
+                        <button onClick={() => toggleBannerActive(banner)} disabled={isSaving}
+                          style={{ padding: 6, borderRadius: 8, border: 'none', background: banner.active ? '#E8F8F5' : '#FFF3E0', color: banner.active ? '#00B894' : '#F39C12', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title={banner.active ? 'Desactivar banner' : 'Activar banner'}>
+                          {banner.active ? <Eye size={16} /> : <EyeOff size={16} />}
+                        </button>
+                        <button onClick={() => startEdit(banner)} disabled={isSaving}
+                          style={{ padding: 6, borderRadius: 8, border: 'none', background: '#E8F1FF', color: '#54A0FF', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title="Editar banner">
+                          <Pencil size={16} />
+                        </button>
+                        <button onClick={() => handleRemove(banner.id)} disabled={isSaving}
+                          style={{ padding: 6, borderRadius: 8, border: 'none', background: '#FDE8EC', color: '#EF4444', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title="Eliminar banner">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             )}
 
             {/* Add banner button */}
-            <input ref={bannerInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" onChange={handleUpload} style={{ display: 'none' }} />
-            <button onClick={() => bannerInputRef.current?.click()} disabled={bannerUploading || isSaving}
+            <input ref={bannerInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" onChange={handleFileSelect} style={{ display: 'none' }} />
+            <button onClick={openModal}
               style={{
                 padding: '14px 16px', borderRadius: 10,
                 border: '2px dashed var(--primary)', background: 'var(--primary-light)',
-                color: 'var(--primary)', fontSize: 14, fontWeight: 600, cursor: (bannerUploading || isSaving) ? 'wait' : 'pointer',
+                color: 'var(--primary)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                opacity: (bannerUploading || isSaving) ? 0.6 : 1, transition: 'all 0.2s ease',
+                transition: 'all 0.2s ease',
               }}>
-              {bannerUploading ? (
-                <><div style={{ width: 16, height: 16, border: '2px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Subiendo...</>
-              ) : (
-                <><Plus size={18} /> Agregar banner</>
-              )}
+              <Plus size={18} /> Agregar banner
             </button>
             <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 5MB. Imagenes (JPG, PNG, WebP, GIF) o videos (MP4, WebM).</p>
           </>
         )}
       </div>
+
+      {/* ═══ MODAL: Nuevo Banner ═══ */}
+      {showModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 20 }} onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}>
+          <div style={{ background: '#FFFFFF', borderRadius: 16, padding: 24, maxWidth: 460, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Nuevo Banner</h3>
+                <p style={{ fontSize: 12, color: 'var(--text-light)', margin: '4px 0 0' }}>Configura la imagen o video del banner</p>
+              </div>
+              <button onClick={closeModal} style={{ padding: 6, borderRadius: 8, border: 'none', background: 'var(--input-bg)', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* File preview / select area */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ ...labelStyle, marginBottom: 8 }}><ImageIcon size={14} /> Archivo</label>
+              {modalPreview ? (
+                <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: 'var(--border)', marginBottom: 8 }}>
+                  {modalPreview === '__video__' ? (
+                    <div style={{ width: '100%', height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a2e' }}>
+                      <div style={{ textAlign: 'center', color: 'white' }}>
+                        <Upload size={32} style={{ margin: '0 auto 8px', display: 'block', opacity: 0.6 }} />
+                        <p style={{ fontSize: 13, opacity: 0.8 }}>{modalFile?.name}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <img src={modalPreview} alt="Vista previa" style={{ width: '100%', height: 180, objectFit: 'cover' }} />
+                  )}
+                  <button onClick={() => { setModalFile(null); setModalPreview(null); if (bannerInputRef.current) bannerInputRef.current.value = ''; }}
+                    style={{ position: 'absolute', top: 8, right: 8, padding: 6, borderRadius: 8, border: 'none', background: 'rgba(0,0,0,0.6)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => bannerInputRef.current?.click()}
+                  style={{ width: '100%', height: 120, borderRadius: 12, border: '2px dashed var(--border)', background: 'var(--input-bg)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'border-color 0.2s' }}>
+                  <Upload size={28} color="var(--text-light)" />
+                  <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', margin: 0 }}>Haz clic para seleccionar</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>JPG, PNG, WebP, GIF, MP4, WebM (max 5MB)</p>
+                </button>
+              )}
+            </div>
+
+            {/* Duration field */}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ ...labelStyle, marginBottom: 8 }}>
+                <Clock size={14} color="#F39C12" /> Duracion del banner
+                <span style={{ fontWeight: 400, color: 'var(--text-light)', marginLeft: 4 }}>(segundos)</span>
+              </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <input type="range" min={1} max={30} value={modalDuration}
+                  onChange={e => setModalDuration(parseInt(e.target.value))}
+                  style={{ flex: 1, accentColor: '#F39C12' }} />
+                <div style={{
+                  minWidth: 52, height: 42, borderRadius: 10, border: '2px solid var(--border)',
+                  background: '#FEF3E2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 16, fontWeight: 700, color: '#F39C12',
+                }}>
+                  {modalDuration}s
+                </div>
+              </div>
+              <p style={{ fontSize: 11, color: 'var(--text-light)', margin: '6px 0 0' }}>
+                Tiempo que se muestra cada banner antes de pasar al siguiente (1-30 segundos)
+              </p>
+            </div>
+
+            {/* Link field */}
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ ...labelStyle, marginBottom: 8 }}>
+                <Link size={14} color="#54A0FF" /> Enlace
+                <span style={{ fontWeight: 400, color: 'var(--text-light)', marginLeft: 4 }}>(opcional)</span>
+              </label>
+              <input type="url" value={modalLink} onChange={e => setModalLink(e.target.value)}
+                placeholder="https://ejemplo.com"
+                style={inputStyle} />
+              <p style={{ fontSize: 11, color: 'var(--text-light)', margin: '6px 0 0' }}>
+                Al hacer clic en el banner, redirige a esta direccion
+              </p>
+            </div>
+
+            {/* Action buttons */}
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button onClick={closeModal}
+                style={{ padding: '10px 20px', borderRadius: 10, border: '2px solid var(--border)', background: 'var(--input-bg)', color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <X size={16} /> Cancelar
+              </button>
+              <button onClick={handleModalUpload} disabled={!modalFile || bannerUploading}
+                style={{
+                  padding: '10px 24px', borderRadius: 10, border: 'none',
+                  background: (!modalFile || bannerUploading) ? 'var(--primary-hover)' : 'linear-gradient(135deg, #F39C12, #E67E22)',
+                  color: 'white', fontSize: 14, fontWeight: 700,
+                  cursor: (!modalFile || bannerUploading) ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  opacity: (!modalFile || bannerUploading) ? 0.5 : 1, transition: 'all 0.2s ease',
+                  boxShadow: (modalFile && !bannerUploading) ? '0 4px 14px rgba(243,156,18,0.3)' : 'none',
+                }}>
+                {bannerUploading ? (
+                  <><div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Subiendo...</>
+                ) : (
+                  <><Upload size={16} /> Subir banner</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
