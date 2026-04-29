@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import {
   Settings, Store, Globe, Shield, Info, RefreshCw,
   ExternalLink, Palette, Upload, Trash2, Type, Image, Check, X, ImageIcon, Plus,
-  Edit3, Clock, Link, Pencil, Eye, EyeOff, Save,
+  Edit3, Clock, Link, Pencil, Eye, EyeOff, Save, ChevronDown,
 } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -622,10 +622,8 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
                     {editingId === banner.id ? (
                       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Clock size={14} /> Duracion (s):</label>
-                          <input type="number" min={1} max={60} value={editDuration}
-                            onChange={e => setEditDuration(Math.max(1, Math.min(60, parseInt(e.target.value) || 1)))}
-                            style={{ ...inputStyle, width: 80, height: 36, fontSize: 13 }} />
+                          <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Clock size={14} /> Duracion:</label>
+                          <DurationDropdown value={editDuration} onChange={setEditDuration} />
                         </div>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                           <label style={{ ...labelStyle, marginBottom: 0, whiteSpace: 'nowrap' }}><Link size={14} /> Enlace:</label>
@@ -758,22 +756,10 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
             <div style={{ marginBottom: 14 }}>
               <label style={{ ...labelStyle, marginBottom: 8 }}>
                 <Clock size={14} color="#F39C12" /> Duracion del banner
-                <span style={{ fontWeight: 400, color: 'var(--text-light)', marginLeft: 4 }}>(segundos)</span>
               </label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <input type="range" min={1} max={30} value={modalDuration}
-                  onChange={e => setModalDuration(parseInt(e.target.value))}
-                  style={{ flex: 1, accentColor: '#F39C12' }} />
-                <div style={{
-                  minWidth: 52, height: 42, borderRadius: 10, border: '2px solid var(--border)',
-                  background: '#FEF3E2', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, fontWeight: 700, color: '#F39C12',
-                }}>
-                  {modalDuration}s
-                </div>
-              </div>
+              <DurationDropdown value={modalDuration} onChange={setModalDuration} />
               <p style={{ fontSize: 11, color: 'var(--text-light)', margin: '6px 0 0' }}>
-                Tiempo que se muestra cada banner antes de pasar al siguiente (1-30 segundos)
+                Tiempo que se muestra cada banner antes de pasar al siguiente
               </p>
             </div>
 
@@ -815,6 +801,91 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
               </button>
             </div>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Duration Dropdown — 3 preset options
+   ═══════════════════════════════════════════════════════════════ */
+const DURATION_OPTIONS = [
+  { value: 3, label: '3s', desc: 'Rapido' },
+  { value: 5, label: '5s', desc: 'Normal' },
+  { value: 8, label: '8s', desc: 'Lento' },
+];
+
+function DurationDropdown({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = DURATION_OPTIONS.find(o => o.value === value) || DURATION_OPTIONS[1];
+
+  React.useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    if (open) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: 'relative', display: 'inline-block' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '6px 12px', borderRadius: 8,
+          border: '2px solid #F39C12',
+          background: value === 3 ? '#E8F8F5' : value === 5 ? '#FEF3E2' : '#FFF3E0',
+          color: value === 3 ? '#00B894' : value === 5 ? '#F39C12' : '#E67E22',
+          fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <Clock size={14} />
+        <span>{selected.label}</span>
+        <span style={{ fontWeight: 400, opacity: 0.7, fontSize: 11 }}>{selected.desc}</span>
+        <ChevronDown size={14} style={{ marginLeft: 2, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }} />
+      </button>
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 6px)', left: 0,
+          background: 'white', borderRadius: 10, border: '2px solid var(--border)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.12)', zIndex: 100,
+          overflow: 'hidden', minWidth: 140,
+        }}>
+          {DURATION_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '10px 14px', border: 'none', background: value === opt.value ? '#FEF3E2' : 'transparent',
+                cursor: 'pointer', width: '100%', textAlign: 'left',
+                fontSize: 13, fontWeight: 500, color: 'var(--text)',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => { if (value !== opt.value) (e.currentTarget as HTMLButtonElement).style.background = 'var(--input-bg)'; }}
+              onMouseLeave={(e) => { if (value !== opt.value) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+            >
+              <span style={{
+                width: 32, height: 22, borderRadius: 6,
+                background: opt.value === 3 ? '#E8F8F5' : opt.value === 5 ? '#FEF3E2' : '#FFF3E0',
+                color: opt.value === 3 ? '#00B894' : opt.value === 5 ? '#F39C12' : '#E67E22',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, fontWeight: 700,
+              }}>
+                {opt.label}
+              </span>
+              <span style={{ fontWeight: 500 }}>{opt.desc}</span>
+              {value === opt.value && (
+                <Check size={14} style={{ marginLeft: 'auto', color: '#F39C12' }} />
+              )}
+            </button>
+          ))}
         </div>
       )}
     </div>
