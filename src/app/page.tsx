@@ -364,7 +364,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div style={{ padding: '20px 16px 32px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ padding: '20px 16px 32px' }}>
 
         {/* ═══════════════════════════════════════════
             BANNER CAROUSEL (publicidad)
@@ -475,8 +475,9 @@ export default function HomePage() {
         )}
 
         {/* ═══════════════════════════════════════════
-            CATEGORY PILLS
+            CATEGORY PILLS & STORE FILTER (mantienen ancho original)
            ═══════════════════════════════════════════ */}
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {categories.length > 0 && !search && (
           <div className="animate-fade-in" style={{
             display: 'flex', gap: 8, marginBottom: 24,
@@ -554,6 +555,7 @@ export default function HomePage() {
             </select>
           </div>
         )}
+        </div>
 
         {/* ═══════════════════════════════════════════
             FEATURES STRIP
