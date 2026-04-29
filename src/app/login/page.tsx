@@ -221,7 +221,7 @@ export default function LoginPage() {
       display: 'flex',
       alignItems: 'stretch',
       justifyContent: 'stretch',
-      background: 'linear-gradient(135deg, #FF6B35 0%, #FF8C5E 50%, #FDCB6E 100%)',
+      background: 'var(--primary-gradient)',
     }}>
       {/* ── Left Side: Illustration (Desktop Only) ── */}
       <div style={{
@@ -388,7 +388,7 @@ export default function LoginPage() {
                       {otpCode.map((digit, index) => (
                         <input key={index} ref={(el) => { inputRefs.current[index] = el; }} type="text" inputMode="numeric" maxLength={1} value={digit}
                           onChange={(e) => handleOtpChange(index, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          style={{ width: 48, height: 56, borderRadius: 12, border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`, background: digit ? 'var(--primary-light)' : 'var(--white)', textAlign: 'center', fontSize: 24, fontWeight: 700, color: 'var(--text)', outline: 'none', transition: 'all 0.2s ease', boxShadow: digit ? '0 0 0 3px rgba(255,107,53,0.1)' : 'none' }} />
+                          style={{ width: 48, height: 56, borderRadius: 12, border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`, background: digit ? 'var(--primary-light)' : 'var(--white)', textAlign: 'center', fontSize: 24, fontWeight: 700, color: 'var(--text)', outline: 'none', transition: 'all 0.2s ease', boxShadow: digit ? 'var(--shadow-accent)' : 'none' }} />
                       ))}
                     </div>
 

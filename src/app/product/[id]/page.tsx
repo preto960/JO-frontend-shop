@@ -62,7 +62,7 @@ export default function ProductDetailPage() {
       <div style={{ padding: '0 0 100px' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
-            <div style={{ width: 36, height: 36, border: '3px solid var(--border)', borderTopColor: '#FF6B35', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{ width: 36, height: 36, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           </div>
         ) : !product ? (
           <div style={{ textAlign: 'center', padding: 80, color: 'var(--text-secondary)' }}>
@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
                   {name}
                 </h1>
                 <span style={{
-                  fontSize: 26, fontWeight: 800, color: '#FF6B35', whiteSpace: 'nowrap',
+                  fontSize: 26, fontWeight: 800, color: 'var(--primary)', whiteSpace: 'nowrap',
                   background: 'var(--primary-light)', padding: '6px 14px', borderRadius: 'var(--radius)',
                 }}>
                   {formatPrice(price)}

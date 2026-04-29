@@ -35,7 +35,7 @@ export default function GlobalError({
           }}>
             <div style={{
               width: 64, height: 64, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+              background: 'var(--primary-gradient)',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               marginBottom: 20, color: 'white', fontWeight: 800, fontSize: 16,
             }}>
@@ -59,12 +59,12 @@ export default function GlobalError({
                 padding: '12px 28px',
                 borderRadius: 9999,
                 border: 'none',
-                background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+                background: 'var(--primary-gradient)',
                 color: 'white',
                 cursor: 'pointer',
                 fontWeight: 600,
                 fontSize: 14,
-                boxShadow: '0 4px 14px rgba(255,107,53,0.3)',
+                boxShadow: 'var(--shadow-accent)',
               }}
             >
               Reintentar

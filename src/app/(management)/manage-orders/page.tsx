@@ -75,7 +75,7 @@ export default function AdminOrdersPage() {
             style={{
               padding: '8px 18px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: activeTab === tab.value ? 600 : 500,
               whiteSpace: 'nowrap', cursor: 'pointer',
-              background: activeTab === tab.value ? 'linear-gradient(135deg, #FF6B35, #FF8C5E)' : '#FFFFFF',
+              background: activeTab === tab.value ? 'var(--primary-gradient)' : '#FFFFFF',
               color: activeTab === tab.value ? 'white' : 'var(--text-secondary)',
               boxShadow: 'var(--shadow)',
               transition: 'all 0.2s ease',
@@ -90,7 +90,7 @@ export default function AdminOrdersPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
@@ -145,7 +145,7 @@ export default function AdminOrdersPage() {
                     <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                       {order.user?.name || order.userName || 'Cliente'} · {items.length} artículo(s)
                     </p>
-                    <p style={{ fontSize: 18, fontWeight: 700, color: '#FF6B35' }}>{formatPrice(total)}</p>
+                    <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)' }}>{formatPrice(total)}</p>
                   </div>
                 </div>
 
@@ -175,9 +175,9 @@ export default function AdminOrdersPage() {
                           onClick={(e) => { e.stopPropagation(); updateStatus(order.id, nextStatus); }}
                           style={{
                             padding: '10px 18px', borderRadius: 10, border: 'none',
-                            background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+                            background: 'var(--primary-gradient)',
                             color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                            boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+                            boxShadow: 'var(--shadow-accent)',
                             transition: 'all 0.2s ease',
                           }}
                           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}

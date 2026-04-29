@@ -144,7 +144,7 @@ export default function HomePage() {
         padding: '0 16px', height: 60, display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
+        boxShadow: 'var(--shadow-accent)',
       }}>
         {/* Left section */}
         <div style={{ position: 'absolute', left: 16, display: 'flex', gap: 4, zIndex: 1 }}>
@@ -390,7 +390,7 @@ export default function HomePage() {
             marginBottom: 28,
           }}>
             {[
-              { icon: Truck, label: 'Envio rapido', color: '#FF6B35', bg: '#FFF0E9' },
+              { icon: Truck, label: 'Envio rapido', color: 'var(--primary)', bg: 'var(--primary-light)' },
               { icon: Shield, label: 'Pago seguro', color: '#00B894', bg: '#E8FBF5' },
               { icon: Clock, label: 'Soporte 24/7', color: '#54A0FF', bg: '#E8F1FF' },
             ].map((f) => (
@@ -434,10 +434,10 @@ export default function HomePage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{
                   width: 32, height: 32, borderRadius: '50%',
-                  background: '#FFF0E9', display: 'flex',
+                  background: 'var(--primary-light)', display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <TrendingUp size={16} color="#FF6B35" />
+                  <TrendingUp size={16} color="var(--primary)" />
                 </div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
                   Mas vendidos

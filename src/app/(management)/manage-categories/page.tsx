@@ -19,10 +19,10 @@ const styles = {
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   editBtn: {
@@ -39,9 +39,9 @@ const styles = {
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
@@ -131,8 +131,8 @@ export default function AdminCategoriesPage() {
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nueva categoría
         </button>
@@ -143,7 +143,7 @@ export default function AdminCategoriesPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
@@ -168,7 +168,7 @@ export default function AdminCategoriesPage() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{
-                  width: 46, height: 46, borderRadius: 12, background: '#FFF0E9',
+                  width: 46, height: 46, borderRadius: 12, background: 'var(--primary-light)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0,
                 }}>
                   {cat.image ? (

@@ -63,7 +63,7 @@ export default function RegisterPage() {
       display: 'flex',
       alignItems: 'stretch',
       justifyContent: 'stretch',
-      background: 'linear-gradient(135deg, #FF6B35 0%, #FF8C5E 50%, #FDCB6E 100%)',
+      background: 'var(--primary-gradient)',
     }}>
       {/* ── Left Side: Illustration (Desktop Only) ── */}
       <div style={{

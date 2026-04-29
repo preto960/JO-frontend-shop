@@ -114,8 +114,8 @@ export default function SettingsPage() {
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: '#FFF0E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Settings size={22} color="#FF6B35" />
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Settings size={22} color="var(--primary)" />
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Configuracion</h1>
         </div>
@@ -128,7 +128,7 @@ export default function SettingsPage() {
          ═══════════════════════════════════════════ */}
       {isAdmin && (
         <div className="animate-fade-in" style={{ marginBottom: 24 }}>
-          <SectionHeader icon={Palette} iconColor="#E94560" iconBg="#FDE8EC" title="Apariencia" description="Personaliza el nombre, colores y logo del sistema" />
+          <SectionHeader icon={Palette} iconColor="var(--accent)" iconBg="var(--accent-light)" title="Apariencia" description="Personaliza el nombre, colores y logo del sistema" />
 
           <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 20, boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
@@ -263,7 +263,7 @@ export default function SettingsPage() {
               <button onClick={handleSaveAppearance} disabled={savingAppearance}
                 style={{
                   padding: '10px 24px', borderRadius: 10, border: 'none',
-                  background: savingAppearance ? 'var(--primary-hover)' : 'linear-gradient(135deg, #E94560, #FF6B35)',
+                  background: savingAppearance ? 'var(--primary-hover)' : 'var(--primary-gradient)',
                   color: 'white', fontSize: 14, fontWeight: 700, cursor: savingAppearance ? 'wait' : 'pointer',
                   display: 'flex', alignItems: 'center', gap: 8, boxShadow: savingAppearance ? 'none' : '0 4px 14px rgba(233,69,96,0.3)',
                   opacity: savingAppearance ? 0.7 : 1,

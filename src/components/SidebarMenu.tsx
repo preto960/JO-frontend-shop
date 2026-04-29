@@ -186,7 +186,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 fontWeight: 800,
                 fontSize: 15,
                 color: 'white',
-                boxShadow: '0 4px 12px rgba(255,107,53,0.4)',
+                boxShadow: 'var(--shadow-accent)',
                 letterSpacing: '0.5px',
               }}>
                 {shopName.substring(0, 2).toUpperCase()}

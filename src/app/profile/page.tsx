@@ -142,7 +142,7 @@ export default function ProfilePage() {
             background: digit ? 'var(--primary-light)' : 'var(--white)',
             textAlign: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text)',
             outline: 'none', transition: 'all 0.2s ease',
-            boxShadow: digit ? '0 0 0 3px rgba(255,107,53,0.1)' : 'none',
+            boxShadow: digit ? 'var(--shadow-accent)' : 'none',
           }}
         />
       ))}
@@ -438,7 +438,7 @@ export default function ProfilePage() {
             background: digit ? 'var(--primary-light)' : 'var(--white)',
             textAlign: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text)',
             outline: 'none', transition: 'all 0.2s ease',
-            boxShadow: digit ? '0 0 0 3px rgba(255,107,53,0.1)' : 'none',
+            boxShadow: digit ? 'var(--shadow-accent)' : 'none',
           }}
         />
       ))}

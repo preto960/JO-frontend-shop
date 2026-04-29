@@ -137,7 +137,7 @@ export default function DeliveryPage() {
       <div style={{ paddingBottom: 32 }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
-            <div style={{ width: 36, height: 36, border: '3px solid var(--border)', borderTopColor: '#FF6B35', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{ width: 36, height: 36, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           </div>
         ) : displayOrders.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 80 }}>
@@ -188,7 +188,7 @@ export default function DeliveryPage() {
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <p style={{ fontSize: 18, fontWeight: 800, color: '#FF6B35' }}>{formatPrice(total)}</p>
+                        <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>{formatPrice(total)}</p>
                         {isExpanded ? <ChevronUp size={18} style={{ color: 'var(--text-light)' }} /> : <ChevronDown size={18} style={{ color: 'var(--text-light)' }} />}
                       </div>
                     </div>

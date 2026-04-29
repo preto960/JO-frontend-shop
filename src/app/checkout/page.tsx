@@ -60,7 +60,7 @@ export default function CheckoutPage() {
         padding: '0 16px', height: 60, display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
+        boxShadow: 'var(--shadow-accent)',
       }}>
         <div style={{ position: 'absolute', left: 16, display: 'flex', gap: 4 }}>
           <button onClick={() => router.back()} style={{

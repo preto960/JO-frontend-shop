@@ -121,7 +121,7 @@ export default function ConfirmModal({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 6px 18px rgba(255,107,53,0.4)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-accent)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';

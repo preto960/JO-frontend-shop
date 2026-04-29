@@ -19,10 +19,10 @@ const styles = {
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   editBtn: {
@@ -39,9 +39,9 @@ const styles = {
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
@@ -149,8 +149,8 @@ export default function AdminStoresPage() {
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nueva tienda
         </button>
@@ -160,7 +160,7 @@ export default function AdminStoresPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
@@ -185,7 +185,7 @@ export default function AdminStoresPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: 14 }}>
                   <div style={{
-                    width: 48, height: 48, borderRadius: 12, background: '#FFF0E9',
+                    width: 48, height: 48, borderRadius: 12, background: 'var(--primary-light)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
                     flexShrink: 0,
                   }}>
@@ -199,8 +199,8 @@ export default function AdminStoresPage() {
                     {store.phone && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 2 }}>📞 {store.phone}</p>}
                     {store.description && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>{store.description}</p>}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
-                      <Package size={14} style={{ color: '#FF6B35' }} />
-                      <span style={{ fontSize: 13, fontWeight: 500, color: '#FF6B35' }}>
+                      <Package size={14} style={{ color: 'var(--primary)' }} />
+                      <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--primary)' }}>
                         {productCounts[store.id] ?? 0} productos
                       </span>
                     </div>

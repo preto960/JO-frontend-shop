@@ -39,10 +39,10 @@ const styles = {
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   editBtn: {
@@ -59,9 +59,9 @@ const styles = {
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
@@ -262,8 +262,8 @@ export default function AdminRolesPage() {
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nuevo rol
         </button>
@@ -273,18 +273,18 @@ export default function AdminRolesPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
       ) : roles.length === 0 ? (
         <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <div style={{
-            width: 64, height: 64, borderRadius: '50%', background: '#FFF0E9',
+            width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: 16,
           }}>
-            <Shield size={28} color="#FF6B35" />
+            <Shield size={28} color="var(--primary)" />
           </div>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay roles personalizados</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Crea roles para gestionar los permisos de tu equipo</p>
@@ -313,8 +313,8 @@ export default function AdminRolesPage() {
                     onClick={() => openDetail(role)}
                   >
                     <div style={{
-                      width: 48, height: 48, borderRadius: 12, background: '#FFF0E9',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FF6B35',
+                      width: 48, height: 48, borderRadius: 12, background: 'var(--primary-light)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)',
                       flexShrink: 0,
                     }}>
                       <Shield size={24} />
@@ -327,7 +327,7 @@ export default function AdminRolesPage() {
                         </p>
                       )}
                       <div style={{ display: 'flex', gap: 12, marginTop: 4 }}>
-                        <span style={{ fontSize: 12, color: '#FF6B35', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                           <ShieldCheck size={12} /> {permCount} permiso(s)
                         </span>
                         {userCount > 0 && (
@@ -343,10 +343,10 @@ export default function AdminRolesPage() {
                       onClick={(e) => { e.stopPropagation(); openDetail(role); }}
                       style={{
                         ...styles.editBtn,
-                        background: '#FFF0E9', color: '#FF6B35',
+                        background: 'var(--primary-light)', color: 'var(--primary)',
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B35'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFF0E9'; (e.currentTarget as HTMLElement).style.color = '#FF6B35'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
                       title="Gestionar permisos"
                     >
                       <ShieldCheck size={15} />
@@ -442,8 +442,8 @@ export default function AdminRolesPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
-                width: 40, height: 40, borderRadius: 10, background: '#FFF0E9',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FF6B35',
+                width: 40, height: 40, borderRadius: 10, background: 'var(--primary-light)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)',
               }}>
                 <Shield size={20} />
               </div>

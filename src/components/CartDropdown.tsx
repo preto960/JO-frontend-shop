@@ -243,7 +243,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   }}>
                     {item.name || item.nombre}
                   </p>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: '#FF6B35', marginTop: 2 }}>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)', marginTop: 2 }}>
                     {formatPrice(item.price * (item.quantity || 1))}
                   </p>
                 </div>
@@ -317,7 +317,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
               alignItems: 'center', marginBottom: 12,
             }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Total</span>
-              <span style={{ fontSize: 18, fontWeight: 800, color: '#FF6B35' }}>
+              <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
                 {formatPrice(total)}
               </span>
             </div>
@@ -341,10 +341,10 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                 style={{
                   flex: 1, padding: '11px 0', borderRadius: 10,
                   border: 'none',
-                  background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+                  background: 'var(--primary-gradient)',
                   color: 'white', cursor: 'pointer',
                   fontWeight: 700, fontSize: 13,
-                  boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+                  boxShadow: 'var(--shadow-accent)',
                   transition: 'all 0.2s',
                 }}
               >

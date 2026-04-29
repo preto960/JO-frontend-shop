@@ -59,7 +59,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          boxShadow: '0 2px 20px rgba(255,107,53,0.3)',
+          boxShadow: 'var(--shadow-accent)',
         }}
       >
         {/* Left section */}

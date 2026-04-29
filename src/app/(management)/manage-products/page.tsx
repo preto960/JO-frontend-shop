@@ -8,7 +8,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { formatPrice, getProductImage, showToast, debounce } from '@/lib/utils';
 
 const styles = {
-  primaryGradient: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+  primaryGradient: 'var(--primary-gradient)',
   overlay: {
     position: 'fixed' as const, inset: 0, background: 'rgba(26,29,41,0.6)',
     backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
@@ -22,10 +22,10 @@ const styles = {
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   searchInput: {
@@ -51,9 +51,9 @@ const styles = {
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
@@ -236,8 +236,8 @@ export default function AdminProductsPage() {
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nuevo producto
         </button>
@@ -258,7 +258,7 @@ export default function AdminProductsPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
@@ -271,9 +271,9 @@ export default function AdminProductsPage() {
             onClick={fetchProducts}
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
-              background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+              background: 'var(--primary-gradient)',
               color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-              boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+              boxShadow: 'var(--shadow-accent)',
             }}
           >
             Reintentar
@@ -319,7 +319,7 @@ export default function AdminProductsPage() {
                           </span>
                         </div>
                       </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#FF6B35' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>
                         {formatPrice(product.price)}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? '#FF6B6B' : 'var(--text)' }}>

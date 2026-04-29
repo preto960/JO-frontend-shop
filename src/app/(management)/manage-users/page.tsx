@@ -22,10 +22,10 @@ const styles = {
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   searchInput: {
@@ -47,9 +47,9 @@ const styles = {
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
-    background: 'linear-gradient(135deg, #FF6B35, #FF8C5E)',
+    background: 'var(--primary-gradient)',
     color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-    boxShadow: '0 4px 15px rgba(255,107,53,0.35)',
+    boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
@@ -190,8 +190,8 @@ export default function AdminUsersPage() {
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 20px rgba(255,107,53,0.45)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 15px rgba(255,107,53,0.35)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nuevo usuario
         </button>
@@ -212,7 +212,7 @@ export default function AdminUsersPage() {
         <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
           <div style={{
             width: 36, height: 36,
-            border: '3px solid var(--border)', borderTopColor: '#FF6B35',
+            border: '3px solid var(--border)', borderTopColor: 'var(--primary)',
             borderRadius: '50%', animation: 'spin 1s linear infinite',
           }} />
         </div>
@@ -383,8 +383,8 @@ export default function AdminUsersPage() {
                         style={{
                           display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
                           borderRadius: 10,
-                          border: `2px solid ${isChecked ? '#FF6B35' : 'var(--border)'}`,
-                          background: isChecked ? '#FFF0E9' : '#FFFFFF',
+                          border: `2px solid ${isChecked ? 'var(--primary)' : 'var(--border)'}`,
+                          background: isChecked ? 'var(--primary-light)' : '#FFFFFF',
                           cursor: 'pointer', transition: 'all 0.2s',
                         }}
                       >
@@ -396,9 +396,9 @@ export default function AdminUsersPage() {
                         />
                         <div style={{
                           width: 18, height: 18, borderRadius: 4,
-                          border: `2px solid ${isChecked ? '#FF6B35' : 'var(--border)'}`,
+                          border: `2px solid ${isChecked ? 'var(--primary)' : 'var(--border)'}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: isChecked ? '#FF6B35' : 'transparent',
+                          background: isChecked ? 'var(--primary)' : 'transparent',
                         }}>
                           {isChecked && (
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>

@@ -214,8 +214,8 @@ export default function AdminDashboard() {
               title="Total pedidos"
               value={stats?.totalOrders ?? '0'}
               icon={ShoppingBag}
-              color="#FF6B35"
-              bgColor="#FFF0E9"
+              color="var(--primary)"
+              bgColor="var(--primary-light)"
             />
             <StatCard
               title="Ingresos"
