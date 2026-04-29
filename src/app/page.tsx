@@ -369,6 +369,7 @@ export default function HomePage() {
         {/* ═══════════════════════════════════════════
             BANNER CAROUSEL (publicidad)
            ═══════════════════════════════════════════ */}
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         {banners.length > 0 && !hasActiveFilters && (
           <div className="animate-fade-in" style={{
             position: 'relative',
@@ -474,6 +475,8 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* close banner wrapper */}</div>
+
         {/* ═══════════════════════════════════════════
             CATEGORY PILLS & STORE FILTER (mantienen ancho original)
            ═══════════════════════════════════════════ */}
@@ -556,6 +559,11 @@ export default function HomePage() {
           </div>
         )}
         </div>
+
+        {/* ═══════════════════════════════════════════
+            EXPANDED CONTENT WRAPPER (ancho mayor que buscador/filtros)
+           ═══════════════════════════════════════════ */}
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
 
         {/* ═══════════════════════════════════════════
             FEATURES STRIP
@@ -898,6 +906,9 @@ export default function HomePage() {
               @media (min-width: 1024px) {
                 .products-grid { grid-template-columns: repeat(4, 1fr) !important; }
               }
+              @media (min-width: 1440px) {
+                .products-grid { grid-template-columns: repeat(5, 1fr) !important; }
+              }
             `}</style>
             {products.map((product: any) => (
               <ProductCard
@@ -909,6 +920,7 @@ export default function HomePage() {
             ))}
           </div>
         )}
+        {/* close expanded content wrapper */}</div>
       </div>
 
       {/* ═══════════════════════════════════════════
@@ -920,6 +932,8 @@ export default function HomePage() {
           borderTop: '1px solid var(--border)',
           padding: '24px 16px',
           textAlign: 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
         }}>
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
