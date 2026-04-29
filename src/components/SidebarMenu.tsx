@@ -16,6 +16,7 @@ import {
   LayoutDashboard,
   Truck,
   Settings,
+  Layers,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -26,7 +27,7 @@ interface SidebarMenuProps {
 }
 
 export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
-  const { user, logout, isAdmin, isEditor, isDelivery, canViewModule } = useAuth();
+  const { user, logout, isAdmin, isEditor, isDelivery, canViewModule, hasPermission } = useAuth();
   const { config, isMultiStore } = useConfig();
   const shopName = config.shop_name || 'JO-Shop';
   const shopLogoUrl = config.shop_logo_url || '';
@@ -83,6 +84,9 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       ];
       if (canViewModule('products') || isAdmin) {
         items.push({ path: '/manage-products', label: 'Gestionar Productos', icon: Package });
+      }
+      if (hasPermission('product_batches.view') || isAdmin) {
+        items.push({ path: '/product-batches', label: 'Lotes', icon: Layers });
       }
       if (canViewModule('categories') || isAdmin) {
         items.push({ path: '/manage-categories', label: 'Categorías', icon: Tag });

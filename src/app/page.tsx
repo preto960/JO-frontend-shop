@@ -122,10 +122,8 @@ export default function HomePage() {
     }
   };
 
-  // Products with price > 0 — simulate "offers" (lowest prices)
   const offerProducts = [...products]
-    .filter((p) => (p.oldPrice || p.originalPrice || p.compareAtPrice) || p.price < 15)
-    .sort((a, b) => (a.price || 0) - (b.price || 0))
+    .filter((p) => p.discountPercent > 0)
     .slice(0, 6);
 
   // Simulate "best sellers" — first 6 products
@@ -369,7 +367,7 @@ export default function HomePage() {
         {/* ═══════════════════════════════════════════
             BANNER CAROUSEL (publicidad)
            ═══════════════════════════════════════════ */}
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <div>
         {banners.length > 0 && !hasActiveFilters && (
           <div className="animate-fade-in" style={{
             position: 'relative',
@@ -563,7 +561,7 @@ export default function HomePage() {
         {/* ═══════════════════════════════════════════
             EXPANDED CONTENT WRAPPER (ancho mayor que buscador/filtros)
            ═══════════════════════════════════════════ */}
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <div>
 
         {/* ═══════════════════════════════════════════
             FEATURES STRIP
@@ -907,7 +905,10 @@ export default function HomePage() {
                 .products-grid { grid-template-columns: repeat(4, 1fr) !important; }
               }
               @media (min-width: 1440px) {
-                .products-grid { grid-template-columns: repeat(5, 1fr) !important; }
+                .products-grid { grid-template-columns: repeat(6, 1fr) !important; }
+              }
+              @media (min-width: 1600px) {
+                .products-grid { grid-template-columns: repeat(7, 1fr) !important; }
               }
             `}</style>
             {products.map((product: any) => (
@@ -932,8 +933,6 @@ export default function HomePage() {
           borderTop: '1px solid var(--border)',
           padding: '24px 16px',
           textAlign: 'center',
-          maxWidth: 1400,
-          margin: '0 auto',
         }}>
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
