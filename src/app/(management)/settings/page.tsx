@@ -394,14 +394,14 @@ function SectionHeader({ icon: Icon, iconColor, iconBg, title, description }: { 
 
 function BannersSection({ config, updateConfig, isSaving }: { config: any; updateConfig: (s: Record<string, string>) => Promise<void>; isSaving: boolean }) {
   const [bannersEnabled, setBannersEnabled] = useState(
-    config.banners_enabled === 'true' || config.banners_enabled === true
+    config.banners_enabled === 'true'
   );
   const [banners, setBanners] = useState<{image?: string; url?: string; link?: string}[]>([]);
   const [bannerUploading, setBannerUploading] = useState(false);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    setBannersEnabled(config.banners_enabled === 'true' || config.banners_enabled === true);
+    setBannersEnabled(config.banners_enabled === 'true');
     try {
       const data = config.banners_data;
       if (!data) { setBanners([]); return; }
