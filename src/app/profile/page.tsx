@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
 import Header from '@/components/Header';
 import { Shield, ShieldCheck, ShieldOff, User, LogOut, Edit3, Check, Mail, Phone, Calendar, ArrowLeft, RefreshCw, Lock, Unlock, Smartphone, KeyRound, Copy, Download, AlertTriangle, Info, ChevronRight } from 'lucide-react';
 import { getInitials, showToast, getRoleLabel, getRoleBadgeColor } from '@/lib/utils';
@@ -14,6 +15,7 @@ export default function ProfilePage() {
     user, isLoading, updateProfile, logout, userRole, refreshProfile,
     send2FACode, verify2FASetup, setupTOTP, enableTOTP, getBackupCodes,
   } = useAuth();
+  const { config } = useConfig();
   const router = useRouter();
 
   // Profile editing
@@ -331,7 +333,7 @@ export default function ProfilePage() {
   };
 
   const downloadBackupCodes = (codes: string[]) => {
-    const text = `JO-Shop - Códigos de Recuperación 2FA\n` +
+    const text = `${config.shop_name || 'JO-Shop'} - Códigos de Recuperación 2FA\n` +
       `Generados: ${new Date().toLocaleString('es-ES')}\n` +
       `Usuario: ${user?.email}\n` +
       `\nIMPORTANTE: Guarda estos códigos en un lugar seguro.\n` +

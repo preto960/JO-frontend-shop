@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
 import { showToast } from '@/lib/utils';
 import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check } from 'lucide-react';
 
@@ -22,6 +23,9 @@ export default function LoginPage() {
   const [copySuccess, setCopySuccess] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { login, verifyOtp, resendOtpCode, isDelivery, isLoading, user } = useAuth();
+  const { config } = useConfig();
+  const shopName = config.shop_name || 'JO-Shop';
+  const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
 
   // If already logged in, redirect away from login
@@ -258,11 +262,15 @@ export default function LoginPage() {
           marginBottom: 24,
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
-          <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>JO</span>
+          {shopLogoUrl ? (
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
+          ) : (
+            <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+          )}
         </div>
 
         <h1 style={{ fontSize: 32, fontWeight: 800, color: '#fff', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          JO-Shop
+          {shopName}
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center' }}>
           Tu tienda en línea
@@ -294,16 +302,24 @@ export default function LoginPage() {
         }}>
           {/* Mobile Logo */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:hidden">
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-              <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>JO</span>
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+            ) : (
+              <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
+                <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           {/* Desktop Logo (small) */}
           <div style={{ display: 'none', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:flex">
-            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-              <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>JO</span>
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+            ) : (
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
+                <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           {!otpEmail ? (
@@ -311,7 +327,7 @@ export default function LoginPage() {
               {/* ── LOGIN FORM ── */}
               <div style={{ textAlign: 'center', marginBottom: 28 }}>
                 <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Bienvenido de vuelta</h1>
-                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Inicia sesión en tu cuenta JO-Shop</p>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Inicia sesión en tu cuenta {shopName}</p>
               </div>
 
               <form onSubmit={handleLogin}>
@@ -441,7 +457,7 @@ export default function LoginPage() {
               {isTOTP && !useBackupCode && (
                 <div style={{ textAlign: 'center', marginTop: 20 }}>
                   <p style={{ fontSize: 12, color: 'var(--text-light)', lineHeight: 1.6 }}>
-                    Abre Google Authenticator, Authy u otra app compatible y busca el código correspondiente a <strong>JO-Shop</strong>.
+                    Abre Google Authenticator, Authy u otra app compatible y busca el código correspondiente a <strong>{shopName}</strong>.
                   </p>
                 </div>
               )}

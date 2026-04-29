@@ -37,9 +37,10 @@ export default function GlobalError({
               width: 64, height: 64, borderRadius: '50%',
               background: 'var(--primary-gradient)',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 20, color: 'white', fontWeight: 800, fontSize: 16,
+              marginBottom: 20, color: 'white', fontWeight: 800, fontSize: 14,
+              overflow: 'hidden',
             }}>
-              JO
+              <span style={{ position: 'relative', zIndex: 1 }}>JS</span>
             </div>
             <h2 style={{
               fontSize: 20, fontWeight: 700, color: '#2D3436',
@@ -51,7 +52,7 @@ export default function GlobalError({
               fontSize: 14, color: '#636E72',
               marginBottom: 24, lineHeight: 1.6,
             }}>
-              Ocurrio un error inesperado en JO-Shop. Por favor intenta de nuevo.
+              Ocurrio un error inesperado. Por favor intenta de nuevo.
             </p>
             <button
               onClick={reset}

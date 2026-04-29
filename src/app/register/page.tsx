@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
 import { showToast } from '@/lib/utils';
 
 export default function RegisterPage() {
@@ -13,6 +14,9 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const { config } = useConfig();
+  const shopName = config.shop_name || 'JO-Shop';
+  const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
 
   // Password strength
@@ -102,7 +106,11 @@ export default function RegisterPage() {
           marginBottom: 24,
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
-          <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>JO</span>
+        {shopLogoUrl ? (
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
+          ) : (
+            <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+          )}
         </div>
 
         <h1 style={{
@@ -110,7 +118,7 @@ export default function RegisterPage() {
           marginBottom: 8, textAlign: 'center',
           textShadow: '0 2px 8px rgba(0,0,0,0.1)',
         }}>
-          Únete a JO-Shop
+          Únete a {shopName}
         </h1>
         <p style={{
           fontSize: 18, color: 'rgba(255,255,255,0.9)',
@@ -166,15 +174,19 @@ export default function RegisterPage() {
             justifyContent: 'center',
             marginBottom: 8,
           }} className="lg:hidden">
-            <div style={{
-              width: 72, height: 72, borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 12,
-              boxShadow: 'var(--shadow-accent)',
-            }}>
-              <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>JO</span>
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+            ) : (
+              <div style={{
+                width: 72, height: 72, borderRadius: '50%',
+                background: 'var(--primary-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 12,
+                boxShadow: 'var(--shadow-accent)',
+              }}>
+                <span style={{ fontWeight: 800, fontSize: 28, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           {/* Desktop Logo (small) */}
@@ -184,15 +196,19 @@ export default function RegisterPage() {
             justifyContent: 'center',
             marginBottom: 8,
           }} className="lg:flex">
-            <div style={{
-              width: 64, height: 64, borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 12,
-              boxShadow: 'var(--shadow-accent)',
-            }}>
-              <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>JO</span>
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+            ) : (
+              <div style={{
+                width: 64, height: 64, borderRadius: '50%',
+                background: 'var(--primary-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 12,
+                boxShadow: 'var(--shadow-accent)',
+              }}>
+                <span style={{ fontWeight: 800, fontSize: 24, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           {/* Title */}
@@ -204,7 +220,7 @@ export default function RegisterPage() {
               Crear cuenta
             </h1>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
-              Regístrate en JO-Shop para comenzar
+              Regístrate en {shopName} para comenzar
             </p>
           </div>
 

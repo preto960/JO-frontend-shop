@@ -22,7 +22,9 @@ import { showToast, debounce, formatPrice } from '@/lib/utils';
 
 export default function HomePage() {
   const { user, isLoading: authLoading } = useAuth();
-  const { isMultiStore } = useConfig();
+  const { config, isMultiStore } = useConfig();
+  const shopName = config.shop_name || 'JO-Shop';
+  const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -164,7 +166,11 @@ export default function HomePage() {
         </div>
 
         {/* Center title */}
-        <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>JO-Shop</h1>
+        {shopLogoUrl ? (
+          <img src={shopLogoUrl} alt={shopName} style={{ height: 30, width: 'auto', objectFit: 'contain', zIndex: 1 }} />
+        ) : (
+          <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>{shopName}</h1>
+        )}
 
         {/* Right section */}
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
@@ -747,16 +753,20 @@ export default function HomePage() {
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             marginBottom: 8,
           }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: '50%',
-              background: 'var(--primary-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 800, fontSize: 12, color: 'white',
-            }}>
-              JO
-            </div>
+            {shopLogoUrl ? (
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'var(--primary-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 800, fontSize: 12, color: 'white',
+              }}>
+                {shopName.slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
-              JO-Shop
+              {shopName}
             </span>
           </div>
           <p style={{ fontSize: 12, color: 'var(--text-light)' }}>
