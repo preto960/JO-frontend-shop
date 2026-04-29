@@ -137,6 +137,10 @@ export default function HomePage() {
   const bannersEnabled = config.banners_enabled === 'true';
   const [banners, setBanners] = React.useState<any[]>([]);
   const [currentBanner, setCurrentBanner] = React.useState(0);
+  const [bannerProgress, setBannerProgress] = React.useState(0);
+  const bannerIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const bannerRafRef = React.useRef<number | null>(null);
+  const bannerStartTimeRef = React.useRef<number>(0);
 
   React.useEffect(() => {
     if (!bannersEnabled) { setBanners([]); return; }
@@ -150,16 +154,45 @@ export default function HomePage() {
     loadBanners();
   }, [bannersEnabled]);
 
-  // Dynamic duration from first banner, fallback 4s
-  const bannerDuration = banners.length > 0 ? (banners[0]?.duration || 4) * 1000 : 4000;
+  // Get current banner's individual duration (fallback 4s)
+  const currentBannerDuration = banners.length > 0
+    ? (banners[currentBanner]?.duration || 4) * 1000
+    : 4000;
 
+  // Auto-rotate with per-banner duration + smooth progress bar
   React.useEffect(() => {
-    if (banners.length <= 1) return;
-    const timer = setInterval(() => {
+    if (banners.length <= 1) {
+      setBannerProgress(100);
+      return;
+    }
+    // Cleanup previous
+    if (bannerIntervalRef.current) clearInterval(bannerIntervalRef.current);
+    if (bannerRafRef.current) cancelAnimationFrame(bannerRafRef.current);
+
+    setBannerProgress(0);
+    bannerStartTimeRef.current = Date.now();
+
+    // Animate progress bar smoothly
+    const animateProgress = () => {
+      const elapsed = Date.now() - bannerStartTimeRef.current;
+      const progress = Math.min((elapsed / currentBannerDuration) * 100, 100);
+      setBannerProgress(progress);
+      if (progress < 100) {
+        bannerRafRef.current = requestAnimationFrame(animateProgress);
+      }
+    };
+    bannerRafRef.current = requestAnimationFrame(animateProgress);
+
+    // Advance to next banner when duration expires
+    bannerIntervalRef.current = setInterval(() => {
       setCurrentBanner(prev => (prev + 1) % banners.length);
-    }, bannerDuration);
-    return () => clearInterval(timer);
-  }, [banners.length, bannerDuration]);
+    }, currentBannerDuration);
+
+    return () => {
+      if (bannerIntervalRef.current) clearInterval(bannerIntervalRef.current);
+      if (bannerRafRef.current) cancelAnimationFrame(bannerRafRef.current);
+    };
+  }, [currentBanner, banners.length, currentBannerDuration]);
 
   const { logout } = useAuth();
   const isLoggedIn = !!user;
@@ -369,6 +402,25 @@ export default function HomePage() {
                 )}
               </div>
             ))}
+            {/* Subtle progress bar — thin line at bottom left corner */}
+            {banners.length > 1 && (
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0,
+                width: 48, height: 2.5,
+                background: 'rgba(255,255,255,0.15)',
+                borderRadius: '0 2px 0 0',
+                zIndex: 10,
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${bannerProgress}%`,
+                  background: 'rgba(255,255,255,0.6)',
+                  borderRadius: '0 2px 0 0',
+                  transition: bannerProgress >= 99 ? 'none' : 'width 0.1s linear',
+                }} />
+              </div>
+            )}
             {banners.length > 1 && (
               <>
                 <button
