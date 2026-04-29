@@ -230,7 +230,7 @@ export default function ProductBatchesPage() {
             </p>
           </div>
         </div>
-        {hasPermission('product_batches.create') && (
+        {hasPermission('batches.create') && (
           <button onClick={openCreate} style={styles.newBtn}>
             <Plus size={18} /> Nuevo lote
           </button>
@@ -314,7 +314,7 @@ export default function ProductBatchesPage() {
                     </td>
                     <td style={{ padding: '14px 16px', textAlign: 'right' }} onClick={(e) => e.stopPropagation()}>
                       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                        {batch.status === 'active' && hasPermission('product_batches.edit') && (
+                        {batch.active !== false && hasPermission('batches.edit') && (
                           <button
                             onClick={() => openEdit(batch)}
                             style={styles.iconBtn('#E8F1FF', '#54A0FF')}
@@ -324,7 +324,7 @@ export default function ProductBatchesPage() {
                             <Edit2 size={15} />
                           </button>
                         )}
-                        {batch.status === 'active' && hasPermission('product_batches.delete') && (
+                        {batch.active !== false && hasPermission('batches.delete') && (
                           <button
                             onClick={() => setDeleteModal(batch)}
                             style={styles.iconBtn('#FFE8E8', '#FF6B6B')}

@@ -23,6 +23,7 @@ const moduleLabels: Record<string, string> = {
   stores: 'Tiendas',
   users: 'Usuarios',
   roles: 'Roles',
+  batches: 'Lotes',
 };
 
 const styles = {

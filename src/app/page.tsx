@@ -122,8 +122,12 @@ export default function HomePage() {
     }
   };
 
+  // Products with discountPercent > 0 — real offers from batch system
   const offerProducts = [...products]
-    .filter((p) => p.discountPercent > 0)
+    .filter((p) => {
+      const dp = p.discountPercent ?? p.discount_percent ?? 0;
+      return dp > 0;
+    })
     .slice(0, 6);
 
   // Simulate "best sellers" — first 6 products
@@ -362,12 +366,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div style={{ padding: '20px 16px 32px' }}>
+      <div style={{ padding: '20px 16px 32px', maxWidth: 1200, margin: '0 auto' }}>
 
         {/* ═══════════════════════════════════════════
             BANNER CAROUSEL (publicidad)
            ═══════════════════════════════════════════ */}
-        <div>
         {banners.length > 0 && !hasActiveFilters && (
           <div className="animate-fade-in" style={{
             position: 'relative',
@@ -473,12 +476,9 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* close banner wrapper */}</div>
-
         {/* ═══════════════════════════════════════════
-            CATEGORY PILLS & STORE FILTER (mantienen ancho original)
+            CATEGORY PILLS
            ═══════════════════════════════════════════ */}
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {categories.length > 0 && !search && (
           <div className="animate-fade-in" style={{
             display: 'flex', gap: 8, marginBottom: 24,
@@ -556,12 +556,6 @@ export default function HomePage() {
             </select>
           </div>
         )}
-        </div>
-
-        {/* ═══════════════════════════════════════════
-            EXPANDED CONTENT WRAPPER (ancho mayor que buscador/filtros)
-           ═══════════════════════════════════════════ */}
-        <div>
 
         {/* ═══════════════════════════════════════════
             FEATURES STRIP
@@ -904,12 +898,6 @@ export default function HomePage() {
               @media (min-width: 1024px) {
                 .products-grid { grid-template-columns: repeat(4, 1fr) !important; }
               }
-              @media (min-width: 1440px) {
-                .products-grid { grid-template-columns: repeat(6, 1fr) !important; }
-              }
-              @media (min-width: 1600px) {
-                .products-grid { grid-template-columns: repeat(7, 1fr) !important; }
-              }
             `}</style>
             {products.map((product: any) => (
               <ProductCard
@@ -921,7 +909,6 @@ export default function HomePage() {
             ))}
           </div>
         )}
-        {/* close expanded content wrapper */}</div>
       </div>
 
       {/* ═══════════════════════════════════════════

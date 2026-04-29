@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2, X, Layers } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Search, Plus, Edit2, Trash2, X, Layers } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -79,7 +79,7 @@ export default function AdminProductsPage() {
   const [deleteModal, setDeleteModal] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '', discountPercent: '',
+    name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '',
   });
 
   const fetchProducts = async () => {
@@ -160,7 +160,7 @@ export default function AdminProductsPage() {
 
   const openCreate = () => {
     setEditingProduct(null);
-    setForm({ name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '', discountPercent: '' });
+    setForm({ name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '' });
     setModalOpen(true);
   };
 
@@ -176,7 +176,6 @@ export default function AdminProductsPage() {
       storeId: store,
       stock: String(product.stock ?? ''),
       image: product.image || product.thumbnail || product.image_url || '',
-      discountPercent: String(product.discountPercent || ''),
     });
     setModalOpen(true);
   };
@@ -197,7 +196,6 @@ export default function AdminProductsPage() {
       };
       if (form.categoryId) payload.categoryId = form.categoryId;
       if (isMultiStore && form.storeId) payload.storeId = form.storeId;
-      if (form.discountPercent) payload.discountPercent = parseFloat(form.discountPercent);
 
       if (editingProduct) {
         await api.put(`/products/${editingProduct.id}`, payload);
@@ -233,11 +231,22 @@ export default function AdminProductsPage() {
   );
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Productos</h1>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => router.push('/manage-batches')}
+            style={{
+              ...styles.newBtn,
+              background: '#FF6B6B',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+          >
+            <Layers size={18} /> Lotes de descuento
+          </button>
           <button
             onClick={openCreate}
             style={styles.newBtn}
@@ -245,17 +254,6 @@ export default function AdminProductsPage() {
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           >
             <Plus size={18} /> Nuevo producto
-          </button>
-          <button
-            onClick={() => router.push('/product-batches')}
-            style={{
-              ...styles.newBtn,
-              background: '#FFFFFF',
-              color: 'var(--primary)',
-              border: '2px solid var(--primary)',
-            }}
-          >
-            <Layers size={18} /> Lotes de productos
           </button>
         </div>
       </div>
@@ -305,7 +303,6 @@ export default function AdminProductsPage() {
                   <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Producto</th>
                   <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Precio</th>
                   <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stock</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Descuento</th>
                   <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Categoría</th>
                   {isMultiStore && <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tienda</th>}
                   <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Acciones</th>
@@ -342,9 +339,6 @@ export default function AdminProductsPage() {
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? '#FF6B6B' : 'var(--text)' }}>
                         {product.stock != null ? product.stock : 'N/A'}
-                      </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, color: product.discountPercent > 0 ? '#00B894' : 'var(--text-secondary)' }}>
-                        {product.discountPercent > 0 ? `${product.discountPercent}%` : '-'}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
                       {isMultiStore && <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{storeName || 'N/A'}</td>}
@@ -421,7 +415,7 @@ export default function AdminProductsPage() {
                 style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none', resize: 'vertical' }}
               />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div>
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Precio *</label>
                 <input
@@ -435,14 +429,6 @@ export default function AdminProductsPage() {
                 <input
                   type="number" value={form.stock}
                   onChange={(e) => setForm({ ...form, stock: e.target.value })} placeholder="0"
-                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Descuento (%)</label>
-                <input
-                  type="number" min="0" max="100" step="0.1" value={form.discountPercent}
-                  onChange={(e) => setForm({ ...form, discountPercent: e.target.value })} placeholder="0"
                   style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
                 />
               </div>

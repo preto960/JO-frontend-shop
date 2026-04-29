@@ -85,7 +85,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       if (canViewModule('products') || isAdmin) {
         items.push({ path: '/manage-products', label: 'Gestionar Productos', icon: Package });
       }
-      if (hasPermission('product_batches.view') || isAdmin) {
+      if (canViewModule('batches') || isAdmin) {
         items.push({ path: '/product-batches', label: 'Lotes', icon: Layers });
       }
       if (canViewModule('categories') || isAdmin) {
