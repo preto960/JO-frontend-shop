@@ -43,7 +43,7 @@ export default function AppHeader() {
         background: 'var(--primary-gradient)',
         color: 'var(--white)',
         padding: '0 16px',
-        height: 60,
+        height: 68,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -89,13 +89,13 @@ export default function AppHeader() {
         </div>
 
         {/* Center: Logo + Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, zIndex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, zIndex: 1 }}>
           {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ height: 30, width: 'auto', objectFit: 'contain' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
           ) : (
             <>
-              <ShoppingBag size={22} strokeWidth={2.5} />
-              <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.3px' }}>{shopName}</h1>
+              <ShoppingBag size={26} strokeWidth={2.5} />
+              <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>{shopName}</h1>
             </>
           )}
         </div>
