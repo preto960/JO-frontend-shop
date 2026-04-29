@@ -393,27 +393,37 @@ function SectionHeader({ icon: Icon, iconColor, iconBg, title, description }: { 
 }
 
 function BannersSection({ config, updateConfig, isSaving }: { config: any; updateConfig: (s: Record<string, string>) => Promise<void>; isSaving: boolean }) {
-  const [bannersEnabled, setBannersEnabled] = useState(
-    config.banners_enabled === 'true'
-  );
-  const [banners, setBanners] = useState<{image?: string; url?: string; link?: string}[]>([]);
+  const [bannersEnabled, setBannersEnabled] = useState(config.banners_enabled === 'true');
+  const [banners, setBanners] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [bannerUploading, setBannerUploading] = useState(false);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
+  // Load banners from /banners/all
+  const loadBanners = React.useCallback(async () => {
+    try {
+      const res: any = await api.get('/banners/all');
+      setBanners(Array.isArray(res) ? res : res?.data || []);
+    } catch {
+      setBanners([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   React.useEffect(() => {
     setBannersEnabled(config.banners_enabled === 'true');
-    try {
-      const data = config.banners_data;
-      if (!data) { setBanners([]); return; }
-      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      setBanners(Array.isArray(parsed) ? parsed : []);
-    } catch { setBanners([]); }
-  }, [config.banners_enabled, config.banners_data]);
+  }, [config.banners_enabled]);
+
+  React.useEffect(() => {
+    if (config.banners_enabled === 'true') loadBanners();
+    else { setBanners([]); setLoading(false); }
+  }, [config.banners_enabled, loadBanners]);
 
   const handleToggle = async (value: boolean) => {
     setBannersEnabled(value);
     try {
-      await updateConfig({ banners_enabled: String(value), banners_data: value ? JSON.stringify(banners) : '' });
+      await updateConfig({ banners_enabled: String(value) });
     } catch {
       setBannersEnabled(!value);
     }
@@ -422,23 +432,16 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { showToast('Maximo 2MB por banner', 'error'); return; }
+    if (file.size > 5 * 1024 * 1024) { showToast('Maximo 5MB por banner', 'error'); return; }
     setBannerUploading(true);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res: any = await api.post('/config/upload-banner', formData, {
+      const res: any = await api.post('/banners', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      const url = res?.url || res?.data?.url;
-      if (url) {
-        const newBanners = [...banners, { image: url, link: '' }];
-        setBanners(newBanners);
-        await updateConfig({ banners_data: JSON.stringify(newBanners) });
-        if (!bannersEnabled) {
-          setBannersEnabled(true);
-          await updateConfig({ banners_enabled: 'true' });
-        }
+      if (res?.banner) {
+        setBanners(prev => [...prev, res.banner]);
         showToast('Banner agregado', 'success');
       }
     } catch {
@@ -449,15 +452,13 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
     }
   };
 
-  const handleRemove = async (index: number) => {
-    const newBanners = banners.filter((_, i) => i !== index);
-    setBanners(newBanners);
+  const handleRemove = async (id: number) => {
+    setBanners(prev => prev.filter(b => b.id !== id));
     try {
-      await updateConfig({ banners_data: JSON.stringify(newBanners) });
-      try { await api.delete('/config/upload-banner', { data: { url: banners[index].image } }); } catch {}
+      await api.delete(`/banners/${id}`);
       showToast('Banner eliminado', 'success');
     } catch {
-      setBanners(banners);
+      loadBanners();
       showToast('No se pudo eliminar', 'error');
     }
   };
@@ -488,16 +489,23 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
         {bannersEnabled && (
           <>
             {/* Banner list */}
-            {banners.length > 0 && (
+            {loading ? (
+              <p style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center' }}>Cargando banners...</p>
+            ) : banners.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {banners.map((banner, idx) => (
-                  <div key={`banner-${idx}`} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 10, borderRadius: 10, background: 'var(--input-bg)' }}>
-                    <img src={banner.image || banner.url} alt={`Banner ${idx + 1}`} style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
+                {banners.map((banner) => (
+                  <div key={banner.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 10, borderRadius: 10, background: 'var(--input-bg)' }}>
+                    <img src={banner.imageUrl} alt={`Banner ${banner.sortOrder}`} style={{ width: 100, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, background: 'var(--border)' }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>Banner {idx + 1}</p>
-                      <p style={{ fontSize: 11, color: 'var(--text-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{banner.image || banner.url}</p>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
+                        Banner {banner.sortOrder}
+                        <span style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 400, marginLeft: 6 }}>
+                          {banner.mediaType === 'video' ? 'Video' : 'Imagen'} - {banner.duration}s
+                        </span>
+                      </p>
+                      {banner.link && <p style={{ fontSize: 11, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{banner.link}</p>}
                     </div>
-                    <button onClick={() => handleRemove(idx)} disabled={isSaving}
+                    <button onClick={() => handleRemove(banner.id)} disabled={isSaving}
                       style={{ padding: 6, borderRadius: 8, border: 'none', background: '#FDE8EC', color: '#EF4444', cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       title="Eliminar banner">
                       <Trash2 size={16} />
@@ -508,7 +516,7 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
             )}
 
             {/* Add banner button */}
-            <input ref={bannerInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} style={{ display: 'none' }} />
+            <input ref={bannerInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" onChange={handleUpload} style={{ display: 'none' }} />
             <button onClick={() => bannerInputRef.current?.click()} disabled={bannerUploading || isSaving}
               style={{
                 padding: '14px 16px', borderRadius: 10,
@@ -523,7 +531,7 @@ function BannersSection({ config, updateConfig, isSaving }: { config: any; updat
                 <><Plus size={18} /> Agregar banner</>
               )}
             </button>
-            <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 2MB por banner. Se muestra como carrusel en el inicio.</p>
+            <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 5MB. Imagenes (JPG, PNG, WebP, GIF) o videos (MP4, WebM).</p>
           </>
         )}
       </div>

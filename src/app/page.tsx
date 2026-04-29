@@ -135,24 +135,31 @@ export default function HomePage() {
 
   // ─── Banners de publicidad ────────────────────────────────────────────
   const bannersEnabled = config.banners_enabled === 'true';
-  const banners: {image?: string; url?: string; link?: string}[] = (() => {
-    if (!bannersEnabled) return [];
-    try {
-      const data = config.banners_data;
-      if (!data) return [];
-      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      return Array.isArray(parsed) ? parsed : [];
-    } catch { return []; }
-  })();
+  const [banners, setBanners] = React.useState<any[]>([]);
   const [currentBanner, setCurrentBanner] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!bannersEnabled) { setBanners([]); return; }
+    const loadBanners = async () => {
+      try {
+        const res = await api.get('/banners');
+        const list = Array.isArray(res) ? res : res?.data || [];
+        setBanners(list);
+      } catch { setBanners([]); }
+    };
+    loadBanners();
+  }, [bannersEnabled]);
+
+  // Dynamic duration from first banner, fallback 4s
+  const bannerDuration = banners.length > 0 ? (banners[0]?.duration || 4) * 1000 : 4000;
 
   React.useEffect(() => {
     if (banners.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentBanner(prev => (prev + 1) % banners.length);
-    }, 4000);
+    }, bannerDuration);
     return () => clearInterval(timer);
-  }, [banners.length]);
+  }, [banners.length, bannerDuration]);
 
   const { logout } = useAuth();
   const isLoggedIn = !!user;
@@ -350,18 +357,15 @@ export default function HomePage() {
               >
                 {banner.link ? (
                   <a href={banner.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
-                    <img
-                      src={banner.image || banner.url}
-                      alt={`Banner ${idx + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
+                    {banner.mediaType === 'video'
+                      ? <video src={banner.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay muted loop playsInline />
+                      : <img src={banner.imageUrl} alt={`Banner ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    }
                   </a>
                 ) : (
-                  <img
-                    src={banner.image || banner.url}
-                    alt={`Banner ${idx + 1}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+                  banner.mediaType === 'video'
+                    ? <video src={banner.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay muted loop playsInline />
+                    : <img src={banner.imageUrl} alt={`Banner ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 )}
               </div>
             ))}
