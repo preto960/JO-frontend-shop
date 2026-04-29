@@ -43,7 +43,7 @@ export default function AppHeader() {
         background: 'var(--primary-gradient)',
         color: 'var(--white)',
         padding: '0 16px',
-        height: 68,
+        height: 100,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -77,14 +77,14 @@ export default function AppHeader() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: 'var(--radius-sm)',
               transition: 'var(--transition-fast)',
             }}
             aria-label="Abrir menú"
           >
-            <Menu size={22} />
+            <Menu size={24} />
           </button>
         </div>
 
@@ -116,15 +116,15 @@ export default function AppHeader() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 borderRadius: 'var(--radius-sm)',
                 transition: 'var(--transition-fast)',
                 position: 'relative',
               }}
               aria-label="Carrito"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={22} />
               {cartCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
@@ -155,14 +155,14 @@ export default function AppHeader() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: 'var(--radius-sm)',
               transition: 'var(--transition-fast)',
             }}
             aria-label="Cerrar sesión"
           >
-            <LogOut size={20} />
+            <LogOut size={22} />
           </button>
         </div>
       </header>
