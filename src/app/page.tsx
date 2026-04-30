@@ -370,18 +370,6 @@ export default function HomePage() {
         }} />
 
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div className="animate-fade-in">
-            <h2 style={{
-              fontSize: 26, fontWeight: 800, color: 'white', marginBottom: 6,
-              textShadow: '0 1px 4px rgba(0,0,0,0.1)',
-            }}>
-              Bienvenido{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
-            </h2>
-            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.9)', marginBottom: 20 }}>
-              Descubre los mejores productos y haz tu pedido
-            </p>
-          </div>
-
           {/* Search bar */}
           <div className="animate-fade-in" style={{ position: 'relative' }}>
             <Search size={18} style={{
@@ -521,55 +509,84 @@ export default function HomePage() {
         )}
 
         {/* ═══════════════════════════════════════════
-            CATEGORY PILLS
+            CATEGORY CARDS
            ═══════════════════════════════════════════ */}
         {categories.length > 0 && !search && (
           <div className="animate-fade-in" style={{
-            display: 'flex', gap: 8, marginBottom: 24,
+            display: 'flex', gap: 12, marginBottom: 24,
             overflowX: 'auto', paddingBottom: 4,
-            paddingRight: 4,
+            paddingRight: 4, scrollSnapType: 'x mandatory',
           }}>
+            {/* "Todos" card */}
             <button
               onClick={() => setSelectedCategory('')}
+              className="cat-card"
               style={{
-                height: 38,
-                padding: '0 20px',
-                borderRadius: 'var(--radius-full)',
-                border: 'none',
-                fontSize: 13,
-                fontWeight: 600,
-                whiteSpace: 'nowrap',
-                cursor: 'pointer',
-                transition: 'all 0.25s ease',
+                minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'start',
                 background: !selectedCategory ? 'var(--primary-gradient)' : 'var(--white)',
+                borderRadius: 16, border: 'none', cursor: 'pointer',
+                padding: '12px 8px', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', gap: 8, boxShadow: 'var(--shadow)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 color: !selectedCategory ? '#fff' : 'var(--text)',
-                boxShadow: !selectedCategory ? 'var(--shadow-accent)' : 'var(--shadow)',
               }}
             >
-              Todos
+              <div style={{
+                width: 48, height: 48, borderRadius: 14,
+                background: !selectedCategory ? 'rgba(255,255,255,0.2)' : 'var(--input-bg)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+              }}>
+                <Sparkles size={22} style={{ color: !selectedCategory ? '#fff' : 'var(--text-light)' }} />
+              </div>
+              <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>Todos</span>
             </button>
-            {categories.map((cat: any) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id === selectedCategory ? '' : cat.id)}
-                style={{
-                  height: 38,
-                  padding: '0 20px',
-                  borderRadius: 'var(--radius-full)',
-                  border: 'none',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease',
-                  background: selectedCategory === cat.id ? 'var(--primary-gradient)' : 'var(--white)',
-                  color: selectedCategory === cat.id ? '#fff' : 'var(--text)',
-                  boxShadow: selectedCategory === cat.id ? 'var(--shadow-accent)' : 'var(--shadow)',
-                }}
-              >
-                {cat.name || cat.nombre || cat.id}
-              </button>
-            ))}
+
+            {/* Category cards with images */}
+            {categories.map((cat: any) => {
+              const isActive = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(isActive ? '' : cat.id)}
+                  className="cat-card"
+                  style={{
+                    minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'start',
+                    background: isActive ? 'var(--primary-gradient)' : 'var(--white)',
+                    borderRadius: 16, border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
+                    cursor: 'pointer',
+                    padding: '12px 8px', display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: 8,
+                    boxShadow: isActive ? 'var(--shadow-accent)' : 'var(--shadow)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  }}
+                >
+                  <div style={{
+                    width: 48, height: 48, borderRadius: 14,
+                    background: cat.image ? 'none' : 'var(--input-bg)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}>
+                    {cat.image ? (
+                      <img
+                        src={cat.image}
+                        alt={cat.name || cat.nombre}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 14 }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: 22 }}>🏷️</span>
+                    )}
+                  </div>
+                  <span style={{
+                    fontSize: 12, fontWeight: 600, color: isActive ? '#fff' : 'var(--text)',
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    maxWidth: '100%',
+                  }}>
+                    {cat.name || cat.nombre || cat.id}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
 
