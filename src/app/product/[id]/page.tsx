@@ -522,7 +522,7 @@ export default function ProductDetailPage() {
                 fontSize: 17, fontWeight: 500, color: 'var(--text-light)',
                 textDecoration: 'line-through',
               }}>
-                {formatPrice(price)
+                {formatPrice(price)}
               </span>
             )}
           </div>
