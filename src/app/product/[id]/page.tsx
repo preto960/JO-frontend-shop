@@ -232,8 +232,8 @@ export default function ProductDetailPage() {
 
           {/* Action buttons row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <button onClick={toggleFavorite} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: isFavorite ? 'var(--accent-light)' : 'var(--input-bg)', border: `1px solid ${isFavorite ? 'var(--accent)' : 'var(--border)'}`, cursor: 'pointer', color: isFavorite ? 'var(--accent)' : 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Favorito">
-              <Heart size={16} fill={isFavorite ? 'var(--accent)' : 'none'} />
+            <button onClick={toggleFavorite} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Favorito">
+              <Heart size={16} fill={isFavorite ? '#E74C3C' : 'none'} style={{ color: isFavorite ? '#E74C3C' : undefined }} />
               {isFavorite ? 'Guardado' : 'Favorito'}
             </button>
             <button onClick={shareProduct} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Compartir">

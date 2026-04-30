@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   Search, PackageSearch, ShoppingCart, Star, TrendingUp,
   Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, Sparkles,
-  Menu, LogIn, LogOut, User,
+  Menu, LogIn, LogOut, User, Heart,
 } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
@@ -35,6 +35,7 @@ export default function HomePage() {
   const [selectedStore, setSelectedStore] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [favCount, setFavCount] = useState(0);
   const [cartOpen, setCartOpen] = useState(false);
   const cartBtnRef = React.useRef<HTMLButtonElement>(null);
 
@@ -97,6 +98,25 @@ export default function HomePage() {
     return () => {
       window.removeEventListener('cartUpdated', updateCart);
       window.removeEventListener('storage', updateCart);
+    };
+  }, []);
+
+  // Favorites count listener
+  useEffect(() => {
+    const updateFavs = () => {
+      try {
+        const favs = JSON.parse(localStorage.getItem('joshop_favorites') || '[]');
+        setFavCount(favs.length);
+      } catch {
+        setFavCount(0);
+      }
+    };
+    updateFavs();
+    window.addEventListener('favoritesUpdated', updateFavs);
+    window.addEventListener('storage', updateFavs);
+    return () => {
+      window.removeEventListener('favoritesUpdated', updateFavs);
+      window.removeEventListener('storage', updateFavs);
     };
   }, []);
 
@@ -238,6 +258,30 @@ export default function HomePage() {
 
         {/* Right section */}
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
+          <button
+            onClick={() => router.push('/favorites')}
+            style={{
+              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+              cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative',
+            }}
+            aria-label="Favoritos"
+          >
+            <Heart size={22} />
+            {favCount > 0 && (
+              <span style={{
+                position: 'absolute', top: 2, right: 2,
+                background: '#E74C3C', color: 'white',
+                fontSize: 10, fontWeight: 700,
+                minWidth: 16, height: 16, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '0 4px',
+              }}>
+                {favCount > 9 ? '9+' : favCount}
+              </span>
+            )}
+          </button>
           <button
             ref={cartBtnRef}
             onClick={() => setCartOpen(!cartOpen)}
