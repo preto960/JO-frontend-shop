@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ShoppingCart, ShoppingBag, ChevronLeft, ChevronRight, Minus, Plus, Tag } from 'lucide-react';
+import { ShoppingCart, ShoppingBag, ChevronLeft, ChevronRight, Minus, Plus, Tag, Heart, Share2 } from 'lucide-react';
 import api from '@/lib/api';
 import Header from '@/components/Header';
 import { formatPrice, getProductImages, showToast } from '@/lib/utils';
@@ -15,10 +15,45 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (!product) return;
+    try {
+      const favs: string[] = JSON.parse(localStorage.getItem('joshop_favorites') || '[]');
+      setIsFavorite(favs.includes(product.id));
+    } catch {}
+  }, [product]);
+
+  const toggleFavorite = () => {
+    if (!product) return;
+    try {
+      const favs: string[] = JSON.parse(localStorage.getItem('joshop_favorites') || '[]');
+      if (favs.includes(product.id)) {
+        const updated = favs.filter((f) => f !== product.id);
+        localStorage.setItem('joshop_favorites', JSON.stringify(updated));
+        setIsFavorite(false);
+        showToast('Eliminado de favoritos', 'info');
+      } else {
+        favs.push(product.id);
+        localStorage.setItem('joshop_favorites', JSON.stringify(favs));
+        setIsFavorite(true);
+        showToast('Agregado a favoritos', 'success');
+      }
+    } catch {}
+  };
+
+  const shareProduct = () => {
+    if (navigator.share) {
+      navigator.share({ title: name, text: `Mira este producto: ${name} - ${formatPrice(finalPrice)}`, url: window.location.href }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => showToast('Enlace copiado', 'success')).catch(() => showToast('No se pudo copiar', 'error'));
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -188,10 +223,20 @@ export default function ProductDetailPage() {
             </span>
           )}
 
-          {/* Name */}
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', lineHeight: 1.25, marginBottom: 12, letterSpacing: '-0.3px' }}>
-            {name}
-          </h1>
+          {/* Name + action buttons */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
+            <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', lineHeight: 1.25, letterSpacing: '-0.3px', flex: 1 }}>
+              {name}
+            </h1>
+            <div style={{ display: 'flex', gap: 8, flexShrink: 0, paddingTop: 2 }}>
+              <button onClick={shareProduct} style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--input-bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all 0.2s ease' }} aria-label="Compartir">
+                <Share2 size={18} />
+              </button>
+              <button onClick={toggleFavorite} style={{ width: 40, height: 40, borderRadius: '50%', background: isFavorite ? 'var(--accent-light)' : 'var(--input-bg)', border: `1px solid ${isFavorite ? 'var(--accent)' : 'var(--border)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isFavorite ? 'var(--accent)' : 'var(--text-secondary)', transition: 'all 0.2s ease' }} aria-label="Favorito">
+                <Heart size={18} fill={isFavorite ? 'var(--accent)' : 'none'} />
+              </button>
+            </div>
+          </div>
 
           {/* Price */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 20 }}>
