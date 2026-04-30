@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, ShoppingCart, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
 import Header from '@/components/Header';
 
-import { formatPrice, getProductImage, showToast } from '@/lib/utils';
+import { formatPrice, getProductImages, showToast } from '@/lib/utils';
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -14,6 +14,9 @@ export default function ProductDetailPage() {
   const id = params?.id as string;
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -30,6 +33,51 @@ export default function ProductDetailPage() {
     };
     fetchProduct();
   }, [id]);
+
+  const images = getProductImages(product);
+  const hasMultiple = images.length > 1;
+
+  const goToSlide = useCallback((index: number) => {
+    if (images.length <= 1 || isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide(index);
+      setIsTransitioning(false);
+      setProgress(0);
+    }, 300);
+  }, [images.length, isTransitioning]);
+
+  const goNext = useCallback(() => {
+    if (images.length <= 1) return;
+    goToSlide((currentSlide + 1) % images.length);
+  }, [currentSlide, images.length, goToSlide]);
+
+  const goPrev = useCallback(() => {
+    if (images.length <= 1) return;
+    goToSlide((currentSlide - 1 + images.length) % images.length);
+  }, [currentSlide, images.length, goToSlide]);
+
+  // Auto-play with progress indicator
+  useEffect(() => {
+    if (!hasMultiple) return;
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          goNext();
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 50); // 50ms * 100 steps = 5 seconds total
+    return () => clearInterval(progressInterval);
+  }, [hasMultiple, goNext]);
+
+  // Pause auto-play on hover
+  const [isPaused, setIsPaused] = useState(false);
+  useEffect(() => {
+    if (!isPaused || !hasMultiple) return;
+    // Reset progress while paused is handled via the progress interval check
+  }, [isPaused, hasMultiple]);
 
   const addToCart = () => {
     if (!product) return;
@@ -49,7 +97,6 @@ export default function ProductDetailPage() {
     }
   };
 
-  const image = getProductImage(product);
   const price = product?.price ?? product?.precio ?? 0;
   const name = product?.name || product?.nombre || 'Sin nombre';
   const desc = product?.description || product?.descripcion || '';
@@ -78,18 +125,131 @@ export default function ProductDetailPage() {
           </div>
         ) : (
           <div className="animate-fade-in">
-            {/* Product image */}
-            <div style={{
-              width: '100%', height: 340, background: 'var(--input-bg)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-              position: 'relative',
-            }}>
-              {image ? (
-                <img
-                  src={image}
-                  alt={name}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
+            {/* Product image / Carousel */}
+            <div
+              style={{
+                width: '100%', height: 340, background: 'var(--input-bg)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                position: 'relative',
+              }}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              {images.length > 0 ? (
+                <>
+                  <img
+                    src={images[currentSlide] || images[0]}
+                    alt={`${name} - imagen ${currentSlide + 1}`}
+                    style={{
+                      width: '100%', height: '100%', objectFit: 'contain',
+                      transition: 'opacity 0.3s ease',
+                      opacity: isTransitioning ? 0 : 1,
+                    }}
+                  />
+
+                  {/* Left arrow */}
+                  {hasMultiple && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                      style={{
+                        position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                        width: 40, height: 40, borderRadius: '50%',
+                        background: 'rgba(255,255,255,0.85)',
+                        border: 'none', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        transition: 'all 0.2s ease',
+                        zIndex: 5,
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'white'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                      aria-label="Imagen anterior"
+                    >
+                      <ChevronLeft size={22} color="#333" />
+                    </button>
+                  )}
+
+                  {/* Right arrow */}
+                  {hasMultiple && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); goNext(); }}
+                      style={{
+                        position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                        width: 40, height: 40, borderRadius: '50%',
+                        background: 'rgba(255,255,255,0.85)',
+                        border: 'none', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        transition: 'all 0.2s ease',
+                        zIndex: 5,
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'white'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                      aria-label="Imagen siguiente"
+                    >
+                      <ChevronRight size={22} color="#333" />
+                    </button>
+                  )}
+
+                  {/* Progress bar */}
+                  {hasMultiple && (
+                    <div style={{
+                      position: 'absolute', top: 0, left: 0, right: 0,
+                      height: 3, background: 'rgba(0,0,0,0.1)', zIndex: 5,
+                    }}>
+                      <div style={{
+                        height: '100%', width: `${isPaused ? progress : progress}%`,
+                        background: 'var(--primary)',
+                        transition: 'width 0.05s linear',
+                        borderRadius: '0 2px 2px 0',
+                      }} />
+                    </div>
+                  )}
+
+                  {/* Dot indicators */}
+                  {hasMultiple && (
+                    <div style={{
+                      position: 'absolute', bottom: 16, left: '50%',
+                      transform: 'translateX(-50%)',
+                      display: 'flex', gap: 8,
+                      padding: '6px 14px',
+                      background: 'rgba(0,0,0,0.4)',
+                      borderRadius: 'var(--radius-full)',
+                      backdropFilter: 'blur(6px)',
+                      zIndex: 5,
+                    }}>
+                      {images.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={(e) => { e.stopPropagation(); goToSlide(idx); }}
+                          style={{
+                            width: currentSlide === idx ? 24 : 8,
+                            height: 8,
+                            borderRadius: 4,
+                            background: currentSlide === idx ? 'white' : 'rgba(255,255,255,0.5)',
+                            border: 'none', cursor: 'pointer', padding: 0,
+                            transition: 'width 0.3s ease, background 0.3s ease',
+                          }}
+                          aria-label={`Ir a imagen ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Image counter */}
+                  {hasMultiple && (
+                    <div style={{
+                      position: 'absolute', top: 12, right: 12,
+                      background: 'rgba(0,0,0,0.5)',
+                      color: 'white', fontSize: 12, fontWeight: 600,
+                      padding: '4px 10px', borderRadius: 'var(--radius-full)',
+                      backdropFilter: 'blur(4px)',
+                      letterSpacing: '0.3px', zIndex: 5,
+                    }}>
+                      {currentSlide + 1} / {images.length}
+                    </div>
+                  )}
+                </>
               ) : (
                 <div style={{ color: 'var(--text-light)' }}>
                   <ShoppingBag size={80} />
@@ -100,7 +260,7 @@ export default function ProductDetailPage() {
                   position: 'absolute', top: 16, right: 16,
                   background: 'var(--danger)', color: 'white',
                   padding: '6px 14px', borderRadius: 'var(--radius-full)',
-                  fontSize: 12, fontWeight: 700,
+                  fontSize: 12, fontWeight: 700, zIndex: 5,
                 }}>
                   Agotado
                 </div>

@@ -81,6 +81,36 @@ export function getProductImage(product: any): string {
   return product?.image || product?.thumbnail || product?.image_url || product?.imageUrl || '';
 }
 
+// Get all product images as array (for carousel/gallery)
+export function getProductImages(product: any): string[] {
+  if (!product) return [];
+  const primaryImage = getProductImage(product);
+  let galleryImages: string[] = [];
+
+  // Parse the images field — could be a JSON string or already an array
+  if (product.images) {
+    if (typeof product.images === 'string') {
+      try {
+        const parsed = JSON.parse(product.images);
+        if (Array.isArray(parsed)) {
+          galleryImages = parsed.filter((url: any) => typeof url === 'string' && url.trim() !== '');
+        }
+      } catch {
+        // Not valid JSON, ignore
+      }
+    } else if (Array.isArray(product.images)) {
+      galleryImages = product.images.filter((url: any) => typeof url === 'string' && url.trim() !== '');
+    }
+  }
+
+  // Ensure primary image is first if it's not already in the gallery
+  if (primaryImage && !galleryImages.includes(primaryImage)) {
+    return [primaryImage, ...galleryImages];
+  }
+
+  return galleryImages.length > 0 ? galleryImages : (primaryImage ? [primaryImage] : []);
+}
+
 // Get role label in Spanish
 export function getRoleLabel(role: string): string {
   const labels: Record<string, string> = {

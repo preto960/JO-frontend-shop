@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Plus, Edit2, Trash2, X, Layers } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, X, Layers, Upload, ImagePlus, Star, GripVertical } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
-import { formatPrice, getProductImage, showToast, debounce } from '@/lib/utils';
+import { formatPrice, getProductImage, getProductImages, showToast, debounce } from '@/lib/utils';
 
 const styles = {
   primaryGradient: 'var(--primary-gradient)',
@@ -18,7 +18,7 @@ const styles = {
   },
   modal: {
     background: '#FFFFFF', borderRadius: 20, padding: 28,
-    maxWidth: 480, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
+    maxWidth: 520, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
@@ -78,9 +78,14 @@ export default function AdminProductsPage() {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [deleteModal, setDeleteModal] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '',
   });
+  // Gallery images: ordered array of URLs. First = primary.
+  const [formImages, setFormImages] = useState<string[]>([]);
 
   const fetchProducts = async () => {
     try {
@@ -161,6 +166,8 @@ export default function AdminProductsPage() {
   const openCreate = () => {
     setEditingProduct(null);
     setForm({ name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '' });
+    setFormImages([]);
+    setUrlInput('');
     setModalOpen(true);
   };
 
@@ -168,6 +175,11 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     const cat = product.categoryId || (product.category && product.category.id) || '';
     const store = product.storeId || (product.store && product.store.id) || '';
+    const primaryImage = product.image || product.thumbnail || product.image_url || '';
+
+    // Build images array from product
+    const allImages = getProductImages(product);
+
     setForm({
       name: product.name || '',
       description: product.description || '',
@@ -175,8 +187,10 @@ export default function AdminProductsPage() {
       categoryId: cat,
       storeId: store,
       stock: String(product.stock ?? ''),
-      image: product.image || product.thumbnail || product.image_url || '',
+      image: primaryImage,
     });
+    setFormImages(allImages);
+    setUrlInput('');
     setModalOpen(true);
   };
 
@@ -187,13 +201,21 @@ export default function AdminProductsPage() {
     }
     setSaving(true);
     try {
+      // Sync: first image in formImages = primary image
+      const primaryImg = formImages.length > 0 ? formImages[0] : form.image;
       const payload: any = {
         name: form.name,
         description: form.description,
         price: parseFloat(form.price),
         stock: form.stock ? parseInt(form.stock) : undefined,
-        image: form.image,
+        image: primaryImg || '',
       };
+      // Send full gallery as JSON string
+      if (formImages.length > 0) {
+        payload.images = JSON.stringify(formImages);
+      } else if (editingProduct?.images) {
+        payload.images = JSON.stringify([]);
+      }
       if (form.categoryId) payload.categoryId = form.categoryId;
       if (isMultiStore && form.storeId) payload.storeId = form.storeId;
 
@@ -224,6 +246,82 @@ export default function AdminProductsPage() {
     } finally {
       setDeleteModal(null);
     }
+  };
+
+  // --- Multi-image handlers ---
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+      const res = await api.post('/products/upload-images', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const data = (res as any)?.urls || (res as any)?.data?.urls || (res as any)?.urls;
+      const uploadedUrls = Array.isArray(data) ? data : (data ? [data] : []);
+      if (uploadedUrls.length > 0) {
+        setFormImages((prev) => [...prev, ...uploadedUrls]);
+        showToast(`${uploadedUrls.length} imagen(es) subida(s)`, 'success');
+      } else {
+        showToast('No se recibieron URLs de imagen', 'error');
+      }
+    } catch (err: any) {
+      showToast(err?.message || 'Error al subir imagenes', 'error');
+    } finally {
+      setUploading(false);
+      // Reset file input so same files can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleAddUrl = () => {
+    const url = urlInput.trim();
+    if (!url) return;
+    if (formImages.includes(url)) {
+      showToast('Esta URL ya esta en la lista', 'error');
+      return;
+    }
+    setFormImages((prev) => [...prev, url]);
+    setUrlInput('');
+  };
+
+  const handleUrlKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddUrl();
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setFormImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSetPrimary = (index: number) => {
+    if (index === 0) return;
+    setFormImages((prev) => {
+      const newArr = [...prev];
+      const [moved] = newArr.splice(index, 1);
+      newArr.unshift(moved);
+      return newArr;
+    });
+    showToast('Imagen principal actualizada', 'info');
+  };
+
+  const handleDeleteImage = async (index: number) => {
+    const imgUrl = formImages[index];
+    // Try to call delete-image endpoint, but proceed with local removal regardless
+    try {
+      await api.delete('/products/delete-image', { data: { url: imgUrl } });
+    } catch {
+      // API might not support this or might fail, continue with local removal
+    }
+    handleRemoveImage(index);
   };
 
   const debouncedSearch = React.useCallback(
@@ -433,14 +531,158 @@ export default function AdminProductsPage() {
                 />
               </div>
             </div>
+
+            {/* === Multi-image section === */}
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>URL de imagen</label>
-              <input
-                value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })}
-                placeholder="https://..."
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
-              />
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8, color: 'var(--text)' }}>
+                Imagenes del producto
+              </label>
+
+              {/* Upload + URL input row */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={handleFileUpload}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  style={{
+                    flex: '0 0 auto',
+                    padding: '0 14px', height: 42, borderRadius: 10,
+                    border: '1px solid var(--border)', background: '#FFFFFF',
+                    color: 'var(--text)', fontSize: 13, fontWeight: 500, cursor: uploading ? 'not-allowed' : 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    transition: 'all 0.2s ease',
+                    opacity: uploading ? 0.6 : 1,
+                  }}
+                >
+                  <Upload size={16} />
+                  {uploading ? 'Subiendo...' : 'Subir imagenes'}
+                </button>
+                <input
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  onKeyDown={handleUrlKeyDown}
+                  placeholder="Agregar URL de imagen"
+                  style={{
+                    flex: 1, padding: '0 14px', height: 42, borderRadius: 10,
+                    border: '1px solid var(--border)', fontSize: 13, color: 'var(--text)',
+                    background: '#FFFFFF', outline: 'none',
+                  }}
+                />
+                <button
+                  onClick={handleAddUrl}
+                  disabled={!urlInput.trim()}
+                  style={{
+                    flex: '0 0 auto',
+                    padding: '0 14px', height: 42, borderRadius: 10,
+                    border: 'none',
+                    background: urlInput.trim() ? 'var(--primary-gradient)' : 'var(--input-bg)',
+                    color: 'white', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <ImagePlus size={15} />
+                  Agregar
+                </button>
+              </div>
+
+              {/* Gallery preview */}
+              {formImages.length > 0 && (
+                <div style={{
+                  display: 'flex', flexWrap: 'wrap', gap: 8,
+                  padding: 12, borderRadius: 12,
+                  background: 'var(--input-bg)', border: '1px dashed var(--border)',
+                }}>
+                  {formImages.map((imgUrl, idx) => (
+                    <div
+                      key={`${imgUrl}-${idx}`}
+                      style={{
+                        position: 'relative',
+                        width: 72, height: 72,
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        border: idx === 0 ? '2px solid var(--primary)' : '2px solid transparent',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        flexShrink: 0,
+                      }}
+                      onClick={() => handleSetPrimary(idx)}
+                      title={idx === 0 ? 'Imagen principal' : 'Clic para establecer como principal'}
+                    >
+                      <img
+                        src={imgUrl}
+                        alt={`Imagen ${idx + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                      {/* Primary badge */}
+                      {idx === 0 && (
+                        <div style={{
+                          position: 'absolute', top: 2, left: 2,
+                          background: 'var(--primary)',
+                          color: 'white', borderRadius: '0 0 6px 0',
+                          padding: '1px 5px', fontSize: 8, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', gap: 2,
+                        }}>
+                          <Star size={8} fill="white" />
+                          PRI
+                        </div>
+                      )}
+                      {/* Remove button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteImage(idx);
+                        }}
+                        style={{
+                          position: 'absolute', top: 2, right: 2,
+                          width: 20, height: 20, borderRadius: '50%',
+                          background: 'rgba(0,0,0,0.6)', color: 'white',
+                          border: 'none', cursor: 'pointer', padding: 0,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          transition: 'background 0.15s ease',
+                          fontSize: 12,
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#FF6B6B'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
+                        aria-label="Eliminar imagen"
+                      >
+                        <X size={11} />
+                      </button>
+                      {/* Index number */}
+                      <div style={{
+                        position: 'absolute', bottom: 2, right: 2,
+                        background: 'rgba(0,0,0,0.5)', color: 'white',
+                        borderRadius: 4, padding: '0 4px', fontSize: 9, fontWeight: 600,
+                      }}>
+                        {idx + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {formImages.length === 0 && (
+                <div style={{
+                  padding: '20px 16px', borderRadius: 12,
+                  background: 'var(--input-bg)', border: '1px dashed var(--border)',
+                  textAlign: 'center', color: 'var(--text-light)', fontSize: 13,
+                }}>
+                  No hay imagenes. Sube archivos o agrega URLs.
+                </div>
+              )}
             </div>
+
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Categoría</label>
               <select
