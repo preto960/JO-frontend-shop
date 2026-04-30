@@ -17,6 +17,7 @@ import {
   Truck,
   Settings,
   Layers,
+  Heart,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -121,6 +122,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
     // Customer
     return [
       { path: '/', label: 'Inicio', icon: Home },
+      { path: '/favorites', label: 'Favoritos', icon: Heart },
       { path: '/cart', label: 'Carrito', icon: ShoppingCart, badge: cartCount },
       { path: '/my-orders', label: 'Mis Pedidos', icon: ClipboardList },
       { path: '/profile', label: 'Perfil', icon: User },

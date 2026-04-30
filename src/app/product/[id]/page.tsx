@@ -38,11 +38,13 @@ export default function ProductDetailPage() {
         localStorage.setItem('joshop_favorites', JSON.stringify(updated));
         setIsFavorite(false);
         showToast('Eliminado de favoritos', 'info');
+        window.dispatchEvent(new Event('favoritesUpdated'));
       } else {
         favs.push(product.id);
         localStorage.setItem('joshop_favorites', JSON.stringify(favs));
         setIsFavorite(true);
         showToast('Agregado a favoritos', 'success');
+        window.dispatchEvent(new Event('favoritesUpdated'));
       }
     } catch {}
   };
@@ -223,19 +225,21 @@ export default function ProductDetailPage() {
             </span>
           )}
 
-          {/* Name + action buttons */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
-            <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', lineHeight: 1.25, letterSpacing: '-0.3px', flex: 1 }}>
-              {name}
-            </h1>
-            <div style={{ display: 'flex', gap: 8, flexShrink: 0, paddingTop: 2 }}>
-              <button onClick={shareProduct} style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--input-bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all 0.2s ease' }} aria-label="Compartir">
-                <Share2 size={18} />
-              </button>
-              <button onClick={toggleFavorite} style={{ width: 40, height: 40, borderRadius: '50%', background: isFavorite ? 'var(--accent-light)' : 'var(--input-bg)', border: `1px solid ${isFavorite ? 'var(--accent)' : 'var(--border)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: isFavorite ? 'var(--accent)' : 'var(--text-secondary)', transition: 'all 0.2s ease' }} aria-label="Favorito">
-                <Heart size={18} fill={isFavorite ? 'var(--accent)' : 'none'} />
-              </button>
-            </div>
+          {/* Name */}
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', lineHeight: 1.25, marginBottom: 12, letterSpacing: '-0.3px' }}>
+            {name}
+          </h1>
+
+          {/* Action buttons row */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            <button onClick={toggleFavorite} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: isFavorite ? 'var(--accent-light)' : 'var(--input-bg)', border: `1px solid ${isFavorite ? 'var(--accent)' : 'var(--border)'}`, cursor: 'pointer', color: isFavorite ? 'var(--accent)' : 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Favorito">
+              <Heart size={16} fill={isFavorite ? 'var(--accent)' : 'none'} />
+              {isFavorite ? 'Guardado' : 'Favorito'}
+            </button>
+            <button onClick={shareProduct} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Compartir">
+              <Share2 size={16} />
+              Compartir
+            </button>
           </div>
 
           {/* Price */}
