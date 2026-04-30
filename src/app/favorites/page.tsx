@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Heart, Trash2, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { formatPrice, showToast } from '@/lib/utils';
 import api from '@/lib/api';
+import Header from '@/components/Header';
 
 interface FavProduct {
   id: string;
@@ -91,22 +92,7 @@ export default function FavoritesPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      {/* Header */}
-      <div style={{
-        background: 'var(--primary-gradient)',
-        color: 'var(--white)',
-        padding: '0 20px',
-        height: 60,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        boxShadow: 'var(--shadow-accent)',
-      }}>
-        <h1 style={{ fontSize: 18, fontWeight: 700 }}>Mis Favoritos</h1>
-      </div>
+      <Header title="Mis Favoritos" showBack onBack={() => router.push('/')} showLogout={false} />
 
       <div style={{ padding: '20px', maxWidth: 960, margin: '0 auto' }}>
         {loading ? (
