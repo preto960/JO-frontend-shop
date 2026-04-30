@@ -292,7 +292,7 @@ const BannersPage: React.FC = () => {
 
   /* ── Render ── */
   return (
-    <div style={{ padding: '24px 20px 40px', maxWidth: 960, margin: '0 auto' }}>
+    <div style={{ padding: '24px 20px 40px' }}>
       {/* Back button */}
       <button
         onClick={() => router.push('/settings')}

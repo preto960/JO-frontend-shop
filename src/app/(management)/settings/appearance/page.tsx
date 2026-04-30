@@ -114,15 +114,7 @@ export default function AppearanceSettingsPage() {
       </button>
 
       {/* Section header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Palette size={22} color="var(--accent)" />
-        </div>
-        <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Apariencia</h1>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: 0 }}>Personaliza el nombre, colores y logo del sistema</p>
-        </div>
-      </div>
+      <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: '0 0 4px 0' }}>Apariencia</h1>
 
       <div style={{ height: 1, background: 'var(--border)', margin: '16px 0 28px 0' }} />
 
