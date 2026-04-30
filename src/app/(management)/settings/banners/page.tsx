@@ -309,22 +309,9 @@ const BannersPage: React.FC = () => {
       </button>
 
       {/* Section header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-        <div style={{
-          width: 42, height: 42, borderRadius: 12, background: 'linear-gradient(135deg, #F39C12, #E67E22)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <ImageIcon size={22} color="#FFF" />
-        </div>
-        <div>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3 }}>
-            Banners de Publicidad
-          </h2>
-          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
-            Gestiona los banners publicitarios de tu tienda
-          </p>
-        </div>
-      </div>
+      <h2 style={{ margin: '0 0 24px', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
+        Banners de Publicidad
+      </h2>
 
       {/* Main card */}
       <div style={{

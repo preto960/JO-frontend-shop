@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Edit2, Trash2, X, ArrowLeft, Upload, ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, ArrowLeft, Upload, ImageIcon, Power, PowerOff } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import ConfirmModal from '@/components/ConfirmModal';
 import { showToast } from '@/lib/utils';
@@ -15,7 +15,7 @@ const styles = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28, maxWidth: 420, width: '100%',
+    background: '#FFFFFF', borderRadius: 20, padding: 28, maxWidth: 460, width: '100%',
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
@@ -64,12 +64,14 @@ export default function AdminCategoriesPage() {
   const [form, setForm] = useState({ name: '', image: '' });
   const [imageUploading, setImageUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/categories');
+      // Fetch ALL categories (including inactive) for admin view
+      const res = await api.get('/categories?all=true');
       setCategories(extractData(res));
     } catch { /* ignore */ }
     finally { setLoading(false); }
@@ -172,6 +174,22 @@ export default function AdminCategoriesPage() {
     }
   };
 
+  const handleToggleActive = async (cat: any) => {
+    const newActive = !cat.active;
+    setTogglingId(cat.id);
+    try {
+      await api.put(`/categories/${cat.id}`, { active: newActive });
+      setCategories((prev) =>
+        prev.map((c) => (c.id === cat.id ? { ...c, active: newActive } : c))
+      );
+      showToast(newActive ? 'Categoría activada' : 'Categoría desactivada', 'success');
+    } catch {
+      showToast('Error al cambiar estado', 'error');
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
   return (
     <div style={{ padding: 24 }}>
       {/* Back button */}
@@ -192,7 +210,7 @@ export default function AdminCategoriesPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Categorías</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Categorías</h1>
         <button
           onClick={openCreate}
           style={styles.newBtn}
@@ -230,35 +248,71 @@ export default function AdminCategoriesPage() {
             <div
               key={cat.id} className="animate-fade-in"
               style={{
-                background: '#FFFFFF', borderRadius: 14, padding: 16,
-                boxShadow: 'var(--shadow)', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                background: '#FFFFFF', borderRadius: 16, padding: 18,
+                boxShadow: 'var(--shadow)', display: 'flex', alignItems: 'center', gap: 16,
                 transition: 'all 0.2s ease',
+                opacity: cat.active ? 1 : 0.6,
+                position: 'relative',
               }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{
-                  width: 46, height: 46, borderRadius: 12, background: 'var(--input-bg)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  overflow: 'hidden', flexShrink: 0,
-                }}>
-                  {cat.image ? (
-                    <img src={cat.image} alt="" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: 'cover' }} />
-                  ) : (
-                    <ImageIcon size={20} color="var(--text-light)" />
-                  )}
-                </div>
-                <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{cat.name || cat.nombre}</h3>
-                  {cat._count?.products > 0 && (
-                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
-                      {cat._count.products} producto(s)
-                    </p>
-                  )}
-                </div>
+              {/* Category image — outside the card content, bigger */}
+              <div style={{
+                width: 64, height: 64, borderRadius: 14,
+                background: cat.image ? 'none' : 'var(--input-bg)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden', flexShrink: 0,
+                border: cat.image ? '2px solid var(--border)' : 'none',
+              }}>
+                {cat.image ? (
+                  <img src={cat.image} alt="" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: 'cover' }} />
+                ) : (
+                  <ImageIcon size={28} color="var(--text-light)" />
+                )}
               </div>
-              <div style={{ display: 'flex', gap: 8 }}>
+
+              {/* Text content */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', margin: '0 0 2px' }}>{cat.name || cat.nombre}</h3>
+                {cat._count?.products > 0 && (
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>
+                    {cat._count.products} producto(s)
+                  </p>
+                )}
+                {!cat.active && (
+                  <span style={{
+                    fontSize: 11, fontWeight: 600, color: '#FF6B6B',
+                    background: '#FFE8E8', padding: '2px 8px', borderRadius: 6,
+                    display: 'inline-block', marginTop: 4,
+                  }}>
+                    Inactiva
+                  </span>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                {/* Toggle active */}
+                <button
+                  onClick={() => handleToggleActive(cat)}
+                  disabled={togglingId === cat.id}
+                  title={cat.active ? 'Desactivar' : 'Activar'}
+                  style={{
+                    width: 34, height: 34, borderRadius: '50%', border: 'none',
+                    background: cat.active ? '#E8FBF5' : '#FFE8E8',
+                    color: cat.active ? '#27AE60' : '#FF6B6B',
+                    cursor: togglingId === cat.id ? 'wait' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    opacity: togglingId === cat.id ? 0.5 : 1,
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
+                >
+                  {cat.active ? <Power size={15} /> : <PowerOff size={15} />}
+                </button>
+
                 <button
                   onClick={() => openEdit(cat)} style={styles.editBtn}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
@@ -286,7 +340,7 @@ export default function AdminCategoriesPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingCategory ? 'Editar categoría' : 'Nueva categoría'}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', margin: 0 }}>{editingCategory ? 'Editar categoría' : 'Nueva categoría'}</h2>
             <button
               onClick={() => setModalOpen(false)}
               style={{
@@ -316,7 +370,7 @@ export default function AdminCategoriesPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 {/* Preview */}
                 <div style={{
-                  width: 72, height: 72, borderRadius: 14,
+                  width: 80, height: 80, borderRadius: 16,
                   border: '2px dashed var(--border)', background: 'var(--input-bg)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   overflow: 'hidden', flexShrink: 0, position: 'relative',
@@ -324,7 +378,7 @@ export default function AdminCategoriesPage() {
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <ImageIcon size={24} color="var(--text-light)" />
+                    <ImageIcon size={28} color="var(--text-light)" />
                   )}
                 </div>
 

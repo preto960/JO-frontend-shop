@@ -513,33 +513,35 @@ export default function HomePage() {
            ═══════════════════════════════════════════ */}
         {categories.length > 0 && !search && (
           <div className="animate-fade-in" style={{
-            display: 'flex', gap: 12, marginBottom: 24,
-            overflowX: 'auto', paddingBottom: 4,
-            paddingRight: 4, scrollSnapType: 'x mandatory',
+            display: 'flex', gap: 14, marginBottom: 24,
+            overflowX: 'auto', paddingBottom: 6,
+            paddingLeft: 4, paddingRight: 4,
+            justifyContent: 'center',
+            scrollSnapType: 'x mandatory',
           }}>
             {/* "Todos" card */}
             <button
               onClick={() => setSelectedCategory('')}
               className="cat-card"
               style={{
-                minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'start',
+                minWidth: 110, width: 110, flexShrink: 0, scrollSnapAlign: 'center',
                 background: !selectedCategory ? 'var(--primary-gradient)' : 'var(--white)',
-                borderRadius: 16, border: 'none', cursor: 'pointer',
-                padding: '12px 8px', display: 'flex', flexDirection: 'column',
-                alignItems: 'center', gap: 8, boxShadow: 'var(--shadow)',
+                borderRadius: 18, border: 'none', cursor: 'pointer',
+                padding: '14px 10px', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', gap: 10, boxShadow: 'var(--shadow)',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 color: !selectedCategory ? '#fff' : 'var(--text)',
               }}
             >
               <div style={{
-                width: 48, height: 48, borderRadius: 14,
+                width: 62, height: 62, borderRadius: 16,
                 background: !selectedCategory ? 'rgba(255,255,255,0.2)' : 'var(--input-bg)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                <Sparkles size={22} style={{ color: !selectedCategory ? '#fff' : 'var(--text-light)' }} />
+                <Sparkles size={26} style={{ color: !selectedCategory ? '#fff' : 'var(--text-light)' }} />
               </div>
-              <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>Todos</span>
+              <span style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}>Todos</span>
             </button>
 
             {/* Category cards with images */}
@@ -551,18 +553,18 @@ export default function HomePage() {
                   onClick={() => setSelectedCategory(isActive ? '' : cat.id)}
                   className="cat-card"
                   style={{
-                    minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'start',
+                    minWidth: 110, width: 110, flexShrink: 0, scrollSnapAlign: 'center',
                     background: isActive ? 'var(--primary-gradient)' : 'var(--white)',
-                    borderRadius: 16, border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
+                    borderRadius: 18, border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
                     cursor: 'pointer',
-                    padding: '12px 8px', display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: 8,
+                    padding: '14px 10px', display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: 10,
                     boxShadow: isActive ? 'var(--shadow-accent)' : 'var(--shadow)',
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                   }}
                 >
                   <div style={{
-                    width: 48, height: 48, borderRadius: 14,
+                    width: 62, height: 62, borderRadius: 16,
                     background: cat.image ? 'none' : 'var(--input-bg)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     overflow: 'hidden',
@@ -571,14 +573,14 @@ export default function HomePage() {
                       <img
                         src={cat.image}
                         alt={cat.name || cat.nombre}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 14 }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 16 }}
                       />
                     ) : (
-                      <span style={{ fontSize: 22 }}>🏷️</span>
+                      <span style={{ fontSize: 26 }}>🏷️</span>
                     )}
                   </div>
                   <span style={{
-                    fontSize: 12, fontWeight: 600, color: isActive ? '#fff' : 'var(--text)',
+                    fontSize: 13, fontWeight: 600, color: isActive ? '#fff' : 'var(--text)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     maxWidth: '100%',
                   }}>
