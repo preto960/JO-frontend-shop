@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, Plus, Edit2, Trash2, X, ArrowLeft } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -61,6 +62,7 @@ const styles = {
 };
 
 export default function AdminUsersPage() {
+  const router = useRouter();
   const { user: currentUser } = useAuth();
   const { isMultiStore } = useConfig();
   const [users, setUsers] = useState<any[]>([]);
@@ -184,6 +186,22 @@ export default function AdminUsersPage() {
 
   return (
     <div style={{ padding: 24 }}>
+      {/* Back button */}
+      <button
+        onClick={() => router.push('/settings')}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500,
+          marginBottom: 20, padding: 0, transition: 'color 0.2s ease',
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+      >
+        <ArrowLeft size={18} />
+        Volver a Configuracion
+      </button>
+
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Usuarios</h1>

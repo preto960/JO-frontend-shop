@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, Package } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus, Edit2, Trash2, X, Package, ArrowLeft } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import ConfirmModal from '@/components/ConfirmModal';
 import { showToast } from '@/lib/utils';
@@ -53,6 +54,7 @@ const styles = {
 };
 
 export default function AdminStoresPage() {
+  const router = useRouter();
   const [stores, setStores] = useState<any[]>([]);
   const [productCounts, setProductCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -143,6 +145,22 @@ export default function AdminStoresPage() {
 
   return (
     <div style={{ padding: 24 }}>
+      {/* Back button */}
+      <button
+        onClick={() => router.push('/settings')}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500,
+          marginBottom: 20, padding: 0, transition: 'color 0.2s ease',
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+      >
+        <ArrowLeft size={18} />
+        Volver a Configuracion
+      </button>
+
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Tiendas</h1>

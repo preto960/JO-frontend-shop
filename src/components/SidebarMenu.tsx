@@ -9,14 +9,10 @@ import {
   User,
   X,
   Package,
-  Tag,
-  Store,
-  Shield,
-  Users,
   LayoutDashboard,
+  Layers,
   Truck,
   Settings,
-  Layers,
   Heart,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -89,20 +85,8 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       if (canViewModule('batches') || isAdmin) {
         items.push({ path: '/product-batches', label: 'Lotes', icon: Layers });
       }
-      if (canViewModule('categories') || isAdmin) {
-        items.push({ path: '/manage-categories', label: 'Categorías', icon: Tag });
-      }
       if (canViewModule('orders') || isAdmin) {
         items.push({ path: '/manage-orders', label: 'Pedidos', icon: ClipboardList });
-      }
-      if (isMultiStore && (canViewModule('stores') || isAdmin)) {
-        items.push({ path: '/manage-stores', label: 'Tiendas', icon: Store });
-      }
-      if (canViewModule('roles') || isAdmin) {
-        items.push({ path: '/manage-roles', label: 'Roles', icon: Shield });
-      }
-      if (isAdmin) {
-        items.push({ path: '/manage-users', label: 'Usuarios', icon: Users });
       }
       if (isAdmin) {
         items.push({ path: '/settings', label: 'Configuracion', icon: Settings });

@@ -9,7 +9,6 @@ import {
   Users,
   Tag,
   Store,
-  Layers,
   ImageIcon,
   Globe,
   Info,
@@ -30,7 +29,7 @@ interface SettingsCard {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   color: string;
   bgColor: string;
-  permission: 'admin' | 'products' | 'batches';
+  permission: 'admin' | 'products';
   showWhenMultiStore?: boolean;
 }
 
@@ -78,16 +77,6 @@ const CARDS: SettingsCard[] = [
     color: '#00B894',
     bgColor: '#E8FBF5',
     permission: 'products',
-  },
-  {
-    id: 'batches',
-    title: 'Lotes y Descuentos',
-    description: 'Gestiona lotes con precios y descuentos especiales',
-    path: '/product-batches',
-    icon: Layers,
-    color: '#E17055',
-    bgColor: '#FFF9E6',
-    permission: 'batches',
   },
   {
     id: 'stores',
@@ -154,8 +143,6 @@ export default function SettingsPage() {
         return isAdmin;
       case 'products':
         return isAdmin || (isEditor && canViewModule('products'));
-      case 'batches':
-        return isAdmin || (isEditor && canViewModule('batches'));
       default:
         return false;
     }
