@@ -4,9 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
-import { LogOut, Menu, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { LogOut, Menu, ShoppingBag, ShoppingCart, Heart } from 'lucide-react';
 import SidebarMenu from '@/components/SidebarMenu';
 import CartDropdown from '@/components/CartDropdown';
+import FavoritesDropdown from '@/components/FavoritesDropdown';
 
 export default function AppHeader() {
   const { logout, isEditor, user } = useAuth();
@@ -18,6 +19,9 @@ export default function AppHeader() {
   const [cartCount, setCartCount] = useState(0);
   const [cartOpen, setCartOpen] = useState(false);
   const cartBtnRef = useRef<HTMLButtonElement>(null);
+  const [favCount, setFavCount] = useState(0);
+  const [favOpen, setFavOpen] = useState(false);
+  const favBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const updateCart = () => {
@@ -34,6 +38,24 @@ export default function AppHeader() {
     return () => {
       window.removeEventListener('cartUpdated', updateCart);
       window.removeEventListener('storage', updateCart);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateFavs = () => {
+      try {
+        const favs: string[] = JSON.parse(localStorage.getItem('joshop_favorites') || '[]');
+        setFavCount(favs.length);
+      } catch {
+        setFavCount(0);
+      }
+    };
+    updateFavs();
+    window.addEventListener('favoritesUpdated', updateFavs);
+    window.addEventListener('storage', updateFavs);
+    return () => {
+      window.removeEventListener('favoritesUpdated', updateFavs);
+      window.removeEventListener('storage', updateFavs);
     };
   }, []);
 
@@ -100,13 +122,55 @@ export default function AppHeader() {
           )}
         </div>
 
-        {/* Right: cart dropdown + logout */}
+        {/* Right: favorites + cart dropdown + logout */}
         <div style={{ position: 'absolute', right: 16, zIndex: 1, display: 'flex', gap: 8 }}>
+          {/* Favorites icon with badge + dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button
+              ref={favBtnRef}
+              onClick={() => { setFavOpen(!favOpen); setCartOpen(false); }}
+              style={{
+                background: 'rgba(255,255,255,0.15)',
+                border: 'none',
+                color: 'var(--white)',
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 44,
+                height: 44,
+                borderRadius: 'var(--radius-sm)',
+                transition: 'var(--transition-fast)',
+                position: 'relative',
+              }}
+              aria-label="Favoritos"
+            >
+              <Heart size={22} />
+              {favCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: 2, right: 2,
+                  background: '#FF6B6B', color: 'white',
+                  fontSize: 10, fontWeight: 700,
+                  minWidth: 16, height: 16, borderRadius: 8,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 4px',
+                }}>
+                  {favCount > 9 ? '9+' : favCount}
+                </span>
+              )}
+            </button>
+            <FavoritesDropdown
+              isOpen={favOpen}
+              onClose={() => setFavOpen(false)}
+              anchorRef={favBtnRef}
+            />
+          </div>
           {/* Cart icon with badge + dropdown */}
           <div style={{ position: 'relative' }}>
             <button
               ref={cartBtnRef}
-              onClick={() => setCartOpen(!cartOpen)}
+              onClick={() => { setCartOpen(!cartOpen); setFavOpen(false); }}
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
