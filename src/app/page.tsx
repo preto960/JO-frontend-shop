@@ -13,6 +13,7 @@ import { useConfig } from '@/contexts/ConfigContext';
 import SidebarMenu from '@/components/SidebarMenu';
 import ProductCard from '@/components/ProductCard';
 import CartDropdown from '@/components/CartDropdown';
+import FavoritesDropdown from '@/components/FavoritesDropdown';
 import { showToast, debounce, formatPrice } from '@/lib/utils';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -37,7 +38,9 @@ export default function HomePage() {
   const [cartCount, setCartCount] = useState(0);
   const [favCount, setFavCount] = useState(0);
   const [cartOpen, setCartOpen] = useState(false);
+  const [favOpen, setFavOpen] = useState(false);
   const cartBtnRef = React.useRef<HTMLButtonElement>(null);
+  const favBtnRef = React.useRef<HTMLButtonElement>(null);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -258,33 +261,41 @@ export default function HomePage() {
 
         {/* Right section */}
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
-          <button
-            onClick={() => router.push('/favorites')}
-            style={{
-              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-              cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              position: 'relative',
-            }}
-            aria-label="Favoritos"
-          >
-            <Heart size={22} />
-            {favCount > 0 && (
-              <span style={{
-                position: 'absolute', top: 2, right: 2,
-                background: '#E74C3C', color: 'white',
-                fontSize: 10, fontWeight: 700,
-                minWidth: 16, height: 16, borderRadius: 8,
+          <div style={{ position: 'relative' }}>
+            <button
+              ref={favBtnRef}
+              onClick={() => { setFavOpen(!favOpen); setCartOpen(false); }}
+              style={{
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '0 4px',
-              }}>
-                {favCount > 9 ? '9+' : favCount}
-              </span>
-            )}
-          </button>
+                position: 'relative',
+              }}
+              aria-label="Favoritos"
+            >
+              <Heart size={22} />
+              {favCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: 2, right: 2,
+                  background: '#E74C3C', color: 'white',
+                  fontSize: 10, fontWeight: 700,
+                  minWidth: 16, height: 16, borderRadius: 8,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 4px',
+                }}>
+                  {favCount > 9 ? '9+' : favCount}
+                </span>
+              )}
+            </button>
+            <FavoritesDropdown
+              isOpen={favOpen}
+              onClose={() => setFavOpen(false)}
+              anchorRef={favBtnRef}
+            />
+          </div>
           <button
             ref={cartBtnRef}
-            onClick={() => setCartOpen(!cartOpen)}
+            onClick={() => { setCartOpen(!cartOpen); setFavOpen(false); }}
             style={{
               background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
               cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
