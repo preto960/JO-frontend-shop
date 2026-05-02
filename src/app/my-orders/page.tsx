@@ -31,14 +31,6 @@ export default function OrdersPage() {
     if (!isLoading && !user) router.replace('/login');
   }, [user, isLoading, router]);
 
-  if (isLoading || !user) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
-        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-      </div>
-    );
-  }
-
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -55,9 +47,18 @@ export default function OrdersPage() {
     }
   };
 
+  // Fetch orders when user is ready or tab changes
   useEffect(() => {
-    fetchOrders();
-  }, [activeTab]);
+    if (!isLoading && user) fetchOrders();
+  }, [activeTab, isLoading, user]);
+
+  if (isLoading || !user) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
