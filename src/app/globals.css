@@ -219,7 +219,7 @@ html, body {
 /* ═══ Toast ═══ */
 .toast {
   position: fixed;
-  top: 20px;
+  top: 80px;
   right: 20px;
   z-index: 9999;
   padding: 14px 22px;
