@@ -61,6 +61,26 @@ const styles = {
   },
 };
 
+function PasswordCheck({ label, met }: { label: string; met: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
+      <div style={{
+        width: 18, height: 18, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: met ? '#10B981' : '#E5E7EB', transition: 'all 0.2s ease', flexShrink: 0,
+      }}>
+        {met && (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        )}
+      </div>
+      <span style={{ color: met ? '#10B981' : '#9CA3AF', fontWeight: met ? 600 : 400, transition: 'color 0.2s ease' }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
 export default function AdminUsersPage() {
   const router = useRouter();
   const { user: currentUser } = useAuth();
@@ -150,7 +170,8 @@ export default function AdminUsersPage() {
       setModalOpen(false);
       fetchUsers();
     } catch (err: any) {
-      showToast(err?.message || 'Error al guardar', 'error');
+      const errorMsg = err?.error || err?.message || 'Error al guardar';
+      showToast(errorMsg, 'error');
     } finally {
       setSaving(false);
     }
@@ -349,6 +370,13 @@ export default function AdminUsersPage() {
                 placeholder="••••••••"
                 style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
               />
+              {form.password && (
+                <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <PasswordCheck label="Mínimo 6 caracteres" met={form.password.length >= 6} />
+                  <PasswordCheck label="Al menos una mayúscula" met={/[A-Z]/.test(form.password)} />
+                  <PasswordCheck label="Al menos un número" met={/[0-9]/.test(form.password)} />
+                </div>
+              )}
             </div>
 
             {/* Role selection */}
