@@ -161,74 +161,76 @@ export default function AdminDashboard() {
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
     try {
-      let url = '/orders/stats/dashboard?';
-      if (period === 'custom' && customFrom && customTo) {
-        url += `from=${customFrom}&to=${customTo}`;
-      } else {
-        url += `period=${period}`;
+      // 1. Fetch dashboard stats
+      try {
+        let url = '/orders/stats/dashboard?';
+        if (period === 'custom' && customFrom && customTo) {
+          url += `from=${customFrom}&to=${customTo}`;
+        } else {
+          url += `period=${period}`;
+        }
+
+        const dashRes = await api.get(url);
+        if (dashRes) {
+          // Backend returns { summary: {...}, charts: {...}, recentOrders: [...] }
+          const s = dashRes.summary || dashRes;
+          const c = dashRes.charts || dashRes;
+          setStats({
+            totalOrders: s.totalOrders || 0,
+            revenue: s.totalRevenue || 0,
+            todayOrders: s.todayOrders || s.pendingOrders || 0,
+            totalUsers: s.totalCustomers || s.totalUsers || 0,
+            totalProducts: s.totalProducts || 0,
+          });
+
+          // Chart data from backend
+          setChartData({
+            ordersByDay: c.ordersByDay || [],
+            topProducts: c.topProducts || [],
+            revenueByStatus: c.revenueByStatus || [],
+          });
+        }
+      } catch {
+        // Fallback: calculate from orders
+        try {
+          const ordersRes = await api.get('/orders');
+          const orders = extractData(ordersRes);
+          const today = new Date().toDateString();
+          const todayOrders = orders.filter((o: any) => {
+            const d = new Date(o.createdAt || o.created_at);
+            return d.toDateString() === today;
+          });
+          const totalRevenue = orders
+            .filter((o: any) => o.status !== 'cancelled')
+            .reduce((sum: number, o: any) => sum + (o.total || o.totalAmount || 0), 0);
+          setStats({
+            totalOrders: orders.length,
+            revenue: totalRevenue,
+            todayOrders: todayOrders.length,
+          });
+        } catch { /* ignore */ }
       }
 
-      const dashRes = await api.get(url);
-      if (dashRes) {
-        // Backend returns { summary: {...}, charts: {...}, recentOrders: [...] }
-        const s = dashRes.summary || dashRes;
-        const c = dashRes.charts || dashRes;
-        setStats({
-          totalOrders: s.totalOrders || 0,
-          revenue: s.totalRevenue || 0,
-          todayOrders: s.todayOrders || s.pendingOrders || 0,
-          totalUsers: s.totalCustomers || s.totalUsers || 0,
-          totalProducts: s.totalProducts || 0,
-        });
-
-        // Chart data from backend
-        setChartData({
-          ordersByDay: c.ordersByDay || [],
-          topProducts: c.topProducts || [],
-          revenueByStatus: c.revenueByStatus || [],
-        });
-      }
-    } catch {
-      // Fallback: calculate from orders
+      // 2. Fetch recent orders (always independent of period)
       try {
         const ordersRes = await api.get('/orders');
         const orders = extractData(ordersRes);
-        const today = new Date().toDateString();
-        const todayOrders = orders.filter((o: any) => {
-          const d = new Date(o.createdAt || o.created_at);
-          return d.toDateString() === today;
+        const sorted = [...orders].sort((a: any, b: any) => {
+          return new Date(b.createdAt || b.created_at).getTime() - new Date(a.createdAt || a.created_at).getTime();
         });
-        const totalRevenue = orders
-          .filter((o: any) => o.status !== 'cancelled')
-          .reduce((sum: number, o: any) => sum + (o.total || o.totalAmount || 0), 0);
-        setStats({
-          totalOrders: orders.length,
-          revenue: totalRevenue,
-          todayOrders: todayOrders.length,
-        });
+        setRecentOrders(sorted.slice(0, 10));
       } catch { /* ignore */ }
-    }
 
-    // Fetch recent orders (always independent of period)
-    try {
-      const ordersRes = await api.get('/orders');
-      const orders = extractData(ordersRes);
-      const sorted = [...orders].sort((a: any, b: any) => {
-        return new Date(b.createdAt || b.created_at).getTime() - new Date(a.createdAt || a.created_at).getTime();
-      });
-      setRecentOrders(sorted.slice(0, 10));
-    } catch { /* ignore */ }
-
-    // Fetch user and product counts if not from dashboard
-    try {
-      const usersRes = await api.get('/auth/users');
-      const productsRes = await api.get('/products');
-      setStats((prev: any) => ({
-        ...prev,
-        totalUsers: prev.totalUsers || extractData(usersRes).length,
-        totalProducts: prev.totalProducts || extractData(productsRes).length,
-      }));
-    } catch { /* ignore */ }
+      // 3. Fetch user and product counts
+      try {
+        const usersRes = await api.get('/auth/users');
+        const productsRes = await api.get('/products');
+        setStats((prev: any) => ({
+          ...prev,
+          totalUsers: prev.totalUsers || extractData(usersRes).length,
+          totalProducts: prev.totalProducts || extractData(productsRes).length,
+        }));
+      } catch { /* ignore */ }
     } finally {
       setLoading(false);
     }

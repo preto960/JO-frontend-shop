@@ -220,7 +220,7 @@ const BannersPage: React.FC = () => {
       const banner = banners.find((b) => b.id === changingImageId);
       if (banner) {
         formData.append('duration', String(localDurations[banner.id] ?? banner.duration ?? 8));
-        formData.append('link', localLinks[banner.id] ?? banner.link || '');
+        formData.append('link', localLinks[banner.id] ?? (banner.link || ''));
       }
       const res = await api.put(`/banners/${changingImageId}`, formData);
       const updated = res?.banner || res;
