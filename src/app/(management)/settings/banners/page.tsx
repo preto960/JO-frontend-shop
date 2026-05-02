@@ -362,7 +362,7 @@ const BannersPage: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {banners.map((banner, index) => {
                   const changed = hasChanges(banner.id);
-                  const isVideo = getMediaType(banner.media_url || banner.url) === 'video';
+                  const isVideo = getMediaType(banner.imageUrl) === 'video';
                   const localDur = localDurations[banner.id] ?? String(banner.duration ?? 8);
                   const localLink = localLinks[banner.id] ?? (banner.link || '');
 
@@ -391,7 +391,7 @@ const BannersPage: React.FC = () => {
                           </div>
                         ) : (
                           <img
-                            src={banner.media_url || banner.url}
+                            src={banner.imageUrl}
                             alt={`Banner ${index + 1}`}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
