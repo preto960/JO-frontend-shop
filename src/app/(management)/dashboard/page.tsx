@@ -229,6 +229,9 @@ export default function AdminDashboard() {
         totalProducts: prev.totalProducts || extractData(productsRes).length,
       }));
     } catch { /* ignore */ }
+    } finally {
+      setLoading(false);
+    }
   }, [period, customFrom, customTo]);
 
   useEffect(() => {

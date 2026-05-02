@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImageIcon, Plus, Trash2, Clock, Link, Eye, EyeOff, Save, MoreVertical, X, Upload, ArrowLeft } from 'lucide-react';
+import { ImageIcon, Plus, Trash2, Clock, Link, Eye, EyeOff, Save, MoreVertical, X, Upload, ArrowLeft, Camera } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { showToast } from '@/lib/utils';
@@ -107,6 +107,8 @@ const BannersPage: React.FC = () => {
   const [localLinks, setLocalLinks] = useState<Record<number, string>>({});
   const [savingId, setSavingId] = useState<number | null>(null);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [changingImageId, setChangingImageId] = useState<number | null>(null);
+  const replaceImageRef = useRef<HTMLInputElement>(null);
 
   /* ── Helpers ── */
   const loadBanners = async () => {
@@ -187,6 +189,51 @@ const BannersPage: React.FC = () => {
       showToast('Banner eliminado', 'success');
     } catch {
       showToast('Error al eliminar banner', 'error');
+    }
+  };
+
+  /* ── Replace banner image ── */
+  const handleReplaceImage = (bannerId: number) => {
+    setChangingImageId(bannerId);
+    setOpenMenuId(null);
+    setTimeout(() => replaceImageRef.current?.click(), 100);
+  };
+
+  const handleReplaceFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !changingImageId) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('El archivo supera 5MB', 'error');
+      return;
+    }
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm'];
+    if (!allowed.includes(file.type)) {
+      showToast('Formato no soportado', 'error');
+      return;
+    }
+
+    setSavingId(changingImageId);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const banner = banners.find((b) => b.id === changingImageId);
+      if (banner) {
+        formData.append('duration', String(localDurations[banner.id] ?? banner.duration ?? 8));
+        formData.append('link', localLinks[banner.id] ?? banner.link || '');
+      }
+      const res = await api.put(`/banners/${changingImageId}`, formData);
+      const updated = res?.banner || res;
+      setBanners((prev) =>
+        prev.map((b) => (b.id === changingImageId ? { ...b, ...updated } : b)),
+      );
+      showToast('Imagen de banner actualizada', 'success');
+    } catch (err: any) {
+      showToast(err?.error || 'Error al cambiar imagen', 'error');
+    } finally {
+      setSavingId(null);
+      setChangingImageId(null);
+      if (replaceImageRef.current) replaceImageRef.current.value = '';
     }
   };
 
@@ -516,6 +563,20 @@ const BannersPage: React.FC = () => {
                               minWidth: 160, overflow: 'hidden',
                             }}>
                               <button
+                                onClick={(e) => { e.stopPropagation(); handleReplaceImage(banner.id); }}
+                                style={{
+                                  width: '100%', padding: '10px 14px', border: 'none', background: 'none',
+                                  cursor: 'pointer', textAlign: 'left', fontSize: 13,
+                                  color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: 10,
+                                  transition: 'var(--transition-fast)',
+                                }}
+                                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--input-bg)')}
+                                onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
+                              >
+                                <Camera size={14} />
+                                Cambiar imagen
+                              </button>
+                              <button
                                 onClick={(e) => { e.stopPropagation(); handleToggleActive(banner); setOpenMenuId(null); }}
                                 style={{
                                   width: '100%', padding: '10px 14px', border: 'none', background: 'none',
@@ -802,6 +863,15 @@ const BannersPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Hidden file input for replacing banner image */}
+      <input
+        ref={replaceImageRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+        style={{ display: 'none' }}
+        onChange={handleReplaceFileChange}
+      />
 
       {/* Inline keyframes for modal animation */}
       <style>{`
