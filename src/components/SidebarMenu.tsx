@@ -158,26 +158,25 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '24px 20px 20px',
-          background: '#2D3436',
-          filter: 'grayscale(100%)',
+          background: 'var(--primary-gradient)',
           color: 'var(--white)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <div style={{
                 width: 80,
                 height: 80,
                 borderRadius: '50%',
-                background: '#636E72',
+                background: 'rgba(255,255,255,0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: 24,
                 color: 'white',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-accent)',
                 letterSpacing: '0.5px',
               }}>
                 {shopName.substring(0, 2).toUpperCase()}
