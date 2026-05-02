@@ -115,7 +115,7 @@ const BannersPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get('/banners/all');
-      // After interceptor, res is the response body (could be array or object)
+      console.log('[Banners] API response:', JSON.stringify(res)?.substring(0, 200));
       let items: any[] = [];
       if (Array.isArray(res)) {
         items = res;
@@ -123,10 +123,16 @@ const BannersPage: React.FC = () => {
         items = res.data;
       } else if (res && Array.isArray(res.banners)) {
         items = res.banners;
+      } else if (res) {
+        // Try any array property
+        for (const key of Object.keys(res)) {
+          if (Array.isArray((res as any)[key])) { items = (res as any)[key]; break; }
+        }
       }
+      console.log('[Banners] Loaded:', items.length, 'items');
       setBanners(items);
     } catch (err: any) {
-      console.error('Error loading banners:', err);
+      console.error('[Banners] Error loading:', err);
       showToast(err?.error || err?.message || 'Error al cargar banners', 'error');
     } finally {
       setLoading(false);
@@ -224,17 +230,20 @@ const BannersPage: React.FC = () => {
       }
       const res = await api.put(`/banners/${changingImageId}`, formData);
       const updated = res?.banner || res;
-      setBanners((prev) =>
-        prev.map((b) => (b.id === changingImageId ? { ...b, ...updated } : b)),
-      );
+      if (updated) {
+        setBanners((prev) =>
+          prev.map((b) => (b.id === changingImageId ? { ...b, ...updated } : b)),
+        );
+      }
       showToast('Imagen de banner actualizada', 'success');
     } catch (err: any) {
-      showToast(err?.error || 'Error al cambiar imagen', 'error');
+      showToast(err?.error || err?.message || 'Error al cambiar imagen', 'error');
     } finally {
       setSavingId(null);
       setChangingImageId(null);
       if (replaceImageRef.current) replaceImageRef.current.value = '';
-    }
+      // Reload to ensure fresh data
+      loadBanners();
   };
 
   /* ── Save banner edits ── */
@@ -417,6 +426,23 @@ const BannersPage: React.FC = () => {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {/* Add banner button at TOP */}
+                <button
+                  onClick={openModal}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    padding: '12px 20px', borderRadius: 10,
+                    border: '2px dashed var(--primary)', background: 'rgba(243,156,18,0.04)',
+                    cursor: 'pointer', transition: 'var(--transition-fast)',
+                    color: 'var(--primary)', fontWeight: 600, fontSize: 14,
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(243,156,18,0.1)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(243,156,18,0.04)'; }}
+                >
+                  <Plus size={18} />
+                  Agregar banner
+                </button>
+
                 {banners.map((banner, index) => {
                   const changed = hasChanges(banner.id);
                   const isVideo = getMediaType(banner.imageUrl) === 'video';
@@ -612,40 +638,6 @@ const BannersPage: React.FC = () => {
                   );
                 })}
 
-                {/* Add banner button */}
-                <button
-                  onClick={openModal}
-                  style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    justifyContent: 'center', gap: 10, padding: '28px 20px',
-                    borderRadius: 10, border: '2px dashed var(--border)',
-                    background: 'transparent', cursor: 'pointer',
-                    transition: 'var(--transition-fast)', color: 'var(--text-secondary)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--primary)';
-                    e.currentTarget.style.background = 'rgba(243,156,18,0.04)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
-                    e.currentTarget.style.background = 'transparent';
-                  }}
-                >
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%', border: '2px solid var(--border)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'var(--transition-fast)',
-                  }}>
-                    <Plus size={20} style={{ color: 'var(--primary)' }} />
-                  </div>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>
-                    Agregar banner
-                  </span>
-                  <span style={{ fontSize: 11, color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.4, maxWidth: 260 }}>
-                    Maximo 5MB. Imagenes (JPG, PNG, WebP, GIF) o videos (MP4, WebM).
-                  </span>
-                </button>
-
                 {/* Empty state */}
                 {!loading && banners.length === 0 && (
                   <div style={{
@@ -656,7 +648,6 @@ const BannersPage: React.FC = () => {
                     <p style={{ margin: 0 }}>No hay banners configurados</p>
                   </div>
                 )}
-              </div>
             )}
           </>
         )}
