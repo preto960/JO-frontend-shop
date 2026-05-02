@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Edit2, Trash2, X, Package, ArrowLeft } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Package, ArrowLeft, Camera, Upload } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import ConfirmModal from '@/components/ConfirmModal';
 import { showToast } from '@/lib/utils';
@@ -62,7 +62,9 @@ export default function AdminStoresPage() {
   const [editingStore, setEditingStore] = useState<any>(null);
   const [deleteModal, setDeleteModal] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ name: '', address: '', phone: '', description: '' });
+  const [form, setForm] = useState({ name: '', address: '', phone: '', description: '', logo: '' });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const fetchStores = async () => {
     try {
@@ -91,7 +93,7 @@ export default function AdminStoresPage() {
 
   const openCreate = () => {
     setEditingStore(null);
-    setForm({ name: '', address: '', phone: '', description: '' });
+    setForm({ name: '', address: '', phone: '', description: '', logo: '' });
     setModalOpen(true);
   };
 
@@ -102,6 +104,7 @@ export default function AdminStoresPage() {
       address: store.address || '',
       phone: store.phone || '',
       description: store.description || '',
+      logo: store.logo || '',
     });
     setModalOpen(true);
   };
@@ -113,7 +116,7 @@ export default function AdminStoresPage() {
     }
     setSaving(true);
     try {
-      const payload = { name: form.name, address: form.address, phone: form.phone, description: form.description };
+      const payload = { name: form.name, address: form.address, phone: form.phone, description: form.description, logo: form.logo || null };
       if (editingStore) {
         await api.put(`/stores/${editingStore.id}`, payload);
         showToast('Tienda actualizada', 'success');
@@ -127,6 +130,32 @@ export default function AdminStoresPage() {
       showToast(err?.message || 'Error al guardar', 'error');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('La imagen no debe superar 2MB', 'error');
+      return;
+    }
+    setLogoUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('/stores/upload-logo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const url = res?.url || res?.data?.url;
+      if (url) {
+        setForm(prev => ({ ...prev, logo: url }));
+        showToast('Logo subido', 'success');
+      }
+    } catch {
+      showToast('Error al subir logo', 'error');
+    } finally {
+      setLogoUploading(false);
     }
   };
 
@@ -202,12 +231,19 @@ export default function AdminStoresPage() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: 14 }}>
-                  <div style={{
-                    width: 48, height: 48, borderRadius: 12, background: 'var(--primary-light)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-                    flexShrink: 0,
-                  }}>
-                    🏪
+                  <div
+                    style={{
+                      width: 48, height: 48, borderRadius: 12,
+                      background: store.logo ? 'none' : 'var(--primary-light)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      overflow: 'hidden', flexShrink: 0, position: 'relative',
+                    }}
+                  >
+                    {store.logo ? (
+                      <img src={store.logo} alt={store.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
+                    ) : (
+                      <span style={{ fontSize: 22 }}>🏪</span>
+                    )}
                   </div>
                   <div>
                     <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
@@ -290,6 +326,50 @@ export default function AdminStoresPage() {
                 placeholder="Teléfono"
                 style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
               />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Logo de la tienda</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    width: 64, height: 64, borderRadius: 12,
+                    background: form.logo ? 'none' : 'var(--input-bg)',
+                    border: '2px dashed var(--border)', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                    overflow: 'hidden', cursor: 'pointer', flexShrink: 0,
+                    transition: 'border-color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--primary)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
+                >
+                  {logoUploading ? (
+                    <div style={{ width: 24, height: 24, border: '2px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                  ) : form.logo ? (
+                    <img src={form.logo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <Upload size={20} style={{ color: 'var(--text-light)' }} />
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 4 }}
+                  >
+                    {form.logo ? 'Cambiar logo' : 'Subir logo'}
+                  </button>
+                  <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Max 2MB. JPG, PNG, WebP</p>
+                  {form.logo && (
+                    <button
+                      onClick={() => setForm(prev => ({ ...prev, logo: '' }))}
+                      style={{ fontSize: 11, fontWeight: 600, color: '#FF6B6B', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: 2 }}
+                    >
+                      Eliminar logo
+                    </button>
+                  )}
+                </div>
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Descripción</label>
