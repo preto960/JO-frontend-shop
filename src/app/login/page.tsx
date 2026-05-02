@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { showToast } from '@/lib/utils';
-import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   // 2FA state
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
@@ -339,8 +340,15 @@ export default function LoginPage() {
 
                 <div style={{ marginBottom: 26 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 7 }}>Contraseña</label>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"
-                    style={{ height: 46, borderRadius: 10, border: '2px solid var(--border)', padding: '0 14px', fontSize: 15, background: 'var(--white)', width: '100%', boxSizing: 'border-box' }} />
+                  <div style={{ position: 'relative' }}>
+                    <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"
+                      style={{ height: 46, borderRadius: 10, border: '2px solid var(--border)', padding: '0 44px 0 14px', fontSize: 15, background: 'var(--white)', width: '100%', boxSizing: 'border-box' }} />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)}
+                      style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
 
                 <button type="submit" disabled={loading}
