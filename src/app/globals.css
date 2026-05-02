@@ -66,6 +66,18 @@
   --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ═══ Anti-Flash: hide body until theme colors are applied ═══ */
+html:not([data-theme-ready]) body {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html[data-theme-ready] body {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: opacity 0.15s ease;
+}
+
 /* ═══ Reset & Base ═══ */
 * {
   box-sizing: border-box;

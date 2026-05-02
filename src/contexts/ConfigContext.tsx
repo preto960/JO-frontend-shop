@@ -124,7 +124,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
 
     if (config.accent_color) {
       root.style.setProperty('--accent', config.accent_color);
-      root.style.setProperty('--accent-light', config.accent_color);
+      root.style.setProperty('--accent-light', config.accent_color + '1A');
     }
 
     if (config.shop_name && config.shop_name !== 'JO-Shop') {
@@ -139,6 +139,9 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
         shop_name: config.shop_name,
       }));
     } catch { /* ignore */ }
+
+    // Reveal body (safety net — the blocking script normally does this first)
+    document.documentElement.setAttribute('data-theme-ready', '');
   }, [config.primary_color, config.accent_color, config.shop_name]);
 
   const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
