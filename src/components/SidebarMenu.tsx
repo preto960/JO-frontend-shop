@@ -94,10 +94,9 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       return items;
     }
 
-    // Delivery
+    // Delivery — no landing page access, only their deliveries and profile
     if (isDelivery) {
       return [
-        { path: '/', label: 'Inicio', icon: Home },
         { path: '/deliveries', label: 'Entregas', icon: Truck },
         { path: '/profile', label: 'Mi Perfil', icon: User },
       ];

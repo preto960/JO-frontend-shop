@@ -24,12 +24,19 @@ const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3d
    ═══════════════════════════════════════════════════════════════ */
 
 export default function HomePage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, isDelivery } = useAuth();
   const { config, isMultiStore } = useConfig();
   const shopName = config.shop_name || 'JO-Shop';
   const shopLogoUrl = config.shop_logo_url || '';
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
+
+  // Redirect delivery users to their dashboard — they should not see the landing page
+  useEffect(() => {
+    if (!authLoading && isDelivery) {
+      router.replace('/deliveries');
+    }
+  }, [authLoading, isDelivery, router]);
   const [categories, setCategories] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
