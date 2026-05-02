@@ -37,10 +37,8 @@ const themeInitScript = `
     }
   } catch(e) {}
 
-  // Update loader name with shop name
+  // Update loader logo text with shop initials
   if (loader) {
-    var nameEl = loader.querySelector('.loader-name');
-    if (nameEl) nameEl.textContent = shopName;
     var logoEl = loader.querySelector('.loader-logo');
     if (logoEl) logoEl.textContent = shopName.slice(0, 2).toUpperCase();
   }
@@ -75,8 +73,6 @@ export default function RootLayout({
         {/* Branded loading screen — visible until page is fully ready */}
         <div id="theme-loader">
           <div className="loader-logo">JO</div>
-          <div className="loader-spinner" />
-          <div className="loader-name">JO-Shop</div>
         </div>
 
         <AuthProvider>
