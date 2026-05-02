@@ -89,15 +89,25 @@ function extractRefreshToken(data: any): string | null {
 
 function getRoleFromUser(user: User): string {
   if (!user) return 'customer';
-  // Backend sends roles as array of {name: 'admin'} or role as string
-  if (user.roles && Array.isArray(user.roles) && user.roles.length > 0) {
-    return user.roles[0].name.toLowerCase();
-  }
-  if (user.role && typeof user.role === 'string') {
-    return user.role.toLowerCase();
-  }
-  if (user.role && typeof user.role === 'object' && 'name' in user.role) {
-    return String((user.role as any).name).toLowerCase();
+  try {
+    // Backend sends roles as array of {id, name, description}
+    if (user.roles && Array.isArray(user.roles) && user.roles.length > 0) {
+      const role = user.roles[0];
+      if (typeof role === 'object' && role !== null && 'name' in role) {
+        return String(role.name).toLowerCase();
+      }
+      if (typeof role === 'string') {
+        return role.toLowerCase();
+      }
+    }
+    if (user.role && typeof user.role === 'string') {
+      return user.role.toLowerCase();
+    }
+    if (user.role && typeof user.role === 'object' && 'name' in user.role) {
+      return String((user.role as any).name).toLowerCase();
+    }
+  } catch {
+    // Fallback on any error
   }
   return 'customer';
 }

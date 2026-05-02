@@ -45,9 +45,11 @@ export default function OrdersPage() {
       let url = '/orders';
       if (activeTab) url += `?status=${activeTab}`;
       const res = await api.get(url);
-      setOrders(extractData(res));
-    } catch {
-      // ignore
+      const data = extractData(res);
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('[my-orders] Error fetching orders:', err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -136,8 +138,9 @@ export default function OrdersPage() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {orders.map((order: any) => {
+              try {
               const status = order.status || order.estado || 'pending';
-              const items = order.items || order.orderItems || [];
+              const items = Array.isArray(order.items) ? order.items : (Array.isArray(order.orderItems) ? order.orderItems : []);
               const total = order.total || order.totalAmount || 0;
               const date = order.createdAt || order.created_at || order.date;
               return (
@@ -199,6 +202,10 @@ export default function OrdersPage() {
                   </div>
                 </div>
               );
+              } catch (renderErr) {
+                console.error('[my-orders] Error rendering order:', order?.id, renderErr);
+                return null;
+              }
             })}
           </div>
         )}
