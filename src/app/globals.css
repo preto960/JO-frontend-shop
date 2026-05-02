@@ -118,15 +118,10 @@
   50% { transform: scale(1.04); opacity: 0.7; }
 }
 
-/* Hide loader and reveal page when theme is ready */
+/* Hide loader when theme is ready — page behind it is already fully loaded */
 html[data-theme-ready] #theme-loader {
   opacity: 0;
   visibility: hidden;
-}
-
-/* Hide body content behind loader until ready */
-html:not([data-theme-ready]) body > *:not(#theme-loader) {
-  visibility: hidden !important;
 }
 
 /* ═══ Reset & Base ═══ */
