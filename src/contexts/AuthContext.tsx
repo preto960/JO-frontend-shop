@@ -90,9 +90,9 @@ function extractRefreshToken(data: any): string | null {
 function getRoleFromUser(user: User): string {
   if (!user) return 'customer';
   try {
-    // Backend sends roles as array of {id, name, description}
-    if (user.roles && Array.isArray(user.roles) && user.roles.length > 0) {
-      const role = user.roles[0];
+    const roles = user.roles as any;
+    if (roles && Array.isArray(roles) && roles.length > 0) {
+      const role = roles[0];
       if (typeof role === 'object' && role !== null && 'name' in role) {
         return String(role.name).toLowerCase();
       }
