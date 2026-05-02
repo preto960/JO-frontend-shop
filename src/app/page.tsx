@@ -608,7 +608,7 @@ export default function HomePage() {
 
         {/* Store filter */}
         {isMultiStore && stores.length > 0 && (
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'center' }}>
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
@@ -622,6 +622,7 @@ export default function HomePage() {
                 padding: '0 36px 0 14px',
                 boxShadow: 'var(--shadow)',
                 maxWidth: 300,
+                width: '100%',
               }}
             >
               <option value="">Todas las tiendas</option>
