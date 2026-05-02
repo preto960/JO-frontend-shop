@@ -15,19 +15,17 @@ const themeInitScript = `
 (function() {
   var loader = document.getElementById('theme-loader');
   var r = document.documentElement;
-  var pc = '#FF6B35';
   var shopName = 'JO-Shop';
 
   // Apply cached colors from previous visit
   try {
     var t = JSON.parse(localStorage.getItem('joshop_theme') || '{}');
     if (t.primary_color) {
-      pc = t.primary_color;
-      r.style.setProperty('--primary', pc);
-      r.style.setProperty('--primary-hover', pc);
-      r.style.setProperty('--primary-light', pc + '1A');
-      r.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + pc + ' 0%, ' + pc + 'CC 100%)');
-      r.style.setProperty('--shadow-accent', '0 4px 14px ' + pc + '4D');
+      r.style.setProperty('--primary', t.primary_color);
+      r.style.setProperty('--primary-hover', t.primary_color);
+      r.style.setProperty('--primary-light', t.primary_color + '1A');
+      r.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + t.primary_color + ' 0%, ' + t.primary_color + 'CC 100%)');
+      r.style.setProperty('--shadow-accent', '0 4px 14px ' + t.primary_color + '4D');
     }
     if (t.accent_color) {
       r.style.setProperty('--accent', t.accent_color);
@@ -39,9 +37,8 @@ const themeInitScript = `
     }
   } catch(e) {}
 
-  // Style the loader with the correct brand color and name
+  // Update loader name with shop name
   if (loader) {
-    loader.style.background = pc;
     var nameEl = loader.querySelector('.loader-name');
     if (nameEl) nameEl.textContent = shopName;
     var logoEl = loader.querySelector('.loader-logo');

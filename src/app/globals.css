@@ -75,47 +75,47 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--primary);
+  background: #FFFFFF;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
 }
 
 #theme-loader .loader-logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.3);
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #F1F3F5;
+  border: 2px solid #DFE4EA;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 24px;
-  color: white;
+  font-size: 22px;
+  color: #636E72;
   letter-spacing: -0.5px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   animation: loaderPulse 1.8s ease-in-out infinite;
 }
 
 #theme-loader .loader-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(255,255,255,0.25);
-  border-top-color: white;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #E0E0E0;
+  border-top-color: #999999;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 #theme-loader .loader-name {
   margin-top: 16px;
-  color: rgba(255,255,255,0.9);
-  font-size: 16px;
+  color: #636E72;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.3px;
 }
 
 @keyframes loaderPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.85; }
+  50% { transform: scale(1.04); opacity: 0.7; }
 }
 
 /* Hide loader and reveal page when theme is ready */
