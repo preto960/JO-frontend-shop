@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import Header from '@/components/Header';
-import { Shield, ShieldCheck, ShieldOff, User, LogOut, Edit3, Check, Mail, Phone, Calendar, ArrowLeft, RefreshCw, Lock, Unlock, Smartphone, KeyRound, Copy, Download, AlertTriangle, Info, ChevronRight } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldOff, User, LogOut, Edit3, Check, Mail, Phone, Calendar, ArrowLeft, RefreshCw, Lock, Unlock, Smartphone, KeyRound, Copy, Download, AlertTriangle, Info, ChevronRight, MapPin, Plus, Star, Trash2, X } from 'lucide-react';
 import { getInitials, showToast, getRoleLabel, getRoleBadgeColor } from '@/lib/utils';
+import api from '@/lib/api';
 
 type TwoFactorStep = 'idle' | 'choose_method' | 'email_confirming' | 'email_verifying' | 'totp_setup' | 'totp_verify' | 'totp_backup' | 'disable_confirming' | 'disable_verifying' | 'backup_codes_view';
 
@@ -52,6 +53,15 @@ export default function ProfilePage() {
   const [viewBackupCodes, setViewBackupCodes] = useState<string[]>([]);
   const [viewCodesLoading, setViewCodesLoading] = useState(false);
   const [viewCodesCopied, setViewCodesCopied] = useState(false);
+
+  // ─── Addresses state ───────────────────────────────────────────
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addressesLoading, setAddressesLoading] = useState(false);
+  const [addrModalOpen, setAddrModalOpen] = useState(false);
+  const [addrForm, setAddrForm] = useState({ label: '', address: '', city: '', notes: '' });
+  const [addrSaving, setAddrSaving] = useState(false);
+  const [editingAddrId, setEditingAddrId] = useState<number | null>(null);
+  const [deleteAddrId, setDeleteAddrId] = useState<number | null>(null);
 
   // Timers
   useEffect(() => {
@@ -361,6 +371,89 @@ export default function ProfilePage() {
     setDisableResendTimer(0);
   };
 
+  // ─── Addresses CRUD ────────────────────────────────────────────
+  const loadAddresses = async () => {
+    try {
+      setAddressesLoading(true);
+      const res = await api.get('/addresses');
+      const list = res?.data || res || [];
+      setAddresses(Array.isArray(list) ? list : []);
+    } catch {
+      // non-critical
+    } finally {
+      setAddressesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) loadAddresses();
+  }, [user]);
+
+  const openAddrModal = (addr?: any) => {
+    if (addr) {
+      setEditingAddrId(addr.id);
+      setAddrForm({ label: addr.label || '', address: addr.address || '', city: addr.city || '', notes: addr.notes || '' });
+    } else {
+      setEditingAddrId(null);
+      setAddrForm({ label: '', address: '', city: '', notes: '' });
+    }
+    setAddrModalOpen(true);
+  };
+
+  const handleSaveAddress = async () => {
+    if (!addrForm.label.trim() || !addrForm.address.trim()) {
+      showToast('Ingresa etiqueta y dirección', 'error'); return;
+    }
+    setAddrSaving(true);
+    try {
+      if (editingAddrId) {
+        const res = await api.put(`/addresses/${editingAddrId}`, {
+          label: addrForm.label.trim(), address: addrForm.address.trim(),
+          city: addrForm.city.trim() || null, notes: addrForm.notes.trim() || null,
+        });
+        const updated = res?.address || res;
+        setAddresses(prev => prev.map(a => a.id === editingAddrId ? updated : a));
+        showToast('Dirección actualizada', 'success');
+      } else {
+        const res = await api.post('/addresses', {
+          label: addrForm.label.trim(), address: addrForm.address.trim(),
+          city: addrForm.city.trim() || null, notes: addrForm.notes.trim() || null,
+        });
+        const created = res?.address || res;
+        setAddresses(prev => [...prev, created]);
+        showToast('Dirección guardada', 'success');
+      }
+      setAddrModalOpen(false);
+    } catch (err: any) {
+      showToast(err?.error || err?.message || 'Error al guardar dirección', 'error');
+    } finally {
+      setAddrSaving(false);
+    }
+  };
+
+  const handleSetDefault = async (addrId: number) => {
+    try {
+      await api.put(`/addresses/${addrId}/default`);
+      setAddresses(prev => prev.map(a => ({ ...a, isDefault: a.id === addrId })));
+      showToast('Dirección principal actualizada', 'success');
+    } catch {
+      showToast('Error al cambiar dirección principal', 'error');
+    }
+  };
+
+  const handleDeleteAddress = async () => {
+    if (!deleteAddrId) return;
+    try {
+      await api.delete(`/addresses/${deleteAddrId}`);
+      setAddresses(prev => prev.filter(a => a.id !== deleteAddrId));
+      showToast('Dirección eliminada', 'success');
+    } catch {
+      showToast('Error al eliminar dirección', 'error');
+    } finally {
+      setDeleteAddrId(null);
+    }
+  };
+
   // ─── Protect route ──────────────────────────────────────────────
   useEffect(() => {
     if (!isLoading && !user) router.replace('/login');
@@ -514,6 +607,164 @@ export default function ProfilePage() {
               ))}
             </div>
             {editing && renderButton(handleSave, 'Guardar cambios', { primary: true, fullWidth: true, loading: saving, icon: <Check size={18} /> })}
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════
+            ADDRESSES SECTION
+            ═══════════════════════════════════════════════════════════ */}
+        {renderCard(
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--info-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <MapPin size={22} style={{ color: 'var(--info)' }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Mis direcciones</h3>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                    {addresses.length === 0 ? 'Sin direcciones guardadas' : `${addresses.length} dirección${addresses.length !== 1 ? 'es' : ''}`}
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => openAddrModal()}
+                style={{ padding: '10px 16px', borderRadius: 12, background: 'var(--primary-gradient)', color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-accent)' }}>
+                <Plus size={16} /> Agregar
+              </button>
+            </div>
+
+            {addressesLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+                <div style={{ width: 28, height: 28, border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              </div>
+            ) : addresses.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '24px 0 8px' }}>
+                <p style={{ fontSize: 14, color: 'var(--text-light)' }}>
+                  Agrega una dirección para facilitar tus pedidos.
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {addresses.map((addr) => (
+                  <div key={addr.id} style={{
+                    padding: 14, borderRadius: 12, background: addr.isDefault ? 'var(--primary-light)' : 'var(--input-bg)',
+                    border: addr.isDefault ? '2px solid var(--primary)' : '2px solid transparent',
+                    transition: 'all 0.2s ease',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                          <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{addr.label}</p>
+                          {addr.isDefault && (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 10px', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'white', fontSize: 11, fontWeight: 600 }}>
+                              <Star size={10} /> Principal
+                            </span>
+                          )}
+                        </div>
+                        <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.4, wordBreak: 'break-word' }}>{addr.address}</p>
+                        {addr.city && <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>{addr.city}</p>}
+                      </div>
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0, marginLeft: 8 }}>
+                        {!addr.isDefault && (
+                          <button onClick={() => handleSetDefault(addr.id)} title="Marcar como principal"
+                            style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
+                            <Star size={15} />
+                          </button>
+                        )}
+                        <button onClick={() => openAddrModal(addr)} title="Editar"
+                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
+                          <Edit3 size={14} />
+                        </button>
+                        <button onClick={() => setDeleteAddrId(addr.id)} title="Eliminar"
+                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Address Modal */}
+        {addrModalOpen && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 16 }} onClick={() => setAddrModalOpen(false)}>
+            <div style={{ background: 'var(--white)', borderRadius: 20, padding: 28, maxWidth: 480, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                  {editingAddrId ? 'Editar dirección' : 'Nueva dirección'}
+                </h3>
+                <button onClick={() => setAddrModalOpen(false)} style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--input-bg)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 6, display: 'block' }}>Etiqueta *</label>
+                  <input value={addrForm.label} onChange={(e) => setAddrForm(prev => ({ ...prev, label: e.target.value }))} placeholder='Ej: Casa, Oficina, Apartamento...'
+                    style={{ width: '100%', height: 44, padding: '0 14px', borderRadius: 10, border: '2px solid var(--border)', background: 'var(--white)', fontSize: 14, color: 'var(--text)', outline: 'none', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 6, display: 'block' }}>Dirección *</label>
+                  <textarea value={addrForm.address} onChange={(e) => setAddrForm(prev => ({ ...prev, address: e.target.value }))} placeholder='Calle, número, edificio...'
+                    rows={3} style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '2px solid var(--border)', background: 'var(--white)', fontSize: 14, color: 'var(--text)', outline: 'none', boxSizing: 'border-box', resize: 'vertical', fontFamily: 'inherit' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 6, display: 'block' }}>Ciudad</label>
+                  <input value={addrForm.city} onChange={(e) => setAddrForm(prev => ({ ...prev, city: e.target.value }))} placeholder='Ciudad (opcional)'
+                    style={{ width: '100%', height: 44, padding: '0 14px', borderRadius: 10, border: '2px solid var(--border)', background: 'var(--white)', fontSize: 14, color: 'var(--text)', outline: 'none', boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 6, display: 'block' }}>Notas</label>
+                  <input value={addrForm.notes} onChange={(e) => setAddrForm(prev => ({ ...prev, notes: e.target.value }))} placeholder='Punto de referencia, apartamento, etc.'
+                    style={{ width: '100%', height: 44, padding: '0 14px', borderRadius: 10, border: '2px solid var(--border)', background: 'var(--white)', fontSize: 14, color: 'var(--text)', outline: 'none', boxSizing: 'border-box' }} />
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                  <button onClick={() => setAddrModalOpen(false)}
+                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--input-bg)', color: 'var(--text)', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                    Cancelar
+                  </button>
+                  <button onClick={handleSaveAddress} disabled={addrSaving}
+                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'white', fontSize: 15, fontWeight: 700, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    {addrSaving ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={18} />}
+                    {addrSaving ? 'Guardando...' : 'Guardar'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Address Confirm Modal */}
+        {deleteAddrId !== null && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 16 }} onClick={() => setDeleteAddrId(null)}>
+            <div style={{ background: 'var(--white)', borderRadius: 20, padding: 28, maxWidth: 400, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--danger-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <Trash2 size={24} style={{ color: 'var(--danger)' }} />
+              </div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>Eliminar dirección</h3>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24, lineHeight: 1.5 }}>
+                ¿Estás seguro de que deseas eliminar esta dirección? Esta acción no se puede deshacer.
+              </p>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={() => setDeleteAddrId(null)}
+                  style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--input-bg)', color: 'var(--text)', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                  Cancelar
+                </button>
+                <button onClick={handleDeleteAddress}
+                  style={{ flex: 1, height: 48, borderRadius: 12, border: '2px solid var(--danger)', background: 'var(--white)', color: 'var(--danger)', fontSize: 15, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                  Eliminar
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
