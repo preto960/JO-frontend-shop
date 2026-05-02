@@ -110,7 +110,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     fetchConfig();
   }, [fetchConfig]);
 
-  // ─── Sync config colors to CSS custom properties ─────────────
+  // ─── Sync config colors to CSS custom properties + persist to localStorage ──
   useEffect(() => {
     const root = document.documentElement;
 
@@ -130,6 +130,15 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     if (config.shop_name && config.shop_name !== 'JO-Shop') {
       document.title = config.shop_name;
     }
+
+    // Persist colors to localStorage for instant load on next visit
+    try {
+      localStorage.setItem('joshop_theme', JSON.stringify({
+        primary_color: config.primary_color,
+        accent_color: config.accent_color,
+        shop_name: config.shop_name,
+      }));
+    } catch { /* ignore */ }
   }, [config.primary_color, config.accent_color, config.shop_name]);
 
   const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
