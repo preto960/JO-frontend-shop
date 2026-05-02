@@ -81,7 +81,7 @@ export default function BottomNav() {
                     top: -8,
                     right: -10,
                     background: 'var(--accent)',
-                    color: 'white',
+                    color: 'var(--white)',
                     fontSize: 10,
                     fontWeight: 700,
                     width: 18,

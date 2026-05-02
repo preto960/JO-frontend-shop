@@ -105,7 +105,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
               <div style={{
                 position: 'absolute', top: 8, left: 8,
                 background: 'rgba(0,0,0,0.55)',
-                color: 'white',
+                color: 'var(--white)',
                 fontSize: 11, fontWeight: 600,
                 padding: '3px 8px',
                 borderRadius: 'var(--radius-full)',
@@ -137,7 +137,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
                       width: currentIndex === idx ? 16 : 6,
                       height: 6,
                       borderRadius: 3,
-                      background: currentIndex === idx ? 'white' : 'rgba(255,255,255,0.5)',
+                      background: currentIndex === idx ? 'var(--white)' : 'rgba(255,255,255,0.5)',
                       transition: 'width 0.3s ease, background 0.3s ease',
                     }}
                   />
@@ -154,7 +154,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
           <div style={{
             position: 'absolute', top: 10, right: 10,
             background: 'var(--danger)',
-            color: 'white',
+            color: 'var(--white)',
             fontSize: 11,
             fontWeight: 600,
             padding: '4px 12px',
@@ -168,8 +168,8 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
         {hasDiscount && (
           <div style={{
             position: 'absolute', top: hasMultiple ? 10 : 10, right: 10,
-            background: '#FF6B6B',
-            color: 'white',
+            background: 'var(--danger)',
+            color: 'var(--white)',
             fontSize: 11,
             fontWeight: 700,
             padding: '4px 10px',
@@ -217,7 +217,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             <span style={{
               fontSize: hasDiscount ? 16 : 18,
               fontWeight: 700,
-              color: hasDiscount ? '#FF6B6B' : 'var(--primary)',
+              color: hasDiscount ? 'var(--danger)' : 'var(--primary)',
               letterSpacing: '-0.3px',
             }}>
               {formatPrice(discountedPrice)}
@@ -229,7 +229,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
               style={{
                 width: 36, height: 36, borderRadius: '50%',
                 background: 'var(--primary-gradient)',
-                color: 'white',
+                color: 'var(--white)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 border: 'none', cursor: 'pointer',
                 transition: 'box-shadow 0.2s ease, transform 0.2s ease',

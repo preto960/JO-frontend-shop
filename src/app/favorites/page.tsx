@@ -120,7 +120,7 @@ export default function FavoritesPage() {
               onClick={() => router.push('/')}
               style={{
                 padding: '12px 28px', borderRadius: 'var(--radius-full)',
-                background: 'var(--primary-gradient)', color: 'white',
+                background: 'var(--primary-gradient)', color: 'var(--white)',
                 fontSize: 15, fontWeight: 600, border: 'none', cursor: 'pointer',
                 boxShadow: 'var(--shadow-accent)',
               }}
@@ -186,7 +186,7 @@ export default function FavoritesPage() {
                     {discount > 0 && (
                       <div style={{
                         position: 'absolute', top: 10, left: 10,
-                        background: 'var(--accent)', color: 'white',
+                        background: 'var(--accent)', color: 'var(--white)',
                         fontSize: 11, fontWeight: 700,
                         padding: '3px 10px', borderRadius: 'var(--radius-full)',
                       }}>
@@ -220,7 +220,7 @@ export default function FavoritesPage() {
                           onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                           style={{
                             flex: 1, padding: '9px 0', borderRadius: 'var(--radius)',
-                            background: 'var(--primary-gradient)', color: 'white',
+                            background: 'var(--primary-gradient)', color: 'var(--white)',
                             fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                             boxShadow: 'var(--shadow-accent)',

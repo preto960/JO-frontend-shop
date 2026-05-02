@@ -266,11 +266,11 @@ export default function LoginPage() {
           {shopLogoUrl ? (
             <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+            <span style={{ fontWeight: 800, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
         </div>
 
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#fff', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           {shopName}
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center' }}>
@@ -294,7 +294,7 @@ export default function LoginPage() {
         padding: 24,
       }}>
         <div className="animate-fade-in" style={{
-          background: '#FFFFFF',
+          background: 'var(--card)',
           borderRadius: 20,
           padding: 36,
           maxWidth: 420,
@@ -307,7 +307,7 @@ export default function LoginPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 30, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 800, fontSize: 30, color: 'var(--white)', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -318,7 +318,7 @@ export default function LoginPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 30, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 800, fontSize: 30, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -352,8 +352,8 @@ export default function LoginPage() {
                 </div>
 
                 <button type="submit" disabled={loading}
-                  style={{ width: '100%', height: 46, borderRadius: 10, background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1, transition: 'all 0.25s ease' }}>
-                  {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
+                  style={{ width: '100%', height: 46, borderRadius: 10, background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1, transition: 'all 0.25s ease' }}>
+                  {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                   {loading ? 'Ingresando...' : 'Iniciar sesión'}
                 </button>
               </form>
@@ -369,7 +369,7 @@ export default function LoginPage() {
                   margin: '0 auto 16px',
                 }}>
                   {isTOTP
-                    ? <Smartphone size={32} style={{ color: '#3B82F6' }} />
+                    ? <Smartphone size={32} style={{ color: 'var(--info)' }} />
                     : <ShieldCheck size={32} style={{ color: 'var(--info)' }} />
                   }
                 </div>
@@ -397,7 +397,7 @@ export default function LoginPage() {
               <div style={{ marginBottom: 20 }}>
                 <button
                   onClick={() => { setUseBackupCode(!useBackupCode); setOtpCode(['', '', '', '', '', '']); }}
-                  style={{ fontSize: 13, fontWeight: 600, color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                  style={{ fontSize: 13, fontWeight: 600, color: 'var(--info)', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
                 >
                   <KeyRound size={14} />
                   {useBackupCode ? 'Usar código authenticator' : 'Usar código de recuperación'}
@@ -418,8 +418,8 @@ export default function LoginPage() {
 
                     {/* Verify button */}
                     <button type="submit" disabled={loading || codeString.length !== 6}
-                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || codeString.length !== 6) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)', opacity: (loading || codeString.length !== 6) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
-                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || codeString.length !== 6) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)', opacity: (loading || codeString.length !== 6) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                       {loading ? 'Verificando...' : 'Verificar código'}
                     </button>
                   </>
@@ -435,8 +435,8 @@ export default function LoginPage() {
                     </div>
 
                     <button type="submit" disabled={loading || !backupCodeInput.trim()}
-                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || !backupCodeInput.trim()) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'white', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || !backupCodeInput.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || !backupCodeInput.trim()) ? 'none' : 'var(--shadow-accent)', opacity: (loading || !backupCodeInput.trim()) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
-                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || !backupCodeInput.trim()) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || !backupCodeInput.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || !backupCodeInput.trim()) ? 'none' : 'var(--shadow-accent)', opacity: (loading || !backupCodeInput.trim()) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                       {loading ? 'Verificando...' : 'Verificar código de recuperación'}
                     </button>
                   </>

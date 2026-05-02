@@ -73,12 +73,12 @@ export default function DeliveryPage() {
 
   const getDeliveryStatusColors = (status: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
-      pending: { bg: 'var(--warning-light)', text: '#856404' },
-      confirmed: { bg: 'var(--info-light)', text: '#0C5460' },
-      preparing: { bg: '#E8DAEF', text: '#6C3483' },
-      shipped: { bg: 'var(--success-light)', text: '#155724' },
-      delivered: { bg: 'var(--success-light)', text: '#1B7A42' },
-      cancelled: { bg: 'var(--danger-light)', text: '#CC3333' },
+      pending: { bg: 'var(--warning-light)', text: 'var(--text-secondary)' },
+      confirmed: { bg: 'var(--info-light)', text: 'var(--text-secondary)' },
+      preparing: { bg: 'var(--purple-light)', text: 'var(--purple)' },
+      shipped: { bg: 'var(--success-light)', text: 'var(--success)' },
+      delivered: { bg: 'var(--success-light)', text: 'var(--success)' },
+      cancelled: { bg: 'var(--danger-light)', text: 'var(--danger)' },
     };
     return colors[status] || { bg: 'var(--input-bg)', text: 'var(--text-secondary)' };
   };
@@ -111,7 +111,7 @@ export default function DeliveryPage() {
           style={{
             flex: 1, padding: '12px', borderRadius: 10, border: 'none', cursor: 'pointer',
             background: activeTab === 'available' ? 'var(--primary-gradient)' : 'transparent',
-            color: activeTab === 'available' ? 'white' : 'var(--text-secondary)',
+            color: activeTab === 'available' ? 'var(--white)' : 'var(--text-secondary)',
             fontSize: 14, fontWeight: activeTab === 'available' ? 700 : 500,
             boxShadow: activeTab === 'available' ? 'var(--shadow-accent)' : 'none',
             transition: 'all 0.25s ease',
@@ -124,7 +124,7 @@ export default function DeliveryPage() {
           style={{
             flex: 1, padding: '12px', borderRadius: 10, border: 'none', cursor: 'pointer',
             background: activeTab === 'mine' ? 'var(--primary-gradient)' : 'transparent',
-            color: activeTab === 'mine' ? 'white' : 'var(--text-secondary)',
+            color: activeTab === 'mine' ? 'var(--white)' : 'var(--text-secondary)',
             fontSize: 14, fontWeight: activeTab === 'mine' ? 700 : 500,
             boxShadow: activeTab === 'mine' ? 'var(--shadow-accent)' : 'none',
             transition: 'all 0.25s ease',
@@ -270,7 +270,7 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); acceptOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'linear-gradient(135deg, #00B894, #00D2A0)', color: 'white', fontSize: 15,
+                            background: 'linear-gradient(135deg, var(--success), var(--teal))', color: 'var(--white)', fontSize: 15,
                             fontWeight: 700, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}
@@ -283,7 +283,7 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); deliverOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'linear-gradient(135deg, #00B894, #00D2A0)', color: 'white', fontSize: 15,
+                            background: 'linear-gradient(135deg, var(--success), var(--teal))', color: 'var(--white)', fontSize: 15,
                             fontWeight: 700, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}

@@ -13,7 +13,7 @@ export default function AppearanceSettingsPage() {
 
   const [shopName, setShopName] = useState(config.shop_name || 'JO-Shop');
   const [primaryColor, setPrimaryColor] = useState(config.primary_color || '#FF6B35');
-  const [accentColor, setAccentColor] = useState(config.accent_color || '#E94560');
+  const [accentColor, setAccentColor] = useState(config.accent_color || 'var(--accent)');
   const [savingAppearance, setSavingAppearance] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,14 +67,14 @@ export default function AppearanceSettingsPage() {
   const resetAppearanceDefaults = () => {
     setShopName('JO-Shop');
     setPrimaryColor('#FF6B35');
-    setAccentColor('#E94560');
+    setAccentColor('var(--accent)');
   };
 
   if (!isAdmin) {
     return (
       <div style={{ padding: 24, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 64, height: 64, borderRadius: 16, background: '#FDE8EC', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <Palette size={28} color="#EF4444" />
           </div>
           <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>No autorizado</h2>
@@ -119,7 +119,7 @@ export default function AppearanceSettingsPage() {
       <div style={{ height: 1, background: 'var(--border)', margin: '16px 0 28px 0' }} />
 
       {/* Main card */}
-      <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 20, boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ background: 'var(--card)', borderRadius: 14, padding: 20, boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* Shop Name */}
         <div>
@@ -189,7 +189,7 @@ export default function AppearanceSettingsPage() {
           <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-light)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Vista previa</p>
           <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
             <div style={{ flex: 1, padding: 16, borderRadius: 12, background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 80 }}>
-              <span style={{ color: 'white', fontWeight: 800, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
+              <span style={{ color: 'var(--white)', fontWeight: 800, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
               <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>Tu tienda de confianza</span>
             </div>
             <div style={{ width: 80, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -233,7 +233,7 @@ export default function AppearanceSettingsPage() {
                 <button onClick={handleDeleteLogo} disabled={isSaving}
                   style={{
                     padding: '8px 16px', borderRadius: 10, border: 'none',
-                    background: '#FDE8EC', color: '#EF4444', fontSize: 13, fontWeight: 600,
+                    background: 'var(--accent-light)', color: 'var(--danger)', fontSize: 13, fontWeight: 600,
                     cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                     opacity: isSaving ? 0.6 : 1,
                   }}>
@@ -255,11 +255,11 @@ export default function AppearanceSettingsPage() {
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
               background: savingAppearance ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-              color: 'white', fontSize: 14, fontWeight: 700, cursor: savingAppearance ? 'wait' : 'pointer',
+              color: 'var(--white)', fontSize: 14, fontWeight: 700, cursor: savingAppearance ? 'wait' : 'pointer',
               display: 'flex', alignItems: 'center', gap: 8, boxShadow: savingAppearance ? 'none' : '0 4px 14px rgba(233,69,96,0.3)',
               opacity: savingAppearance ? 0.7 : 1,
             }}>
-            {savingAppearance ? <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={16} />}
+            {savingAppearance ? <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={16} />}
             {savingAppearance ? 'Guardando...' : 'Guardar apariencia'}
           </button>
         </div>

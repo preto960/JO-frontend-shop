@@ -76,8 +76,8 @@ export default function AdminOrdersPage() {
             style={{
               padding: '8px 18px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: activeTab === tab.value ? 600 : 500,
               whiteSpace: 'nowrap', cursor: 'pointer',
-              background: activeTab === tab.value ? 'var(--primary-gradient)' : '#FFFFFF',
-              color: activeTab === tab.value ? 'white' : 'var(--text-secondary)',
+              background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--card)',
+              color: activeTab === tab.value ? 'var(--white)' : 'var(--text-secondary)',
               boxShadow: 'var(--shadow)',
               transition: 'all 0.2s ease',
             }}
@@ -96,7 +96,7 @@ export default function AdminOrdersPage() {
           }} />
         </div>
       ) : orders.length === 0 ? (
-        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <p style={{ fontSize: 48, marginBottom: 12 }}>📋</p>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay pedidos</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Los pedidos aparecerán aquí cuando los clientes compren</p>
@@ -115,7 +115,7 @@ export default function AdminOrdersPage() {
               <div
                 key={order.id} className="animate-fade-in"
                 style={{
-                  background: '#FFFFFF', borderRadius: 14,
+                  background: 'var(--card)', borderRadius: 14,
                   boxShadow: isExpanded ? 'var(--shadow-md)' : 'var(--shadow)',
                   overflow: 'hidden',
                   transition: 'all 0.2s ease',
@@ -152,7 +152,7 @@ export default function AdminOrdersPage() {
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div style={{ borderTop: '1px solid var(--border)', padding: 18, background: '#F5F6FA' }}>
+                  <div style={{ borderTop: '1px solid var(--border)', padding: 18, background: 'var(--background)' }}>
                     {/* Items */}
                     {items.map((item: any, idx: number) => (
                       <div key={idx} style={{
@@ -177,7 +177,7 @@ export default function AdminOrdersPage() {
                           style={{
                             padding: '10px 18px', borderRadius: 10, border: 'none',
                             background: 'var(--primary-gradient)',
-                            color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                            color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                             boxShadow: 'var(--shadow-accent)',
                             transition: 'all 0.2s ease',
                           }}
@@ -192,12 +192,12 @@ export default function AdminOrdersPage() {
                           onClick={(e) => { e.stopPropagation(); updateStatus(order.id, 'cancelled'); }}
                           style={{
                             padding: '10px 18px', borderRadius: 10,
-                            border: '2px solid #FF6B6B', background: '#FFFFFF',
-                            color: '#FF6B6B', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                            border: '2px solid var(--danger)', background: 'var(--card)',
+                            color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                             transition: 'all 0.2s ease',
                           }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#FFFFFF'; }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                         >
                           Cancelar pedido
                         </button>

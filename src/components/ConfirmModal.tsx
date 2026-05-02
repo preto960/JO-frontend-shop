@@ -112,7 +112,7 @@ export default function ConfirmModal({
               borderRadius: 10,
               border: 'none',
               background: confirmColor || 'var(--primary-gradient)',
-              color: 'white',
+              color: 'var(--white)',
               cursor: 'pointer',
               fontWeight: 600,
               fontSize: 14,

@@ -150,7 +150,7 @@ export default function AppHeader() {
               {favCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: '#FF6B6B', color: 'white',
+                  background: 'var(--danger)', color: 'var(--white)',
                   fontSize: 10, fontWeight: 700,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -192,7 +192,7 @@ export default function AppHeader() {
               {cartCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: '#FF6B6B', color: 'white',
+                  background: 'var(--danger)', color: 'var(--white)',
                   fontSize: 10, fontWeight: 700,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',

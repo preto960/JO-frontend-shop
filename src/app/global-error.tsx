@@ -14,8 +14,8 @@ export default function GlobalError({
       <body style={{
         margin: 0,
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        background: '#F5F6FA',
-        color: '#2D3436',
+        background: 'var(--background)',
+        color: 'var(--text)',
       }}>
         <div style={{
           minHeight: '100vh',
@@ -25,7 +25,7 @@ export default function GlobalError({
           padding: 24,
         }}>
           <div style={{
-            background: '#FFFFFF',
+            background: 'var(--card)',
             borderRadius: 20,
             padding: '40px 32px',
             maxWidth: 420,
@@ -37,19 +37,19 @@ export default function GlobalError({
               width: 64, height: 64, borderRadius: '50%',
               background: 'var(--primary-gradient)',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 20, color: 'white', fontWeight: 800, fontSize: 14,
+              marginBottom: 20, color: 'var(--white)', fontWeight: 800, fontSize: 14,
               overflow: 'hidden',
             }}>
               <span style={{ position: 'relative', zIndex: 1 }}>JS</span>
             </div>
             <h2 style={{
-              fontSize: 20, fontWeight: 700, color: '#2D3436',
+              fontSize: 20, fontWeight: 700, color: 'var(--text)',
               marginBottom: 8,
             }}>
               Algo salio mal
             </h2>
             <p style={{
-              fontSize: 14, color: '#636E72',
+              fontSize: 14, color: 'var(--text-secondary)',
               marginBottom: 24, lineHeight: 1.6,
             }}>
               Ocurrio un error inesperado. Por favor intenta de nuevo.
@@ -61,7 +61,7 @@ export default function GlobalError({
                 borderRadius: 9999,
                 border: 'none',
                 background: 'var(--primary-gradient)',
-                color: 'white',
+                color: 'var(--white)',
                 cursor: 'pointer',
                 fontWeight: 600,
                 fontSize: 14,

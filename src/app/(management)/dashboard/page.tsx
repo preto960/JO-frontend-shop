@@ -118,12 +118,12 @@ function ChartCard({ title, icon: Icon, children }: ChartCardProps) {
    ═══════════════════════════════════════════════════════════════ */
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; bar: string }> = {
-  pending:    { bg: '#FFF3CD', text: '#856404', bar: '#F0C929' },
-  confirmed:  { bg: '#D1ECF1', text: '#0C5460', bar: '#17A2B8' },
-  preparing:  { bg: '#E8DAEF', text: '#6C3483', bar: '#8E44AD' },
+  pending:    { bg: 'var(--warning-light)', text: 'var(--text-secondary)', bar: '#F0C929' },
+  confirmed:  { bg: 'var(--info-light)', text: 'var(--text-secondary)', bar: '#17A2B8' },
+  preparing:  { bg: 'var(--purple-light)', text: 'var(--purple)', bar: '#8E44AD' },
   shipped:    { bg: '#FFE0B2', text: '#E65100', bar: '#FF9800' },
-  delivered:  { bg: '#D4EDDA', text: '#1B7A42', bar: '#28A745' },
-  cancelled:  { bg: '#F8D7DA', text: '#CC3333', bar: '#DC3545' },
+  delivered:  { bg: '#D4EDDA', text: 'var(--success)', bar: '#28A745' },
+  cancelled:  { bg: '#F8D7DA', text: 'var(--danger)', bar: '#DC3545' },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -242,12 +242,12 @@ export default function AdminDashboard() {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
-      pending:    { bg: 'var(--warning-light)',  text: '#856404' },
-      confirmed:  { bg: 'var(--info-light)',     text: '#0C5460' },
-      preparing:  { bg: '#E8DAEF',              text: '#6C3483' },
-      shipped:    { bg: 'var(--success-light)',  text: '#155724' },
-      delivered:  { bg: 'var(--success-light)',  text: '#1B7A42' },
-      cancelled:  { bg: 'var(--danger-light)',   text: '#CC3333' },
+      pending:    { bg: 'var(--warning-light)',  text: 'var(--text-secondary)' },
+      confirmed:  { bg: 'var(--info-light)',     text: 'var(--text-secondary)' },
+      preparing:  { bg: 'var(--purple-light)',              text: 'var(--purple)' },
+      shipped:    { bg: 'var(--success-light)',  text: 'var(--success)' },
+      delivered:  { bg: 'var(--success-light)',  text: 'var(--success)' },
+      cancelled:  { bg: 'var(--danger-light)',   text: 'var(--danger)' },
     };
     return colors[status] || { bg: 'var(--input-bg)', text: 'var(--text-secondary)' };
   };
@@ -441,29 +441,29 @@ export default function AdminDashboard() {
               title="Ingresos"
               value={formatPrice(stats?.revenue ?? 0)}
               icon={DollarSign}
-              color="#00B894"
-              bgColor="#E8FBF5"
+              color="var(--success)"
+              bgColor="var(--success-light)"
             />
             <StatCard
               title="Pedidos hoy"
               value={stats?.todayOrders ?? '0'}
               icon={TrendingUp}
-              color="#54A0FF"
-              bgColor="#E8F1FF"
+              color="var(--info)"
+              bgColor="var(--info-light)"
             />
             <StatCard
               title="Clientes"
               value={stats?.totalUsers ?? '0'}
               icon={Users}
-              color="#FDCB6E"
-              bgColor="#FFF9E6"
+              color="var(--warning)"
+              bgColor="var(--warning-light)"
             />
             <StatCard
               title="Productos"
               value={stats?.totalProducts ?? '0'}
               icon={Package}
-              color="#A29BFE"
-              bgColor="#F0EDFF"
+              color="var(--purple)"
+              bgColor="var(--purple-light)"
             />
           </div>
 
@@ -608,7 +608,7 @@ export default function AdminDashboard() {
                           <div style={{
                             width: `${Math.max(barWidth, 2)}%`,
                             height: '100%',
-                            background: `linear-gradient(90deg, var(--primary), #54A0FF)`,
+                            background: `linear-gradient(90deg, var(--primary), var(--info))`,
                             borderRadius: 5,
                             transition: 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
                             cursor: 'pointer',

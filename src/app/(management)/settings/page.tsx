@@ -44,8 +44,8 @@ const CARDS: SettingsCard[] = [
     description: 'Nombre, colores y logo del sistema',
     path: '/settings/appearance',
     icon: Palette,
-    color: '#E94560',
-    bgColor: '#FDE8EC',
+    color: 'var(--accent)',
+    bgColor: 'var(--accent-light)',
     permission: 'admin',
   },
   {
@@ -54,8 +54,8 @@ const CARDS: SettingsCard[] = [
     description: 'Gestiona los roles y permisos del sistema',
     path: '/manage-roles',
     icon: Shield,
-    color: '#6C5CE7',
-    bgColor: '#F0EDFF',
+    color: 'var(--purple)',
+    bgColor: 'var(--purple-light)',
     permission: 'admin',
   },
   {
@@ -64,8 +64,8 @@ const CARDS: SettingsCard[] = [
     description: 'Administra los usuarios del sistema',
     path: '/manage-users',
     icon: Users,
-    color: '#0984E3',
-    bgColor: '#E8F1FF',
+    color: 'var(--info)',
+    bgColor: 'var(--info-light)',
     permission: 'admin',
   },
   {
@@ -74,8 +74,8 @@ const CARDS: SettingsCard[] = [
     description: 'Organiza las categorías de productos',
     path: '/manage-categories',
     icon: Tag,
-    color: '#00B894',
-    bgColor: '#E8FBF5',
+    color: 'var(--success)',
+    bgColor: 'var(--success-light)',
     permission: 'products',
   },
   {
@@ -84,8 +84,8 @@ const CARDS: SettingsCard[] = [
     description: 'Gestiona las tiendas del sistema',
     path: '/manage-stores',
     icon: Store,
-    color: '#00CEC9',
-    bgColor: '#E8FAF9',
+    color: 'var(--teal)',
+    bgColor: 'var(--teal-light)',
     permission: 'admin',
     showWhenMultiStore: true,
   },
@@ -95,8 +95,8 @@ const CARDS: SettingsCard[] = [
     description: 'Configura los banners del carrusel principal',
     path: '/settings/banners',
     icon: ImageIcon,
-    color: '#F39C12',
-    bgColor: '#FEF3E2',
+    color: 'var(--warning)',
+    bgColor: 'var(--warning-light)',
     permission: 'admin',
   },
 ];
@@ -227,7 +227,7 @@ export default function SettingsPage() {
               width: 36,
               height: 36,
               borderRadius: 10,
-              background: '#F0EDFF',
+              background: 'var(--purple-light)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -243,7 +243,7 @@ export default function SettingsPage() {
 
         <div
           style={{
-            background: '#FFFFFF',
+            background: 'var(--card)',
             borderRadius: 14,
             padding: 20,
             boxShadow: 'var(--shadow)',
@@ -303,7 +303,7 @@ function NavigationCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: '#FFFFFF',
+        background: 'var(--card)',
         borderRadius: 14,
         padding: 20,
         boxShadow: hovered ? '0 8px 25px rgba(0,0,0,0.1)' : 'var(--shadow)',
@@ -372,7 +372,7 @@ function MultiStoreToggleCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: '#FFFFFF',
+        background: 'var(--card)',
         borderRadius: 14,
         padding: 20,
         boxShadow: hovered ? '0 8px 25px rgba(0,0,0,0.1)' : 'var(--shadow)',
@@ -389,7 +389,7 @@ function MultiStoreToggleCard({
           width: 48,
           height: 48,
           borderRadius: '50%',
-          background: enabled ? '#E8FBF5' : 'var(--input-bg)',
+          background: enabled ? 'var(--success-light)' : 'var(--input-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -397,7 +397,7 @@ function MultiStoreToggleCard({
           transition: 'background 0.3s ease',
         }}
       >
-        <Globe size={22} color={enabled ? '#00B894' : 'var(--text-light)'} />
+        <Globe size={22} color={enabled ? 'var(--success)' : 'var(--text-light)'} />
       </div>
 
       {/* Text + toggle */}
@@ -417,7 +417,7 @@ function MultiStoreToggleCard({
             marginTop: 10,
             padding: '8px 12px',
             borderRadius: 10,
-            background: enabled ? '#E8FBF5' : 'var(--input-bg)',
+            background: enabled ? 'var(--success-light)' : 'var(--input-bg)',
             display: 'inline-flex',
             alignItems: 'center',
             gap: 8,
@@ -429,7 +429,7 @@ function MultiStoreToggleCard({
               width: 8,
               height: 8,
               borderRadius: '50%',
-              background: enabled ? '#00B894' : '#B2BEC3',
+              background: enabled ? 'var(--success)' : 'var(--text-light)',
               flexShrink: 0,
               transition: 'background 0.3s ease',
             }}
@@ -438,7 +438,7 @@ function MultiStoreToggleCard({
             style={{
               fontSize: 12,
               fontWeight: 600,
-              color: enabled ? '#00815A' : 'var(--text-secondary)',
+              color: enabled ? 'var(--success)' : 'var(--text-secondary)',
               transition: 'color 0.3s ease',
             }}
           >
@@ -457,7 +457,7 @@ function MultiStoreToggleCard({
           height: 28,
           borderRadius: 14,
           border: 'none',
-          background: enabled ? '#00B894' : '#DFE4EA',
+          background: enabled ? 'var(--success)' : 'var(--border)',
           cursor: loading ? 'wait' : 'pointer',
           position: 'relative',
           transition: 'background 0.3s ease',
@@ -474,7 +474,7 @@ function MultiStoreToggleCard({
             width: 22,
             height: 22,
             borderRadius: '50%',
-            background: '#FFFFFF',
+            background: 'var(--card)',
             boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
             transition: 'left 0.3s ease',
           }}

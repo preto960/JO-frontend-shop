@@ -50,7 +50,7 @@ const DurationInput: React.FC<DurationInputProps> = ({ value, onChange, compact 
             width: inputWidth,
             height: compact ? 32 : 42,
             borderRadius: 10,
-            border: `2px solid ${error ? '#E74C3C' : 'var(--border)'}`,
+            border: `2px solid ${error ? 'var(--danger)' : 'var(--border)'}`,
             fontSize: compact ? 12 : 14,
             padding: '0 8px',
             textAlign: 'center',
@@ -61,15 +61,15 @@ const DurationInput: React.FC<DurationInputProps> = ({ value, onChange, compact 
             boxSizing: 'border-box',
           }}
           onFocus={(e) => {
-            e.target.style.borderColor = error ? '#E74C3C' : 'var(--primary)';
+            e.target.style.borderColor = error ? 'var(--danger)' : 'var(--primary)';
           }}
           onBlur={(e) => {
-            e.target.style.borderColor = error ? '#E74C3C' : 'var(--border)';
+            e.target.style.borderColor = error ? 'var(--danger)' : 'var(--border)';
           }}
         />
         {error && (
           <span style={{
-            position: 'absolute', bottom: -16, left: 0, fontSize: 10, color: '#E74C3C', whiteSpace: 'nowrap',
+            position: 'absolute', bottom: -16, left: 0, fontSize: 10, color: 'var(--danger)', whiteSpace: 'nowrap',
           }}>
             {error}
           </span>
@@ -407,7 +407,7 @@ const BannersPage: React.FC = () => {
             onClick={() => handleToggleBanners(!bannersEnabled)}
             style={{
               width: 52, height: 28, borderRadius: 14, border: 'none', cursor: 'pointer',
-              background: bannersEnabled ? '#F39C12' : '#DFE4EA',
+              background: bannersEnabled ? 'var(--warning)' : 'var(--border)',
               position: 'relative', transition: 'var(--transition-fast)', flexShrink: 0,
             }}
           >
@@ -495,7 +495,7 @@ const BannersPage: React.FC = () => {
                         {/* Media type badge */}
                         <span style={{
                           position: 'absolute', top: 4, right: 4,
-                          background: isVideo ? '#E74C3C' : 'var(--primary)',
+                          background: isVideo ? 'var(--danger)' : 'var(--primary)',
                           color: '#FFF', fontSize: 9, fontWeight: 600, padding: '2px 6px',
                           borderRadius: 4, textTransform: 'uppercase',
                         }}>
@@ -510,7 +510,7 @@ const BannersPage: React.FC = () => {
                           <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 4,
                             fontSize: 11, fontWeight: 600,
-                            color: banner.active ? '#27AE60' : 'var(--text-secondary)',
+                            color: banner.active ? 'var(--success)' : 'var(--text-secondary)',
                             background: banner.active ? 'rgba(39,174,96,0.1)' : 'var(--input-bg)',
                             padding: '3px 8px', borderRadius: 6,
                           }}>
@@ -625,7 +625,7 @@ const BannersPage: React.FC = () => {
                                 style={{
                                   width: '100%', padding: '10px 14px', border: 'none', background: 'none',
                                   cursor: 'pointer', textAlign: 'left', fontSize: 13,
-                                  color: '#E74C3C', display: 'flex', alignItems: 'center', gap: 10,
+                                  color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 10,
                                   transition: 'var(--transition-fast)',
                                 }}
                                 onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(231,76,60,0.06)')}

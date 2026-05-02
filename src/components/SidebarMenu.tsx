@@ -174,7 +174,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: 24,
-                color: 'white',
+                color: 'var(--white)',
                 boxShadow: 'var(--shadow-accent)',
                 letterSpacing: '0.5px',
               }}>
@@ -193,7 +193,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
             style={{
               background: 'rgba(255,255,255,0.12)',
               border: 'none',
-              color: 'white',
+              color: 'var(--white)',
               cursor: 'pointer',
               width: 36,
               height: 36,
@@ -261,7 +261,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 {item.badge > 0 && (
                   <span style={{
                     background: 'var(--primary)',
-                    color: 'white',
+                    color: 'var(--white)',
                     fontSize: 11,
                     fontWeight: 700,
                     minWidth: 20,

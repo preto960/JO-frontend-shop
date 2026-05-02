@@ -19,49 +19,49 @@ const styles = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    background: 'var(--card)', borderRadius: 20, padding: 28,
     maxWidth: 520, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   searchInput: {
-    paddingLeft: 40, paddingRight: 16, background: '#FFFFFF',
+    paddingLeft: 40, paddingRight: 16, background: 'var(--card)',
     borderRadius: 10, height: 44, border: '1px solid var(--border)',
     boxShadow: 'var(--shadow)', fontSize: 14, color: 'var(--text)',
   },
   tableCard: {
-    background: '#FFFFFF', borderRadius: 14,
+    background: 'var(--card)', borderRadius: 14,
     boxShadow: 'var(--shadow)', overflow: 'hidden',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%', border: 'none',
-    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%', border: 'none',
-    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
-    border: '2px solid var(--border)', background: '#FFFFFF',
+    border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
     transition: 'all 0.2s ease',
   },
@@ -364,7 +364,7 @@ export default function AdminProductsPage() {
             onClick={() => router.push('/product-batches')}
             style={{
               ...styles.newBtn,
-              background: '#FF6B6B',
+              background: 'var(--danger)',
             }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
@@ -391,7 +391,7 @@ export default function AdminProductsPage() {
             onClick={() => csvInputRef.current?.click()}
             style={{
               ...styles.newBtn,
-              background: '#FFFFFF',
+              background: 'var(--card)',
               color: 'var(--text)',
               border: '2px solid var(--border)',
               boxShadow: 'var(--shadow)',
@@ -424,7 +424,7 @@ export default function AdminProductsPage() {
           }} />
         </div>
       ) : fetchError && products.length === 0 ? (
-        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Error al cargar productos</p>
           <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>{fetchError}</p>
@@ -433,7 +433,7 @@ export default function AdminProductsPage() {
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
               background: 'var(--primary-gradient)',
-              color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+              color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
               boxShadow: 'var(--shadow-accent)',
             }}
           >
@@ -483,7 +483,7 @@ export default function AdminProductsPage() {
                       <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>
                         {formatPrice(product.price)}
                       </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? '#FF6B6B' : 'var(--text)' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? 'var(--danger)' : 'var(--text)' }}>
                         {product.stock != null ? product.stock : 'N/A'}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
@@ -493,16 +493,16 @@ export default function AdminProductsPage() {
                           <button
                             onClick={() => openEdit(product)}
                             style={styles.editBtn}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                           >
                             <Edit2 size={15} />
                           </button>
                           <button
                             onClick={() => setDeleteModal(product)}
                             style={styles.deleteBtn}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                           >
                             <Trash2 size={15} />
                           </button>
@@ -549,7 +549,7 @@ export default function AdminProductsPage() {
               <input
                 value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Nombre del producto"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
             <div>
@@ -557,7 +557,7 @@ export default function AdminProductsPage() {
               <textarea
                 value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Descripción" rows={3}
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none', resize: 'vertical' }}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none', resize: 'vertical' }}
               />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -566,7 +566,7 @@ export default function AdminProductsPage() {
                 <input
                   type="number" step="0.01" value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0.00"
-                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
                 />
               </div>
               <div>
@@ -574,7 +574,7 @@ export default function AdminProductsPage() {
                 <input
                   type="number" value={form.stock}
                   onChange={(e) => setForm({ ...form, stock: e.target.value })} placeholder="0"
-                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
                 />
               </div>
             </div>
@@ -602,7 +602,7 @@ export default function AdminProductsPage() {
                   style={{
                     flex: '0 0 auto',
                     padding: '0 14px', height: 42, borderRadius: 10,
-                    border: '1px solid var(--border)', background: '#FFFFFF',
+                    border: '1px solid var(--border)', background: 'var(--card)',
                     color: 'var(--text)', fontSize: 13, fontWeight: 500, cursor: uploading ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', gap: 6,
                     transition: 'all 0.2s ease',
@@ -620,7 +620,7 @@ export default function AdminProductsPage() {
                   style={{
                     flex: 1, padding: '0 14px', height: 42, borderRadius: 10,
                     border: '1px solid var(--border)', fontSize: 13, color: 'var(--text)',
-                    background: '#FFFFFF', outline: 'none',
+                    background: 'var(--card)', outline: 'none',
                   }}
                 />
                 <button
@@ -631,7 +631,7 @@ export default function AdminProductsPage() {
                     padding: '0 14px', height: 42, borderRadius: 10,
                     border: 'none',
                     background: urlInput.trim() ? 'var(--primary-gradient)' : 'var(--input-bg)',
-                    color: 'white', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
+                    color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
                     display: 'flex', alignItems: 'center', gap: 5,
                     transition: 'all 0.2s ease',
                   }}
@@ -677,7 +677,7 @@ export default function AdminProductsPage() {
                         <div style={{
                           position: 'absolute', top: 2, left: 2,
                           background: 'var(--primary)',
-                          color: 'white', borderRadius: '0 0 6px 0',
+                          color: 'var(--white)', borderRadius: '0 0 6px 0',
                           padding: '1px 5px', fontSize: 8, fontWeight: 700,
                           display: 'flex', alignItems: 'center', gap: 2,
                         }}>
@@ -694,13 +694,13 @@ export default function AdminProductsPage() {
                         style={{
                           position: 'absolute', top: 2, right: 2,
                           width: 20, height: 20, borderRadius: '50%',
-                          background: 'rgba(0,0,0,0.6)', color: 'white',
+                          background: 'rgba(0,0,0,0.6)', color: 'var(--white)',
                           border: 'none', cursor: 'pointer', padding: 0,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'background 0.15s ease',
                           fontSize: 12,
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#FF6B6B'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--danger)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
                         aria-label="Eliminar imagen"
                       >
@@ -709,7 +709,7 @@ export default function AdminProductsPage() {
                       {/* Index number */}
                       <div style={{
                         position: 'absolute', bottom: 2, right: 2,
-                        background: 'rgba(0,0,0,0.5)', color: 'white',
+                        background: 'rgba(0,0,0,0.5)', color: 'var(--white)',
                         borderRadius: 4, padding: '0 4px', fontSize: 9, fontWeight: 600,
                       }}>
                         {idx + 1}
@@ -734,7 +734,7 @@ export default function AdminProductsPage() {
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Categoría</label>
               <select
                 value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               >
                 <option value="">Seleccionar categoría</option>
                 {categories.map((cat: any) => (
@@ -747,7 +747,7 @@ export default function AdminProductsPage() {
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text)' }}>Tienda</label>
                 <select
                   value={form.storeId} onChange={(e) => setForm({ ...form, storeId: e.target.value })}
-                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                  style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
                 >
                   <option value="">Seleccionar tienda</option>
                   {stores.map((store: any) => (
@@ -764,7 +764,7 @@ export default function AdminProductsPage() {
               style={{
                 ...styles.saveBtn,
                 opacity: saving ? 0.7 : 1,
-                background: saving ? '#FDCB6E' : styles.saveBtn.background,
+                background: saving ? 'var(--warning)' : styles.saveBtn.background,
               }}
             >
               {saving ? 'Guardando...' : 'Guardar'}
@@ -779,7 +779,7 @@ export default function AdminProductsPage() {
         title="Eliminar producto"
         message={`¿Estás seguro de eliminar "${deleteModal?.name || 'este producto'}"?`}
         confirmText="Eliminar"
-        confirmColor="#FF6B6B"
+        confirmColor="var(--danger)"
         onConfirm={handleDelete}
         onCancel={() => setDeleteModal(null)}
       />

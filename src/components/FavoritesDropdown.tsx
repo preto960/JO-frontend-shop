@@ -144,7 +144,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
           marginTop: 8,
           width: 360,
           maxWidth: 'calc(100vw - 32px)',
-          background: '#FFFFFF',
+          background: 'var(--card)',
           borderRadius: 16,
           boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)',
           zIndex: 250,
@@ -164,7 +164,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
               width: 32, height: 32, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #FF6B6B, #ee5a24)',
+              background: 'linear-gradient(135deg, var(--danger), var(--primary))',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <Heart size={16} color="white" fill="white" />
@@ -275,10 +275,10 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
                       onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                       style={{
                         width: 28, height: 28, borderRadius: 6,
-                        border: 'none', background: '#E8F5E9',
+                        border: 'none', background: 'var(--success-light)',
                         cursor: 'pointer', display: 'flex',
                         alignItems: 'center', justifyContent: 'center',
-                        color: '#4CAF50', flexShrink: 0,
+                        color: 'var(--success)', flexShrink: 0,
                       }}
                       aria-label="Agregar al carrito"
                     >
@@ -291,10 +291,10 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
                     onClick={(e) => { e.stopPropagation(); removeFavorite(product.id); }}
                     style={{
                       width: 28, height: 28, borderRadius: 6,
-                      border: 'none', background: '#FFE8E8',
+                      border: 'none', background: 'var(--danger-light)',
                       cursor: 'pointer', display: 'flex',
                       alignItems: 'center', justifyContent: 'center',
-                      color: '#FF6B6B', flexShrink: 0,
+                      color: 'var(--danger)', flexShrink: 0,
                     }}
                     aria-label="Eliminar de favoritos"
                   >
@@ -317,7 +317,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
               onClick={() => goTo('/favorites')}
               style={{
                 width: '100%', padding: '11px 0', borderRadius: 10,
-                border: '2px solid var(--border)', background: 'white',
+                border: '2px solid var(--border)', background: 'var(--white)',
                 color: 'var(--text)', cursor: 'pointer',
                 fontWeight: 600, fontSize: 13,
                 transition: 'all 0.2s',

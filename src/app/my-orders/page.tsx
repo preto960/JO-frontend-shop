@@ -68,7 +68,7 @@ export default function OrdersPage() {
         rightAction={
           <button
             onClick={fetchOrders}
-            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4 }}
+            style={{ background: 'none', border: 'none', color: 'var(--white)', cursor: 'pointer', padding: 4 }}
             aria-label="Actualizar"
           >
             <RefreshCw size={20} />
@@ -96,7 +96,7 @@ export default function OrdersPage() {
               cursor: 'pointer',
               transition: 'all 0.25s ease',
               background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--input-bg)',
-              color: activeTab === tab.value ? '#fff' : 'var(--text-secondary)',
+              color: activeTab === tab.value ? 'var(--white)' : 'var(--text-secondary)',
               boxShadow: activeTab === tab.value ? 'var(--shadow-accent)' : 'none',
             }}
           >

@@ -35,40 +35,40 @@ const styles = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    background: 'var(--card)', borderRadius: 20, padding: 28,
     maxWidth: 600, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
-    border: '2px solid var(--border)', background: '#FFFFFF',
+    border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
     transition: 'all 0.2s ease',
   },
@@ -298,7 +298,7 @@ export default function AdminRolesPage() {
           }} />
         </div>
       ) : roles.length === 0 ? (
-        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <div style={{
             width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -319,7 +319,7 @@ export default function AdminRolesPage() {
               <div
                 key={role.id} className="animate-fade-in"
                 style={{
-                  background: '#FFFFFF', borderRadius: 14, padding: 18,
+                  background: 'var(--card)', borderRadius: 14, padding: 18,
                   boxShadow: 'var(--shadow)',
                   transition: 'all 0.2s ease',
                   cursor: 'pointer',
@@ -365,7 +365,7 @@ export default function AdminRolesPage() {
                         ...styles.editBtn,
                         background: 'var(--primary-light)', color: 'var(--primary)',
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
                       title="Gestionar permisos"
                     >
@@ -374,8 +374,8 @@ export default function AdminRolesPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); openEdit(role); }}
                       style={styles.editBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                       title="Editar rol"
                     >
                       <Edit2 size={15} />
@@ -383,8 +383,8 @@ export default function AdminRolesPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); setDeleteModal(role); }}
                       style={styles.deleteBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                       title="Eliminar rol"
                     >
                       <Trash2 size={15} />
@@ -425,7 +425,7 @@ export default function AdminRolesPage() {
               <input
                 value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Nombre del rol"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
             <div>
@@ -433,7 +433,7 @@ export default function AdminRolesPage() {
               <input
                 value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Descripción del rol"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
           </div>
@@ -442,7 +442,7 @@ export default function AdminRolesPage() {
             <button onClick={() => setModalOpen(false)} style={styles.cancelBtn}>Cancelar</button>
             <button
               onClick={handleSave} disabled={saving}
-              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? '#FDCB6E' : styles.saveBtn.background }}
+              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? 'var(--warning)' : styles.saveBtn.background }}
             >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>
@@ -525,7 +525,7 @@ export default function AdminRolesPage() {
                           padding: '10px 16px',
                           borderBottom: groupedPerms[mod].indexOf(perm) < groupedPerms[mod].length - 1
                             ? '1px solid var(--border)' : 'none',
-                          background: assigned ? '#E8FBF5' : 'transparent',
+                          background: assigned ? 'var(--success-light)' : 'transparent',
                           transition: 'background 0.2s ease',
                         }}
                       >
@@ -542,7 +542,7 @@ export default function AdminRolesPage() {
                           disabled={isToggling}
                           style={{
                             width: 40, height: 24, borderRadius: 12, border: 'none',
-                            background: assigned ? '#00B894' : '#DFE4EA',
+                            background: assigned ? 'var(--success)' : 'var(--border)',
                             cursor: 'pointer', position: 'relative',
                             transition: 'all 0.25s ease',
                             opacity: isToggling ? 0.6 : 1,
@@ -556,7 +556,7 @@ export default function AdminRolesPage() {
                             left: assigned ? 20 : 2,
                             width: 20, height: 20,
                             borderRadius: '50%',
-                            background: '#FFFFFF',
+                            background: 'var(--card)',
                             boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
                             transition: 'left 0.25s ease',
                           }} />
@@ -577,7 +577,7 @@ export default function AdminRolesPage() {
         title="Eliminar rol"
         message={`¿Estás seguro de eliminar el rol "${deleteModal?.name || ''}"?`}
         confirmText="Eliminar"
-        confirmColor="#FF6B6B"
+        confirmColor="var(--danger)"
         onConfirm={handleDelete}
         onCancel={() => setDeleteModal(null)}
       />

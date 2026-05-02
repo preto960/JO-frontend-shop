@@ -29,7 +29,7 @@ export default function OrdersError({
       }}>
         <div style={{
           width: 64, height: 64, borderRadius: '50%',
-          background: '#FFE8E8',
+          background: 'var(--danger-light)',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 20,
         }}>
@@ -54,7 +54,7 @@ export default function OrdersError({
             borderRadius: 'var(--radius-full)',
             border: 'none',
             background: 'var(--primary-gradient)',
-            color: 'white',
+            color: 'var(--white)',
             cursor: 'pointer',
             fontWeight: 600,
             fontSize: 14,

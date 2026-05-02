@@ -127,7 +127,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
           marginTop: 8,
           width: 360,
           maxWidth: 'calc(100vw - 32px)',
-          background: '#FFFFFF',
+          background: 'var(--card)',
           borderRadius: 16,
           boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)',
           zIndex: 250,
@@ -165,8 +165,8 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
             <button
               onClick={clearCart}
               style={{
-                background: '#FFE8E8', border: 'none',
-                color: '#FF6B6B', cursor: 'pointer',
+                background: 'var(--danger-light)', border: 'none',
+                color: 'var(--danger)', cursor: 'pointer',
                 padding: '5px 10px', borderRadius: 8,
                 fontSize: 11, fontWeight: 600,
                 display: 'flex', alignItems: 'center', gap: 4,
@@ -261,7 +261,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                     onClick={() => updateQuantity(index, -1)}
                     style={{
                       width: 28, height: 28, borderRadius: 6,
-                      border: 'none', background: 'white',
+                      border: 'none', background: 'var(--white)',
                       cursor: 'pointer', display: 'flex',
                       alignItems: 'center', justifyContent: 'center',
                       color: 'var(--text)',
@@ -279,7 +279,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                     onClick={() => updateQuantity(index, 1)}
                     style={{
                       width: 28, height: 28, borderRadius: 6,
-                      border: 'none', background: 'white',
+                      border: 'none', background: 'var(--white)',
                       cursor: 'pointer', display: 'flex',
                       alignItems: 'center', justifyContent: 'center',
                       color: 'var(--text)',
@@ -294,10 +294,10 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   onClick={() => removeItem(index)}
                   style={{
                     width: 28, height: 28, borderRadius: 6,
-                    border: 'none', background: '#FFE8E8',
+                    border: 'none', background: 'var(--danger-light)',
                     cursor: 'pointer', display: 'flex',
                     alignItems: 'center', justifyContent: 'center',
-                    color: '#FF6B6B', flexShrink: 0,
+                    color: 'var(--danger)', flexShrink: 0,
                   }}
                 >
                   <X size={14} />
@@ -331,7 +331,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                 onClick={() => goTo('/cart')}
                 style={{
                   flex: 1, padding: '11px 0', borderRadius: 10,
-                  border: '2px solid var(--border)', background: 'white',
+                  border: '2px solid var(--border)', background: 'var(--white)',
                   color: 'var(--text)', cursor: 'pointer',
                   fontWeight: 600, fontSize: 13,
                   transition: 'all 0.2s',
@@ -345,7 +345,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   flex: 1, padding: '11px 0', borderRadius: 10,
                   border: 'none',
                   background: 'var(--primary-gradient)',
-                  color: 'white', cursor: 'pointer',
+                  color: 'var(--white)', cursor: 'pointer',
                   fontWeight: 700, fontSize: 13,
                   boxShadow: 'var(--shadow-accent)',
                   transition: 'all 0.2s',

@@ -16,32 +16,32 @@ const styles: any = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    background: 'var(--card)', borderRadius: 20, padding: 28,
     maxWidth: 750, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   tableCard: {
-    background: '#FFFFFF', borderRadius: 14,
+    background: 'var(--card)', borderRadius: 14,
     boxShadow: 'var(--shadow)', overflow: 'hidden',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
-    border: '2px solid var(--border)', background: '#FFFFFF',
+    border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
     transition: 'all 0.2s ease',
   },
@@ -244,7 +244,7 @@ export default function ProductBatchesPage() {
         <input
           type="text" placeholder="Buscar lotes..." defaultValue={searchBatch}
           onChange={(e) => debouncedBatchSearch(e.target.value)}
-          style={{ paddingLeft: 40, paddingRight: 16, background: '#FFFFFF', borderRadius: 10, height: 44, border: '1px solid var(--border)', boxShadow: 'var(--shadow)', fontSize: 14, color: 'var(--text)', width: '100%', outline: 'none' }}
+          style={{ paddingLeft: 40, paddingRight: 16, background: 'var(--card)', borderRadius: 10, height: 44, border: '1px solid var(--border)', boxShadow: 'var(--shadow)', fontSize: 14, color: 'var(--text)', width: '100%', outline: 'none' }}
         />
       </div>
 
@@ -286,8 +286,8 @@ export default function ProductBatchesPage() {
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{
                         fontSize: 14, fontWeight: 700,
-                        color: batch.discountPercent > 0 ? '#00B894' : 'var(--text-secondary)',
-                        background: batch.discountPercent > 0 ? '#E8FBF5' : 'var(--input-bg)',
+                        color: batch.discountPercent > 0 ? 'var(--success)' : 'var(--text-secondary)',
+                        background: batch.discountPercent > 0 ? 'var(--success-light)' : 'var(--input-bg)',
                         padding: '4px 12px', borderRadius: 20,
                       }}>
                         {batch.discountPercent > 0 ? `${batch.discountPercent}%` : '0%'}
@@ -301,8 +301,8 @@ export default function ProductBatchesPage() {
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{
                         fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 20,
-                        background: batch.status === 'active' ? '#E8FBF5' : '#FFE8E8',
-                        color: batch.status === 'active' ? '#00B894' : '#FF6B6B',
+                        background: batch.status === 'active' ? 'var(--success-light)' : 'var(--danger-light)',
+                        color: batch.status === 'active' ? 'var(--success)' : 'var(--danger)',
                       }}>
                         {batch.status === 'active' ? 'Activo' : batch.status === 'deleted' ? 'Eliminado' : batch.status}
                       </span>
@@ -318,7 +318,7 @@ export default function ProductBatchesPage() {
                         {batch.active !== false && hasPermission('batches.edit') && (
                           <button
                             onClick={() => openEdit(batch)}
-                            style={styles.iconBtn('#E8F1FF', '#54A0FF')}
+                            style={styles.iconBtn('var(--info-light)', 'var(--info)')}
                             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
                           >
@@ -328,7 +328,7 @@ export default function ProductBatchesPage() {
                         {batch.active !== false && hasPermission('batches.delete') && (
                           <button
                             onClick={() => setDeleteModal(batch)}
-                            style={styles.iconBtn('#FFE8E8', '#FF6B6B')}
+                            style={styles.iconBtn('var(--danger-light)', 'var(--danger)')}
                             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
                           >
@@ -356,7 +356,7 @@ export default function ProductBatchesPage() {
                   if (!prod) return null;
                   return (
                     <div key={item.productId || idx} style={{
-                      background: '#FFFFFF', borderRadius: 10, padding: '8px 14px',
+                      background: 'var(--card)', borderRadius: 10, padding: '8px 14px',
                       display: 'flex', alignItems: 'center', gap: 10,
                       boxShadow: 'var(--shadow)', minWidth: 200,
                     }}>
@@ -377,7 +377,7 @@ export default function ProductBatchesPage() {
                         <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '2px 0 0' }}>
                           {formatPrice(prod.price)}
                           {prod.discountPercent > 0 && (
-                            <span style={{ color: '#00B894', marginLeft: 6 }}>-{prod.discountPercent}%</span>
+                            <span style={{ color: 'var(--success)', marginLeft: 6 }}>-{prod.discountPercent}%</span>
                           )}
                         </p>
                       </div>
@@ -422,7 +422,7 @@ export default function ProductBatchesPage() {
               <input
                 value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Ej: Promo Navidad"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
             <div>
@@ -430,7 +430,7 @@ export default function ProductBatchesPage() {
               <textarea
                 value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Descripcion del lote (opcional)" rows={2}
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none', resize: 'vertical' }}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none', resize: 'vertical' }}
               />
             </div>
             <div>
@@ -442,20 +442,20 @@ export default function ProductBatchesPage() {
                 type="number" min="0" max="100" step="0.1"
                 value={form.discountPercent} onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
                 placeholder="Ej: 15 para 15% de descuento"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
 
             {/* Selected products preview */}
             {selectedProductIds.length > 0 && (
-              <div style={{ background: '#E8FBF5', borderRadius: 12, padding: 14 }}>
+              <div style={{ background: 'var(--success-light)', borderRadius: 12, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#00B894' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)' }}>
                     {selectedProductIds.length} producto{selectedProductIds.length > 1 ? 's' : ''} seleccionado{selectedProductIds.length > 1 ? 's' : ''}
                   </span>
                   <button
                     onClick={() => setSelectedProductIds([])}
-                    style={{ fontSize: 12, fontWeight: 600, color: '#FF6B6B', background: '#FFE8E8', border: 'none', padding: '4px 10px', borderRadius: 20, cursor: 'pointer' }}
+                    style={{ fontSize: 12, fontWeight: 600, color: 'var(--danger)', background: 'var(--danger-light)', border: 'none', padding: '4px 10px', borderRadius: 20, cursor: 'pointer' }}
                   >
                     Limpiar
                   </button>
@@ -464,11 +464,11 @@ export default function ProductBatchesPage() {
                   {selectedProducts.map(p => (
                     <span key={p.id} style={{
                       fontSize: 12, fontWeight: 500, color: 'var(--text)',
-                      background: '#FFFFFF', padding: '4px 10px', borderRadius: 6,
-                      border: '1px solid #00B894', display: 'inline-flex', alignItems: 'center', gap: 4,
+                      background: 'var(--card)', padding: '4px 10px', borderRadius: 6,
+                      border: '1px solid var(--success)', display: 'inline-flex', alignItems: 'center', gap: 4,
                     }}>
                       {p.name}
-                      <X size={12} color="#FF6B6B" style={{ cursor: 'pointer' }} onClick={() => toggleProduct(p.id)} />
+                      <X size={12} color="var(--danger)" style={{ cursor: 'pointer' }} onClick={() => toggleProduct(p.id)} />
                     </span>
                   ))}
                 </div>
@@ -485,7 +485,7 @@ export default function ProductBatchesPage() {
                 <input
                   type="text" placeholder="Buscar producto por nombre..."
                   onChange={(e) => debouncedProductSearch(e.target.value)}
-                  style={{ paddingLeft: 36, paddingRight: 16, background: '#FFFFFF', borderRadius: 8, height: 40, border: '1px solid var(--border)', fontSize: 13, color: 'var(--text)', width: '100%', outline: 'none' }}
+                  style={{ paddingLeft: 36, paddingRight: 16, background: 'var(--card)', borderRadius: 8, height: 40, border: '1px solid var(--border)', fontSize: 13, color: 'var(--text)', width: '100%', outline: 'none' }}
                 />
               </div>
               <div style={{ maxHeight: 280, overflowY: 'auto', borderRadius: 10, border: '1px solid var(--border)' }}>
@@ -538,7 +538,7 @@ export default function ProductBatchesPage() {
                           <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '2px 0 0' }}>
                             {formatPrice(product.price)}
                             {product.discountPercent > 0 && (
-                              <span style={{ color: '#00B894', marginLeft: 6 }}>ya tiene {product.discountPercent}%</span>
+                              <span style={{ color: 'var(--success)', marginLeft: 6 }}>ya tiene {product.discountPercent}%</span>
                             )}
                           </p>
                         </div>
@@ -582,14 +582,14 @@ export default function ProductBatchesPage() {
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 8 }}>
             El lote <strong>&quot;{deleteModal?.name}&quot;</strong> sera eliminado.
           </p>
-          <p style={{ fontSize: 13, color: '#FF6B6B', marginBottom: 24, background: '#FFE8E8', padding: '10px 14px', borderRadius: 8 }}>
+          <p style={{ fontSize: 13, color: 'var(--danger)', marginBottom: 24, background: 'var(--danger-light)', padding: '10px 14px', borderRadius: 8 }}>
             El descuento se eliminara de los {deleteModal?.items?.length || deleteModal?.productCount || 0} productos asociados (se reseteara a 0%).
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
             <button onClick={() => setDeleteModal(null)} style={styles.cancelBtn}>Cancelar</button>
             <button
               onClick={handleDelete}
-              style={{ ...styles.saveBtn, background: '#FF6B6B', boxShadow: '0 4px 14px rgba(255,107,107,0.3)' }}
+              style={{ ...styles.saveBtn, background: 'var(--danger)', boxShadow: '0 4px 14px rgba(255,107,107,0.3)' }}
             >
               Eliminar lote
             </button>

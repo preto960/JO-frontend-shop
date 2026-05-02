@@ -17,39 +17,39 @@ const styles = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28, maxWidth: 460, width: '100%',
+    background: 'var(--card)', borderRadius: 20, padding: 28, maxWidth: 460, width: '100%',
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
-    border: '2px solid var(--border)', background: '#FFFFFF',
+    border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
     transition: 'all 0.2s ease',
   },
@@ -242,7 +242,7 @@ export default function AdminCategoriesPage() {
           }} />
         </div>
       ) : categories.length === 0 ? (
-        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <div style={{
             width: 64, height: 64, borderRadius: '50%', background: 'var(--primary-light)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -259,7 +259,7 @@ export default function AdminCategoriesPage() {
             <div
               key={cat.id} className="animate-fade-in"
               style={{
-                background: '#FFFFFF', borderRadius: 16, padding: 18,
+                background: 'var(--card)', borderRadius: 16, padding: 18,
                 boxShadow: 'var(--shadow)', display: 'flex', alignItems: 'center', gap: 16,
                 transition: 'all 0.2s ease',
                 opacity: cat.active ? 1 : 0.6,
@@ -293,8 +293,8 @@ export default function AdminCategoriesPage() {
                 )}
                 {!cat.active && (
                   <span style={{
-                    fontSize: 11, fontWeight: 600, color: '#FF6B6B',
-                    background: '#FFE8E8', padding: '2px 8px', borderRadius: 6,
+                    fontSize: 11, fontWeight: 600, color: 'var(--danger)',
+                    background: 'var(--danger-light)', padding: '2px 8px', borderRadius: 6,
                     display: 'inline-block', marginTop: 4,
                   }}>
                     Inactiva
@@ -311,8 +311,8 @@ export default function AdminCategoriesPage() {
                   title={cat.active ? 'Desactivar' : 'Activar'}
                   style={{
                     width: 34, height: 34, borderRadius: '50%', border: 'none',
-                    background: cat.active ? '#E8FBF5' : '#FFE8E8',
-                    color: cat.active ? '#27AE60' : '#FF6B6B',
+                    background: cat.active ? 'var(--success-light)' : 'var(--danger-light)',
+                    color: cat.active ? 'var(--success)' : 'var(--danger)',
                     cursor: togglingId === cat.id ? 'wait' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'all 0.2s ease',
@@ -326,15 +326,15 @@ export default function AdminCategoriesPage() {
 
                 <button
                   onClick={() => openEdit(cat)} style={styles.editBtn}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                 >
                   <Edit2 size={15} />
                 </button>
                 <button
                   onClick={() => setDeleteModal(cat)} style={styles.deleteBtn}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                 >
                   <Trash2 size={15} />
                 </button>
@@ -371,7 +371,7 @@ export default function AdminCategoriesPage() {
               <input
                 value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Nombre de la categoría"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
 
@@ -425,7 +425,7 @@ export default function AdminCategoriesPage() {
                       onClick={handleRemoveImage}
                       style={{
                         padding: '7px 14px', borderRadius: 10, border: 'none',
-                        background: '#FFE8E8', color: '#EF4444',
+                        background: 'var(--danger-light)', color: 'var(--danger)',
                         fontSize: 12, fontWeight: 600, cursor: 'pointer',
                         display: 'flex', alignItems: 'center', gap: 6,
                       }}
@@ -444,7 +444,7 @@ export default function AdminCategoriesPage() {
             <button onClick={() => setModalOpen(false)} style={styles.cancelBtn}>Cancelar</button>
             <button
               onClick={handleSave} disabled={saving}
-              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? '#FDCB6E' : styles.saveBtn.background }}
+              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? 'var(--warning)' : styles.saveBtn.background }}
             >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>

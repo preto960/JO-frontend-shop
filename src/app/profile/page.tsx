@@ -490,7 +490,7 @@ export default function ProfilePage() {
         width: opts.fullWidth ? '100%' : undefined,
         padding: '14px 20px', borderRadius: 12,
         background: opts.danger ? 'var(--white)' : opts.primary ? 'var(--primary-gradient)' : 'var(--input-bg)',
-        color: opts.danger ? 'var(--danger)' : opts.primary ? 'white' : 'var(--text-secondary)',
+        color: opts.danger ? 'var(--danger)' : opts.primary ? 'var(--white)' : 'var(--text-secondary)',
         fontSize: 15, fontWeight: 700,
         border: opts.danger ? '2px solid var(--danger)' : 'none',
         cursor: (opts.disabled || opts.loading) ? 'not-allowed' : 'pointer',
@@ -499,7 +499,7 @@ export default function ProfilePage() {
         transition: 'all 0.25s ease',
         boxShadow: opts.primary && !opts.loading ? 'var(--shadow-accent)' : 'none',
       }}>
-      {opts.loading && <div style={{ width: 18, height: 18, border: `2.5px solid ${opts.danger ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.3)'}`, borderTopColor: opts.danger ? 'var(--danger)' : 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
+      {opts.loading && <div style={{ width: 18, height: 18, border: `2.5px solid ${opts.danger ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.3)'}`, borderTopColor: opts.danger ? 'var(--danger)' : 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
       {opts.icon}
       {opts.loading ? 'Procesando...' : text}
     </button>
@@ -566,7 +566,7 @@ export default function ProfilePage() {
           <div style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 80, background: 'var(--primary-gradient)', opacity: 0.1 }} />
             <div style={{ position: 'relative' }}>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 800, color: 'white', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 800, color: 'var(--white)', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
                 {getInitials(user?.name || '')}
               </div>
               <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>{user?.name || 'Usuario'}</h2>
@@ -584,7 +584,7 @@ export default function ProfilePage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>Información personal</h3>
               <button onClick={() => { if (editing) { setPhone(user?.phone || ''); setBirthdate(user?.birthdate || ''); } setEditing(!editing); }}
-                style={{ padding: '8px 16px', borderRadius: 'var(--radius)', background: editing ? 'var(--input-bg)' : 'var(--primary-gradient)', color: editing ? 'var(--text)' : 'white', fontSize: 13, fontWeight: 600, boxShadow: editing ? 'none' : 'var(--shadow-accent)' }}>
+                style={{ padding: '8px 16px', borderRadius: 'var(--radius)', background: editing ? 'var(--input-bg)' : 'var(--primary-gradient)', color: editing ? 'var(--text)' : 'var(--white)', fontSize: 13, fontWeight: 600, boxShadow: editing ? 'none' : 'var(--shadow-accent)' }}>
                 {editing ? 'Cancelar' : 'Editar'}
               </button>
             </div>
@@ -632,7 +632,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <button onClick={() => openAddrModal()}
-                style={{ padding: '10px 16px', borderRadius: 12, background: 'var(--primary-gradient)', color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-accent)' }}>
+                style={{ padding: '10px 16px', borderRadius: 12, background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-accent)' }}>
                 <Plus size={16} /> Agregar
               </button>
             </div>
@@ -660,7 +660,7 @@ export default function ProfilePage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{addr.label}</p>
                           {addr.isDefault && (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 10px', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'white', fontSize: 11, fontWeight: 600 }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 10px', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'var(--white)', fontSize: 11, fontWeight: 600 }}>
                               <Star size={10} /> Principal
                             </span>
                           )}
@@ -737,8 +737,8 @@ export default function ProfilePage() {
                     Cancelar
                   </button>
                   <button onClick={handleSaveAddress} disabled={addrSaving}
-                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'white', fontSize: 15, fontWeight: 700, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                    {addrSaving ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={18} />}
+                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 15, fontWeight: 700, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    {addrSaving ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={18} />}
                     {addrSaving ? 'Guardando...' : 'Guardar'}
                   </button>
                 </div>
@@ -797,9 +797,9 @@ export default function ProfilePage() {
             {/* Status banner */}
             <div style={{ padding: '14px 16px', borderRadius: 12, marginBottom: 18, background: isEnabled ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))' : 'linear-gradient(135deg, rgba(255,149,0,0.08), rgba(255,149,0,0.03))', border: `1px solid ${isEnabled ? 'rgba(34,197,94,0.15)' : 'rgba(255,149,0,0.15)'}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                {isEnabled ? <Lock size={18} style={{ color: 'var(--success)', flexShrink: 0 }} /> : <Unlock size={18} style={{ color: '#FF9500', flexShrink: 0 }} />}
+                {isEnabled ? <Lock size={18} style={{ color: 'var(--success)', flexShrink: 0 }} /> : <Unlock size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} />}
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: isEnabled ? 'var(--success)' : '#FF9500', marginBottom: 2 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: isEnabled ? 'var(--success)' : 'var(--warning)', marginBottom: 2 }}>
                     {isEnabled ? 'Tu cuenta está protegida' : 'Tu cuenta no está protegida'}
                   </p>
                   <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -822,7 +822,7 @@ export default function ProfilePage() {
                   <button onClick={handleViewBackupCodes} disabled={viewCodesLoading}
                     style={{ width: '100%', padding: '14px', borderRadius: 12, background: 'var(--input-bg)', color: 'var(--text)', fontSize: 14, fontWeight: 600, border: 'none', cursor: viewCodesLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <KeyRound size={18} style={{ color: '#3B82F6' }} />
+                      <KeyRound size={18} style={{ color: 'var(--info)' }} />
                       {hasBackup ? 'Ver códigos de recuperación' : 'Generar códigos de recuperación'}
                     </span>
                     <ChevronRight size={18} style={{ color: 'var(--text-light)' }} />
@@ -877,7 +877,7 @@ export default function ProfilePage() {
             <button onClick={handleTotpSetup} disabled={twoFaLoading}
               style={{ width: '100%', padding: '20px', borderRadius: 14, background: 'var(--white)', border: '2px solid var(--border)', cursor: twoFaLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'all 0.2s ease', textAlign: 'left' }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Smartphone size={24} style={{ color: '#3B82F6' }} />
+                <Smartphone size={24} style={{ color: 'var(--info)' }} />
               </div>
               <div style={{ flex: 1 }}>
                 <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>App Authenticator</h4>
@@ -926,7 +926,7 @@ export default function ProfilePage() {
           <div>
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                <Smartphone size={28} style={{ color: '#3B82F6' }} />
+                <Smartphone size={28} style={{ color: 'var(--info)' }} />
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Configurar App Authenticator</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -937,7 +937,7 @@ export default function ProfilePage() {
             {/* QR Code */}
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
               {totpQrCode && (
-                <div style={{ display: 'inline-block', padding: 12, borderRadius: 12, background: '#fff', border: '2px solid var(--border)', marginBottom: 12 }}>
+                <div style={{ display: 'inline-block', padding: 12, borderRadius: 12, background: 'var(--white)', border: '2px solid var(--border)', marginBottom: 12 }}>
                   <img src={totpQrCode} alt="QR Code TOTP" style={{ width: 200, height: 200, display: 'block' }} />
                 </div>
               )}
@@ -949,7 +949,7 @@ export default function ProfilePage() {
                 Si no puedes escanear, ingresa este código manualmente:
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
-                <code style={{ fontSize: 13, fontWeight: 600, color: '#3B82F6', background: 'rgba(59,130,246,0.08)', padding: '8px 14px', borderRadius: 8, letterSpacing: 1, wordBreak: 'break-all', flex: 1, textAlign: 'center' }}>
+                <code style={{ fontSize: 13, fontWeight: 600, color: 'var(--info)', background: 'rgba(59,130,246,0.08)', padding: '8px 14px', borderRadius: 8, letterSpacing: 1, wordBreak: 'break-all', flex: 1, textAlign: 'center' }}>
                   {totpSecret}
                 </code>
                 <button onClick={() => copyToClipboard(totpSecret, setTotpCopied)}
@@ -992,8 +992,8 @@ export default function ProfilePage() {
 
             {/* Warning */}
             <div style={{ padding: '12px 16px', borderRadius: 10, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-              <AlertTriangle size={18} style={{ color: '#F59E0B', flexShrink: 0 }} />
-              <p style={{ fontSize: 13, color: '#92400E', lineHeight: 1.5 }}>
+              <AlertTriangle size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} />
+              <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.5 }}>
                 Estos códigos <strong>solo se muestran esta vez</strong>. Cada código es de un solo uso.
               </p>
             </div>
@@ -1030,7 +1030,7 @@ export default function ProfilePage() {
           <div>
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                <KeyRound size={28} style={{ color: '#3B82F6' }} />
+                <KeyRound size={28} style={{ color: 'var(--info)' }} />
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Códigos de recuperación</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>

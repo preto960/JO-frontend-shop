@@ -132,7 +132,7 @@ export default function CheckoutPage() {
       }}>
         <div style={{ position: 'absolute', left: 16, display: 'flex', gap: 4 }}>
           <button onClick={() => router.back()} style={{
-            background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+            background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
             cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}><ArrowLeft size={22} /></button>
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
         <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>Confirmar Pedido</h1>
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
           <button onClick={logout} style={{
-            background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+            background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
             cursor: 'pointer', width: 40, height: 40, borderRadius: 8,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}><LogOut size={20} /></button>
@@ -155,7 +155,7 @@ export default function CheckoutPage() {
             <p style={{ fontSize: 18, fontWeight: 700 }}>Tu carrito esta vacio</p>
             <button onClick={() => router.push('/')} style={{
               marginTop: 16, padding: '12px 28px', borderRadius: 'var(--radius-full)',
-              background: 'var(--primary-gradient)', color: 'white', border: 'none',
+              background: 'var(--primary-gradient)', color: 'var(--white)', border: 'none',
               cursor: 'pointer', fontWeight: 700, boxShadow: 'var(--shadow-accent)',
             }}>Explorar productos</button>
           </div>
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
           <button onClick={placeOrder} disabled={placing} style={{
             width: '100%', height: 50, borderRadius: 12,
             background: placing ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-            color: 'white', fontSize: 16, fontWeight: 700, border: 'none',
+            color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none',
             cursor: placing ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: 'var(--shadow-accent)', opacity: placing ? 0.8 : 1, maxWidth: 900, margin: '0 auto',

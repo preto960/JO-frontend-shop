@@ -17,45 +17,45 @@ const styles = {
     zIndex: 1000, padding: 16,
   },
   modal: {
-    background: '#FFFFFF', borderRadius: 20, padding: 28,
+    background: 'var(--card)', borderRadius: 20, padding: 28,
     maxWidth: 480, width: '100%', maxHeight: '90vh', overflowY: 'auto' as const,
     boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
   },
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   searchInput: {
-    paddingLeft: 40, paddingRight: 16, background: '#FFFFFF',
+    paddingLeft: 40, paddingRight: 16, background: 'var(--card)',
     borderRadius: 10, height: 44, border: '1px solid var(--border)',
     boxShadow: 'var(--shadow)', fontSize: 14, color: 'var(--text)',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#E8F1FF', color: '#54A0FF', cursor: 'pointer',
+    background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
-    background: '#FFE8E8', color: '#FF6B6B', cursor: 'pointer',
+    background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.2s ease',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'all 0.2s ease',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
-    border: '2px solid var(--border)', background: '#FFFFFF',
+    border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
     transition: 'all 0.2s ease',
   },
@@ -66,7 +66,7 @@ function PasswordCheck({ label, met }: { label: string; met: boolean }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
       <div style={{
         width: 18, height: 18, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: met ? '#10B981' : '#E5E7EB', transition: 'all 0.2s ease', flexShrink: 0,
+        background: met ? 'var(--success)' : 'var(--border)', transition: 'all 0.2s ease', flexShrink: 0,
       }}>
         {met && (
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -74,7 +74,7 @@ function PasswordCheck({ label, met }: { label: string; met: boolean }) {
           </svg>
         )}
       </div>
-      <span style={{ color: met ? '#10B981' : '#9CA3AF', fontWeight: met ? 600 : 400, transition: 'color 0.2s ease' }}>
+      <span style={{ color: met ? 'var(--success)' : 'var(--text-light)', fontWeight: met ? 600 : 400, transition: 'color 0.2s ease' }}>
         {label}
       </span>
     </div>
@@ -256,7 +256,7 @@ export default function AdminUsersPage() {
           }} />
         </div>
       ) : users.length === 0 ? (
-        <div style={{ background: '#FFFFFF', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+        <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
           <p style={{ fontSize: 48, marginBottom: 12 }}>👥</p>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay usuarios</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Los usuarios aparecerán aquí cuando se registren</p>
@@ -267,7 +267,7 @@ export default function AdminUsersPage() {
             <div
               key={user.id} className="animate-fade-in"
               style={{
-                background: '#FFFFFF', borderRadius: 14, padding: 18,
+                background: 'var(--card)', borderRadius: 14, padding: 18,
                 boxShadow: 'var(--shadow)', transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
@@ -279,7 +279,7 @@ export default function AdminUsersPage() {
                     width: 46, height: 46, borderRadius: '50%',
                     background: getRoleBadgeColor(user.role),
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontSize: 16, fontWeight: 600, flexShrink: 0,
+                    color: 'var(--white)', fontSize: 16, fontWeight: 600, flexShrink: 0,
                     boxShadow: `0 4px 12px ${getRoleBadgeColor(user.role)}40`,
                   }}>
                     {getInitials(user.name)}
@@ -301,15 +301,15 @@ export default function AdminUsersPage() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => openEdit(user)} style={styles.editBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#54A0FF'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#E8F1FF'; (e.currentTarget as HTMLElement).style.color = '#54A0FF'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                     >
                       <Edit2 size={15} />
                     </button>
                     <button
                       onClick={() => setDeleteModal(user)} style={styles.deleteBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = '#FF6B6B'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = '#FFE8E8'; (e.currentTarget as HTMLElement).style.color = '#FF6B6B'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                     >
                       <Trash2 size={15} />
                     </button>
@@ -348,7 +348,7 @@ export default function AdminUsersPage() {
               <input
                 value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Nombre completo"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
             </div>
             <div>
@@ -357,7 +357,7 @@ export default function AdminUsersPage() {
                 type="email" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="correo@ejemplo.com" disabled={!!editingUser}
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: editingUser ? 'var(--text-light)' : 'var(--text)', background: editingUser ? 'var(--input-bg)' : '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: editingUser ? 'var(--text-light)' : 'var(--text)', background: editingUser ? 'var(--input-bg)' : 'var(--card)', outline: 'none' }}
               />
             </div>
             <div>
@@ -368,7 +368,7 @@ export default function AdminUsersPage() {
                 type="password" value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••"
-                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: '#FFFFFF', outline: 'none' }}
+                style={{ width: '100%', padding: '0 14px', height: 44, borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, color: 'var(--text)', background: 'var(--card)', outline: 'none' }}
               />
               {form.password && (
                 <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -389,7 +389,7 @@ export default function AdminUsersPage() {
                     style={{
                       display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
                       borderRadius: 10, border: `2px solid ${form.role === role ? getRoleBadgeColor(role) : 'var(--border)'}`,
-                      background: form.role === role ? getRoleBadgeColor(role) + '10' : '#FFFFFF',
+                      background: form.role === role ? getRoleBadgeColor(role) + '10' : 'var(--card)',
                       cursor: 'pointer', transition: 'all 0.2s',
                     }}
                   >
@@ -430,7 +430,7 @@ export default function AdminUsersPage() {
                           display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
                           borderRadius: 10,
                           border: `2px solid ${isChecked ? 'var(--primary)' : 'var(--border)'}`,
-                          background: isChecked ? 'var(--primary-light)' : '#FFFFFF',
+                          background: isChecked ? 'var(--primary-light)' : 'var(--card)',
                           cursor: 'pointer', transition: 'all 0.2s',
                         }}
                       >
@@ -463,7 +463,7 @@ export default function AdminUsersPage() {
             <button onClick={() => setModalOpen(false)} style={styles.cancelBtn}>Cancelar</button>
             <button
               onClick={handleSave} disabled={saving}
-              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? '#FDCB6E' : styles.saveBtn.background }}
+              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1, background: saving ? 'var(--warning)' : styles.saveBtn.background }}
             >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>

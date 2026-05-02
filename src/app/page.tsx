@@ -255,7 +255,7 @@ export default function HomePage() {
             <button
               onClick={() => setMenuOpen(true)}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -300,7 +300,7 @@ export default function HomePage() {
               ref={favBtnRef}
               onClick={() => { setFavOpen(!favOpen); setCartOpen(false); }}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative', flexShrink: 0,
@@ -311,7 +311,7 @@ export default function HomePage() {
               {favCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: '#E74C3C', color: 'white',
+                  background: 'var(--danger)', color: 'var(--white)',
                   fontSize: 10, fontWeight: 700,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -331,7 +331,7 @@ export default function HomePage() {
             ref={cartBtnRef}
             onClick={() => { setCartOpen(!cartOpen); setFavOpen(false); }}
             style={{
-              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
               cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative', flexShrink: 0,
@@ -342,7 +342,7 @@ export default function HomePage() {
             {cartCount > 0 && (
               <span style={{
                 position: 'absolute', top: 2, right: 2,
-                background: '#FF6B6B', color: 'white',
+                background: 'var(--danger)', color: 'var(--white)',
                 fontSize: 10, fontWeight: 700,
                 minWidth: 16, height: 16, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -356,7 +356,7 @@ export default function HomePage() {
             <button
               onClick={logout}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -368,7 +368,7 @@ export default function HomePage() {
             <button
               onClick={() => router.push('/login')}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -452,7 +452,7 @@ export default function HomePage() {
                   style={{
                     position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
                     zIndex: 10, width: 34, height: 34, borderRadius: '50%',
-                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'white',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'var(--white)',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   aria-label="Anterior"
@@ -464,7 +464,7 @@ export default function HomePage() {
                   style={{
                     position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
                     zIndex: 10, width: 34, height: 34, borderRadius: '50%',
-                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'white',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'var(--white)',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   aria-label="Siguiente"
@@ -484,7 +484,7 @@ export default function HomePage() {
                         height: 7,
                         borderRadius: 4,
                         border: 'none',
-                        background: idx === currentBanner ? 'white' : 'rgba(255,255,255,0.5)',
+                        background: idx === currentBanner ? 'var(--white)' : 'rgba(255,255,255,0.5)',
                         cursor: 'pointer',
                         transition: 'all 0.3s ease',
                         padding: 0,
@@ -520,7 +520,7 @@ export default function HomePage() {
                 padding: '14px 10px', display: 'flex', flexDirection: 'column',
                 alignItems: 'center', gap: 10, boxShadow: 'var(--shadow)',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                color: !selectedCategory ? '#fff' : 'var(--text)',
+                color: !selectedCategory ? 'var(--white)' : 'var(--text)',
               }}
             >
               <div style={{
@@ -529,7 +529,7 @@ export default function HomePage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                <Sparkles size={26} style={{ color: !selectedCategory ? '#fff' : 'var(--text-light)' }} />
+                <Sparkles size={26} style={{ color: !selectedCategory ? 'var(--white)' : 'var(--text-light)' }} />
               </div>
               <span style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}>Todos</span>
             </button>
@@ -571,7 +571,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <span style={{
-                    fontSize: 13, fontWeight: 600, color: isActive ? '#fff' : 'var(--text)',
+                    fontSize: 13, fontWeight: 600, color: isActive ? 'var(--white)' : 'var(--text)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     maxWidth: '100%',
                   }}>
@@ -610,9 +610,9 @@ export default function HomePage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                <Sparkles size={20} style={{ color: !selectedStore ? '#fff' : 'var(--text-light)' }} />
+                <Sparkles size={20} style={{ color: !selectedStore ? 'var(--white)' : 'var(--text-light)' }} />
               </div>
-              <span style={{ fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', color: !selectedStore ? '#fff' : 'var(--text)' }}>Todas</span>
+              <span style={{ fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', color: !selectedStore ? 'var(--white)' : 'var(--text)' }}>Todas</span>
             </button>
 
             {stores.map((store: any) => {
@@ -650,7 +650,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <span style={{
-                    fontSize: 11, fontWeight: 600, color: isActive ? '#fff' : 'var(--text)',
+                    fontSize: 11, fontWeight: 600, color: isActive ? 'var(--white)' : 'var(--text)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     maxWidth: '100%',
                   }}>
@@ -713,7 +713,7 @@ export default function HomePage() {
                 style={{
                   position: 'absolute', left: -6, top: '50%', transform: 'translateY(-50%)',
                   width: 32, height: 32, borderRadius: '50%', border: 'none',
-                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  background: 'var(--white)', color: 'var(--text)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
                 }}
@@ -727,7 +727,7 @@ export default function HomePage() {
                 style={{
                   position: 'absolute', right: -6, top: '50%', transform: 'translateY(-50%)',
                   width: 32, height: 32, borderRadius: '50%', border: 'none',
-                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  background: 'var(--white)', color: 'var(--text)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
                 }}
@@ -751,18 +751,18 @@ export default function HomePage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{
                   width: 32, height: 32, borderRadius: '50%',
-                  background: '#FFE8E8', display: 'flex',
+                  background: 'var(--danger-light)', display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Percent size={16} color="#FF6B6B" />
+                  <Percent size={16} color="var(--danger)" />
                 </div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
                   Ofertas
                 </h3>
               </div>
               <span style={{
-                fontSize: 12, fontWeight: 600, color: '#FF6B6B',
-                background: '#FFE8E8', padding: '4px 12px',
+                fontSize: 12, fontWeight: 600, color: 'var(--danger)',
+                background: 'var(--danger-light)', padding: '4px 12px',
                 borderRadius: 'var(--radius-full)',
               }}>
                 Precios especiales
@@ -797,7 +797,7 @@ export default function HomePage() {
                 style={{
                   position: 'absolute', left: -6, top: '50%', transform: 'translateY(-50%)',
                   width: 32, height: 32, borderRadius: '50%', border: 'none',
-                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  background: 'var(--white)', color: 'var(--text)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
                 }}
@@ -811,7 +811,7 @@ export default function HomePage() {
                 style={{
                   position: 'absolute', right: -6, top: '50%', transform: 'translateY(-50%)',
                   width: 32, height: 32, borderRadius: '50%', border: 'none',
-                  background: 'white', color: 'var(--text)', cursor: 'pointer',
+                  background: 'var(--white)', color: 'var(--text)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)', zIndex: 5,
                 }}
@@ -882,7 +882,7 @@ export default function HomePage() {
               onClick={() => router.push('/login')}
               style={{
                 marginLeft: 'auto', padding: '6px 14px', borderRadius: 'var(--radius-full)',
-                background: 'var(--primary-gradient)', color: 'white', border: 'none',
+                background: 'var(--primary-gradient)', color: 'var(--white)', border: 'none',
                 cursor: 'pointer', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap',
               }}
             >
@@ -934,7 +934,7 @@ export default function HomePage() {
                 padding: '12px 28px',
                 borderRadius: 'var(--radius-full)',
                 background: 'var(--primary-gradient)',
-                color: 'white',
+                color: 'var(--white)',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: 700,
@@ -994,7 +994,7 @@ export default function HomePage() {
                   width: 40, height: 40, borderRadius: '50%',
                   background: 'var(--primary-gradient)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: 14, color: 'white',
+                  fontWeight: 800, fontSize: 14, color: 'var(--white)',
                 }}>
                   {shopName.slice(0, 2).toUpperCase()}
                 </div>
@@ -1007,8 +1007,8 @@ export default function HomePage() {
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               {[
                 { icon: Truck, label: 'Envio rapido', color: 'var(--primary)', bg: 'var(--primary-light)' },
-                { icon: Shield, label: 'Pago seguro', color: '#00B894', bg: '#E8FBF5' },
-                { icon: Clock, label: 'Soporte 24/7', color: '#54A0FF', bg: '#E8F1FF' },
+                { icon: Shield, label: 'Pago seguro', color: 'var(--success)', bg: 'var(--success-light)' },
+                { icon: Clock, label: 'Soporte 24/7', color: 'var(--info)', bg: 'var(--info-light)' },
               ].map((f) => (
                 <div key={f.label} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
