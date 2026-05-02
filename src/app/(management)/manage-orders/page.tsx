@@ -55,7 +55,8 @@ export default function AdminOrdersPage() {
     if (order.totalAmount) return order.totalAmount;
     const items = order.items || order.orderItems || [];
     return items.reduce((sum: number, item: any) => {
-      return sum + (item.price || item.unitPrice || 0) * (item.quantity || 1);
+      const lineTotal = item.subtotal || (item.price || item.unitPrice || item.productPrice || 0) * (item.quantity || 1);
+      return sum + lineTotal;
     }, 0);
   };
 
@@ -163,7 +164,7 @@ export default function AdminOrdersPage() {
                           <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>Cantidad: {item.quantity}</p>
                         </div>
                         <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>
-                          {formatPrice((item.price || item.unitPrice || 0) * (item.quantity || 1))}
+                          {formatPrice(item.subtotal || (item.price || item.unitPrice || item.productPrice || 0) * (item.quantity || 1))}
                         </p>
                       </div>
                     ))}

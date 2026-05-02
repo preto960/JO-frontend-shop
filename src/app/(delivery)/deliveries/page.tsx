@@ -66,7 +66,8 @@ export default function DeliveryPage() {
     if (order.totalAmount) return order.totalAmount;
     const items = order.items || order.orderItems || [];
     return items.reduce((sum: number, item: any) => {
-      return sum + (item.price || item.unitPrice || 0) * (item.quantity || 1);
+      const lineTotal = item.subtotal || (item.price || item.unitPrice || item.productPrice || 0) * (item.quantity || 1);
+      return sum + lineTotal;
     }, 0);
   };
 
@@ -257,7 +258,7 @@ export default function DeliveryPage() {
                               <span style={{ fontSize: 12, color: 'var(--text-light)' }}>x{item.quantity}</span>
                             </div>
                             <p style={{ fontSize: 14, fontWeight: 600 }}>
-                              {formatPrice((item.price || item.unitPrice || 0) * (item.quantity || 1))}
+                              {formatPrice(item.subtotal || (item.price || item.unitPrice || item.productPrice || 0) * (item.quantity || 1))}
                             </p>
                           </div>
                         ))}
