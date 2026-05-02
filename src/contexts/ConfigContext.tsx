@@ -140,8 +140,9 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       }));
     } catch { /* ignore */ }
 
-    // Reveal body (safety net — the blocking script normally does this first)
-    document.documentElement.setAttribute('data-theme-ready', '');
+    // Signal the loader script that the page is fully ready
+    root.setAttribute('data-theme-ready', '');
+    window.dispatchEvent(new Event('theme-ready'));
   }, [config.primary_color, config.accent_color, config.shop_name]);
 
   const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
