@@ -228,7 +228,9 @@ const BannersPage: React.FC = () => {
         formData.append('duration', String(localDurations[banner.id] ?? banner.duration ?? 8));
         formData.append('link', localLinks[banner.id] ?? (banner.link || ''));
       }
-      const res = await api.put(`/banners/${changingImageId}`, formData);
+      const res = await api.put(`/banners/${changingImageId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       const updated = res?.banner || res;
       if (updated) {
         setBanners((prev) =>
@@ -476,7 +478,7 @@ const BannersPage: React.FC = () => {
                           </div>
                         ) : (
                           <img
-                            src={banner.imageUrl}
+                            src={`${banner.imageUrl}${banner.imageUrl?.includes('?') ? '&' : '?'}t=${banner.updatedAt ? new Date(banner.updatedAt).getTime() : Date.now()}`}
                             alt={`Banner ${index + 1}`}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
