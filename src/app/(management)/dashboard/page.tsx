@@ -170,19 +170,22 @@ export default function AdminDashboard() {
 
       const dashRes = await api.get(url);
       if (dashRes) {
+        // Backend returns { summary: {...}, charts: {...}, recentOrders: [...] }
+        const s = dashRes.summary || dashRes;
+        const c = dashRes.charts || dashRes;
         setStats({
-          totalOrders: dashRes.totalOrders || dashRes.total_orders || 0,
-          revenue: dashRes.totalRevenue || dashRes.total_revenue || 0,
-          todayOrders: dashRes.todayOrders || dashRes.today_orders || 0,
-          totalUsers: dashRes.totalUsers || dashRes.total_users || 0,
-          totalProducts: dashRes.totalProducts || dashRes.total_products || 0,
+          totalOrders: s.totalOrders || 0,
+          revenue: s.totalRevenue || 0,
+          todayOrders: s.todayOrders || s.pendingOrders || 0,
+          totalUsers: s.totalCustomers || s.totalUsers || 0,
+          totalProducts: s.totalProducts || 0,
         });
 
         // Chart data from backend
         setChartData({
-          ordersByDay: dashRes.charts?.ordersByDay || dashRes.ordersByDay || [],
-          topProducts: dashRes.charts?.topProducts || dashRes.topProducts || [],
-          revenueByStatus: dashRes.charts?.revenueByStatus || dashRes.revenueByStatus || [],
+          ordersByDay: c.ordersByDay || [],
+          topProducts: c.topProducts || [],
+          revenueByStatus: c.revenueByStatus || [],
         });
       }
     } catch {

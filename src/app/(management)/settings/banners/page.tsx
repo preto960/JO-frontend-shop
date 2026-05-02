@@ -113,9 +113,19 @@ const BannersPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get('/banners/all');
-      setBanners(res.data?.data ?? res.data ?? []);
-    } catch {
-      showToast('Error al cargar banners', 'error');
+      // After interceptor, res is the response body (could be array or object)
+      let items: any[] = [];
+      if (Array.isArray(res)) {
+        items = res;
+      } else if (res && Array.isArray(res.data)) {
+        items = res.data;
+      } else if (res && Array.isArray(res.banners)) {
+        items = res.banners;
+      }
+      setBanners(items);
+    } catch (err: any) {
+      console.error('Error loading banners:', err);
+      showToast(err?.error || err?.message || 'Error al cargar banners', 'error');
     } finally {
       setLoading(false);
     }
