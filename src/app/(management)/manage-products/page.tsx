@@ -81,6 +81,7 @@ export default function AdminProductsPage() {
   const [uploading, setUploading] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const csvInputRef = React.useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: '', description: '', price: '', categoryId: '', storeId: '', stock: '', image: '',
   });
@@ -324,6 +325,29 @@ export default function AdminProductsPage() {
     handleRemoveImage(index);
   };
 
+  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.csv')) {
+      showToast('El archivo debe ser un CSV', 'error');
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res: any = await api.post('/products/bulk-csv', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 60000,
+      });
+      showToast(res.message || 'Productos importados correctamente', 'success');
+      fetchProducts();
+    } catch (err: any) {
+      showToast(err?.message || 'Error al importar CSV', 'error');
+    } finally {
+      if (csvInputRef.current) csvInputRef.current.value = '';
+    }
+  };
+
   const debouncedSearch = React.useCallback(
     debounce((val: string) => setSearch(val), 400), []
   );
@@ -352,6 +376,28 @@ export default function AdminProductsPage() {
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           >
             <Plus size={18} /> Nuevo producto
+          </button>
+          {/* Hidden file input for CSV */}
+          <input
+            type="file"
+            accept=".csv"
+            style={{ display: 'none' }}
+            ref={csvInputRef}
+            onChange={handleCSVUpload}
+          />
+          <button
+            onClick={() => csvInputRef.current?.click()}
+            style={{
+              ...styles.newBtn,
+              background: '#FFFFFF',
+              color: 'var(--text)',
+              border: '2px solid var(--border)',
+              boxShadow: 'var(--shadow)',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+          >
+            📥 Carga masiva CSV
           </button>
         </div>
       </div>
