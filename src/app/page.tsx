@@ -231,51 +231,76 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <header style={{
         background: 'var(--primary-gradient)', color: 'var(--white)',
-        padding: '0 16px', height: 100, display: 'flex',
-        alignItems: 'center', justifyContent: 'center',
+        padding: '0 12px', height: 64, display: 'flex',
+        alignItems: 'center', gap: 10,
         position: 'sticky', top: 0, zIndex: 100,
         boxShadow: 'var(--shadow-accent)',
         borderRadius: '0 0 16px 16px',
       }}>
-        {/* Left section */}
-        <div style={{ position: 'absolute', left: 16, display: 'flex', gap: 4, zIndex: 1 }}>
+        {/* Left section — Logo + Menu */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          {shopLogoUrl ? (
+            <img src={shopLogoUrl} alt={shopName} style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
+          ) : (
+            <span style={{ fontSize: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>{shopName}</span>
+          )}
           {isLoggedIn && (
             <button
               onClick={() => setMenuOpen(true)}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
               aria-label="Abrir menú"
             >
-              <Menu size={24} />
+              <Menu size={20} />
             </button>
           )}
         </div>
 
-        {/* Center title */}
-        {shopLogoUrl ? (
-          <img src={shopLogoUrl} alt={shopName} style={{ height: 80, width: 'auto', objectFit: 'contain', zIndex: 1 }} />
-        ) : (
-          <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>{shopName}</h1>
-        )}
+        {/* Center — Search bar */}
+        <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+          <Search size={16} style={{
+            position: 'absolute', left: 12, top: '50%',
+            transform: 'translateY(-50%)', color: 'var(--text-light)',
+            pointerEvents: 'none', zIndex: 1,
+          }} />
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            defaultValue={search}
+            onChange={(e) => debouncedSearch(e.target.value)}
+            style={{
+              width: '100%',
+              paddingLeft: 36,
+              paddingRight: 12,
+              background: 'rgba(255,255,255,0.95)',
+              borderRadius: 'var(--radius-full)',
+              height: 38,
+              border: 'none',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              fontSize: 13,
+              color: 'var(--text)',
+            }}
+          />
+        </div>
 
         {/* Right section */}
-        <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
+        <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
           <div style={{ position: 'relative' }}>
             <button
               ref={favBtnRef}
               onClick={() => { setFavOpen(!favOpen); setCartOpen(false); }}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
+                cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                position: 'relative',
+                position: 'relative', flexShrink: 0,
               }}
               aria-label="Favoritos"
             >
-              <Heart size={22} />
+              <Heart size={18} />
               {favCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
@@ -300,13 +325,13 @@ export default function HomePage() {
             onClick={() => { setCartOpen(!cartOpen); setFavOpen(false); }}
             style={{
               background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-              cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
+              cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              position: 'relative',
+              position: 'relative', flexShrink: 0,
             }}
             aria-label="Carrito"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={18} />
             {cartCount > 0 && (
               <span style={{
                 position: 'absolute', top: 2, right: 2,
@@ -325,24 +350,24 @@ export default function HomePage() {
               onClick={logout}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
               aria-label="Cerrar sesión"
             >
-              <LogOut size={22} />
+              <LogOut size={18} />
             </button>
           ) : (
             <button
               onClick={() => router.push('/login')}
               style={{
                 background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white',
-                cursor: 'pointer', width: 44, height: 44, borderRadius: 8,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
               aria-label="Iniciar sesión"
             >
-              <LogIn size={22} />
+              <LogIn size={18} />
             </button>
           )}
           <CartDropdown
@@ -355,61 +380,6 @@ export default function HomePage() {
 
       {/* Sidebar menu (only if logged in) */}
       {isLoggedIn && <SidebarMenu open={menuOpen} onClose={() => setMenuOpen(false)} />}
-
-      {/* ═══════════════════════════════════════════
-          HERO BANNER
-         ═══════════════════════════════════════════ */}
-      <div style={{
-        background: 'var(--primary-gradient)',
-        padding: '28px 16px 32px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Decorative elements */}
-        <div style={{
-          position: 'absolute', top: '-40px', right: '-40px',
-          width: 160, height: 160, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.08)',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '-30px', left: '-30px',
-          width: 120, height: 120, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.06)',
-        }} />
-        <div style={{
-          position: 'absolute', top: '30%', right: '20%',
-          width: 50, height: 50, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.05)',
-        }} />
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Search bar */}
-          <div className="animate-fade-in" style={{ position: 'relative' }}>
-            <Search size={18} style={{
-              position: 'absolute', left: 16, top: '50%',
-              transform: 'translateY(-50%)', color: 'var(--text-light)',
-              pointerEvents: 'none', zIndex: 1,
-            }} />
-            <input
-              type="text"
-              placeholder="Buscar productos..."
-              defaultValue={search}
-              onChange={(e) => debouncedSearch(e.target.value)}
-              style={{
-                paddingLeft: 44,
-                paddingRight: 16,
-                background: 'rgba(255,255,255,0.95)',
-                borderRadius: 'var(--radius-full)',
-                height: 50,
-                border: 'none',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                fontSize: 15,
-                color: 'var(--text)',
-              }}
-            />
-          </div>
-        </div>
-      </div>
 
       <div style={{ padding: '20px 16px 32px' }}>
 
