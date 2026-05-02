@@ -43,7 +43,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ requiresOtp: boolean; email?: string; twoFactorType?: string; error?: string }>;
   verifyOtp: (email: string, code: string, type?: string) => Promise<boolean>;
   resendOtpCode: (email: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<any>;
+  register: (name: string, email: string, password: string, role?: string) => Promise<any>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -269,8 +269,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return res.backupCodes || [];
   }, []);
 
-  const register = useCallback(async (name: string, email: string, password: string) => {
-    const res = await api.post('/auth/register', { name, email, password });
+  const register = useCallback(async (name: string, email: string, password: string, role?: string) => {
+    const payload: any = { name, email, password };
+    if (role) payload.role = role;
+    const res = await api.post('/auth/register', payload);
     const u = extractUser(res);
     const t = extractToken(res);
     const rt = extractRefreshToken(res);
