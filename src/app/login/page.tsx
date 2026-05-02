@@ -474,11 +474,19 @@ export default function LoginPage() {
 
           {/* Register link */}
           {!otpEmail && (
-            <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <div style={{ textAlign: 'center', marginTop: 20 }}>
               <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>¿No tienes cuenta? </span>
               <a href="/register" style={{ fontSize: 14, color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', transition: 'color 0.2s ease' }}>Regístrate</a>
             </div>
           )}
+
+          {/* Back to home */}
+          <div style={{ textAlign: 'center', marginTop: 14 }}>
+            <a href="/" style={{ fontSize: 13, color: 'var(--text-secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, transition: 'color 0.2s ease' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Volver al inicio
+            </a>
+          </div>
         </div>
       </div>
     </div>
