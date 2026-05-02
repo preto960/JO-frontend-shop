@@ -198,6 +198,7 @@ export default function ProductBatchesPage() {
       showToast('Lote eliminado. Descuentos reseteados a 0%.', 'success');
       fetchBatches();
       fetchProducts();
+      setViewBatch(prev => prev?.id === deleteModal.id ? null : prev);
     } catch (err: any) {
       showToast(err?.message || 'Error al eliminar', 'error');
     } finally {
@@ -400,7 +401,6 @@ export default function ProductBatchesPage() {
       {/* Create/Edit Batch Modal */}
       <div
         style={{ ...styles.overlay, display: modalOpen ? 'flex' : 'none' }}
-        onClick={() => setModalOpen(false)}
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>

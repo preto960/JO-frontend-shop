@@ -479,7 +479,6 @@ export default function AdminProductsPage() {
       {/* Create/Edit Modal */}
       <div
         style={{ ...styles.overlay, display: modalOpen ? 'flex' : 'none' }}
-        onClick={() => setModalOpen(false)}
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>

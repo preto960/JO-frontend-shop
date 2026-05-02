@@ -34,11 +34,24 @@ export default function CheckoutPage() {
     setPlacing(true);
     try {
       const items = cart.map(item => ({
-        productId: item.id,
-        quantity: item.quantity,
+        id: item.id,
+        name: item.name || item.title,
         price: item.price,
+        quantity: item.quantity,
       }));
-      await api.post('/orders', { items });
+      // Get user data from auth
+      const auth = JSON.parse(localStorage.getItem('joshop_auth') || '{}');
+      const user = auth?.user || {};
+      const total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+      await api.post('/orders', {
+        customer: {
+          name: user.name || '',
+          phone: user.phone || '',
+        },
+        items,
+        total,
+        totalItems: cart.length,
+      });
       showToast('Pedido realizado con exito!', 'success');
       localStorage.removeItem('joshop_cart');
       window.dispatchEvent(new Event('cartUpdated'));
