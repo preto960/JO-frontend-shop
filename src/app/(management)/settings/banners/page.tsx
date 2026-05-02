@@ -244,7 +244,9 @@ const BannersPage: React.FC = () => {
       if (replaceImageRef.current) replaceImageRef.current.value = '';
       // Reload to ensure fresh data
       loadBanners();
+    }
   };
+
 
   /* ── Save banner edits ── */
   const handleSave = async (id: number) => {
@@ -648,6 +650,7 @@ const BannersPage: React.FC = () => {
                     <p style={{ margin: 0 }}>No hay banners configurados</p>
                   </div>
                 )}
+              </div>
             )}
           </>
         )}
@@ -853,6 +856,42 @@ const BannersPage: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Floating Add Banner Button */}
+      {bannersEnabled && (
+        <button
+          onClick={openModal}
+          style={{
+            position: 'fixed',
+            bottom: 28,
+            right: 28,
+            width: 56,
+            height: 56,
+            borderRadius: 16,
+            border: 'none',
+            cursor: 'pointer',
+            background: 'var(--primary)',
+            color: '#FFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 16px rgba(243,156,18,0.4)',
+            transition: 'var(--transition-fast)',
+            zIndex: 900,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.08)';
+            e.currentTarget.style.boxShadow = '0 6px 24px rgba(243,156,18,0.5)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(243,156,18,0.4)';
+          }}
+          title="Agregar banner"
+        >
+          <Plus size={26} />
+        </button>
       )}
 
       {/* Hidden file input for replacing banner image */}
