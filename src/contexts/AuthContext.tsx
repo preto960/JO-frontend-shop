@@ -281,7 +281,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
-    const res = await api.put('/auth/me', data);
+    const res = await api.put('/auth/profile', data);
     const u = extractUser(res);
     if (u) {
       setUser(prev => {
