@@ -6,6 +6,8 @@ import { Heart, Trash2, ShoppingBag, ShoppingCart, Plus } from 'lucide-react';
 import { formatPrice, showToast } from '@/lib/utils';
 import api from '@/lib/api';
 
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2NjYyIgZm9udC1zaXplPSIxNCI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4=';
+
 interface FavoritesDropdownProps {
   isOpen: boolean;
   onClose: () => void;
@@ -236,7 +238,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
                     overflow: 'hidden', flexShrink: 0,
                   }}>
                     {image ? (
-                      <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG; }} />
                     ) : (
                       <div style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center',

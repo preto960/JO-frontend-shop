@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ShoppingCart, ShoppingBag, Percent } from 'lucide-react';
 import { formatPrice, getProductImages } from '@/lib/utils';
 
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2NjYyIgZm9udC1zaXplPSIxNCI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4=';
+
 interface ProductCardProps {
   product: any;
   onAddToCart?: (product: any) => void;
@@ -86,7 +88,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
               loading="lazy"
               onError={(e) => {
                 const img = e.target as HTMLImageElement;
-                img.style.display = 'none';
+                img.src = PLACEHOLDER_IMG;
               }}
             />
             {/* Hidden placeholder for fallback on error */}

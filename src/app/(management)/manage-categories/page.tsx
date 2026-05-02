@@ -7,6 +7,8 @@ import api, { extractData } from '@/lib/api';
 import ConfirmModal from '@/components/ConfirmModal';
 import { showToast } from '@/lib/utils';
 
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2NjYyIgZm9udC1zaXplPSIxNCI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4=';
+
 const styles = {
   overlay: {
     position: 'fixed' as const, inset: 0, background: 'rgba(26,29,41,0.6)',
@@ -143,11 +145,20 @@ export default function AdminCategoriesPage() {
     setSaving(true);
     try {
       const payload: any = { name: form.name };
-      if (form.image) payload.image = form.image;
+      if (form.image) {
+        payload.image = form.image;
+      } else if (editingCategory?.image) {
+        // Explicitly clear the image when it was removed
+        payload.image = null;
+      }
 
       if (editingCategory) {
         await api.put(`/categories/${editingCategory.id}`, payload);
         showToast('Categoría actualizada', 'success');
+        // Immediately update local state to reflect image removal
+        setCategories((prev) =>
+          prev.map((c) => (c.id === editingCategory.id ? { ...c, name: form.name, image: form.image || null } : c))
+        );
       } else {
         await api.post('/categories', payload);
         showToast('Categoría creada', 'success');
@@ -266,7 +277,7 @@ export default function AdminCategoriesPage() {
                 border: cat.image ? '2px solid var(--border)' : 'none',
               }}>
                 {cat.image ? (
-                  <img src={cat.image} alt="" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: 'cover' }} />
+                  <img src={cat.image} alt="" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: 'cover' }} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG; }} />
                 ) : (
                   <ImageIcon size={28} color="var(--text-light)" />
                 )}
@@ -376,7 +387,7 @@ export default function AdminCategoriesPage() {
                   overflow: 'hidden', flexShrink: 0, position: 'relative',
                 }}>
                   {imagePreview ? (
-                    <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG; }} />
                   ) : (
                     <ImageIcon size={28} color="var(--text-light)" />
                   )}

@@ -115,7 +115,7 @@ export default function CheckoutPage() {
               }}>
                 <div>
                   <p style={{ fontSize: 14, fontWeight: 600 }}>{item.name || 'Producto'}</p>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Qty: {item.quantity}</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Cant.: {item.quantity}</p>
                 </div>
                 <p style={{ fontSize: 15, fontWeight: 700 }}>{formatPrice(item.price * item.quantity)}</p>
               </div>

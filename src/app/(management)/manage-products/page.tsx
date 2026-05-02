@@ -8,6 +8,8 @@ import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
 import { formatPrice, getProductImage, getProductImages, showToast, debounce } from '@/lib/utils';
 
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2NjYyIgZm9udC1zaXplPSIxNCI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4=';
+
 const styles = {
   primaryGradient: 'var(--primary-gradient)',
   overlay: {
@@ -468,7 +470,7 @@ export default function AdminProductsPage() {
                             overflow: 'hidden', flexShrink: 0,
                           }}>
                             {getProductImage(product) ? (
-                              <img src={getProductImage(product)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              <img src={getProductImage(product)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG; }} />
                             ) : (
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)', fontSize: 18 }}>📦</div>
                             )}
@@ -667,7 +669,7 @@ export default function AdminProductsPage() {
                         alt={`Imagen ${idx + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG;
                         }}
                       />
                       {/* Primary badge */}
