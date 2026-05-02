@@ -198,7 +198,7 @@ export default function ProductBatchesPage() {
       showToast('Lote eliminado. Descuentos reseteados a 0%.', 'success');
       fetchBatches();
       fetchProducts();
-      setViewBatch(prev => prev?.id === deleteModal.id ? null : prev);
+      setViewBatch((prev: any) => prev?.id === deleteModal.id ? null : prev);
     } catch (err: any) {
       showToast(err?.message || 'Error al eliminar', 'error');
     } finally {
