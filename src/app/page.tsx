@@ -656,49 +656,6 @@ export default function HomePage() {
         )}
 
         {/* ═══════════════════════════════════════════
-            FEATURES STRIP
-           ═══════════════════════════════════════════ */}
-        {!search && !selectedCategory && !selectedStore && (
-          <div className="animate-fade-in" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 12,
-            marginBottom: 28,
-          }}>
-            {[
-              { icon: Truck, label: 'Envio rapido', color: 'var(--primary)', bg: 'var(--primary-light)' },
-              { icon: Shield, label: 'Pago seguro', color: '#00B894', bg: '#E8FBF5' },
-              { icon: Clock, label: 'Soporte 24/7', color: '#54A0FF', bg: '#E8F1FF' },
-            ].map((f) => (
-              <div key={f.label} style={{
-                background: 'var(--white)',
-                borderRadius: 'var(--radius)',
-                padding: '14px 12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                boxShadow: 'var(--shadow)',
-              }}>
-                <div style={{
-                  width: 38, height: 38, borderRadius: '50%',
-                  background: f.bg, display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
-                  <f.icon size={18} color={f.color} />
-                </div>
-                <span style={{
-                  fontSize: 12, fontWeight: 600, color: 'var(--text)',
-                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                }}>
-                  {f.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ═══════════════════════════════════════════
             BEST SELLERS SECTION (only when no filters)
            ═══════════════════════════════════════════ */}
         {!search && !selectedCategory && !selectedStore && bestSellers.length > 0 && (
@@ -1017,32 +974,57 @@ export default function HomePage() {
         <footer style={{
           background: 'var(--white)',
           borderTop: '1px solid var(--border)',
-          padding: '24px 16px',
-          textAlign: 'center',
+          padding: '28px 16px',
         }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            marginBottom: 8,
-          }}>
-            {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{
-                width: 80, height: 80, borderRadius: '50%',
-                background: 'var(--primary-gradient)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 800, fontSize: 22, color: 'white',
-              }}>
-                {shopName.slice(0, 2).toUpperCase()}
-              </div>
-            )}
-            <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
-              {shopName}
-            </span>
+          {/* Logo left + features right */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 16 }}>
+            {/* Logo */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+              {shopLogoUrl ? (
+                <img src={shopLogoUrl} alt={shopName} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{
+                  width: 40, height: 40, borderRadius: '50%',
+                  background: 'var(--primary-gradient)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 800, fontSize: 14, color: 'white',
+                }}>
+                  {shopName.slice(0, 2).toUpperCase()}
+                </div>
+              )}
+              <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
+                {shopName}
+              </span>
+            </div>
+            {/* Feature pills */}
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              {[
+                { icon: Truck, label: 'Envio rapido', color: 'var(--primary)', bg: 'var(--primary-light)' },
+                { icon: Shield, label: 'Pago seguro', color: '#00B894', bg: '#E8FBF5' },
+                { icon: Clock, label: 'Soporte 24/7', color: '#54A0FF', bg: '#E8F1FF' },
+              ].map((f) => (
+                <div key={f.label} style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                }}>
+                  <div style={{
+                    width: 30, height: 30, borderRadius: '50%',
+                    background: f.bg, display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <f.icon size={14} color={f.color} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    {f.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <p style={{ fontSize: 12, color: 'var(--text-light)' }}>
-            Tu tienda en linea - Todos los derechos reservados
-          </p>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, textAlign: 'center' }}>
+            <p style={{ fontSize: 11, color: 'var(--text-light)' }}>
+              Tu tienda en linea - Todos los derechos reservados
+            </p>
+          </div>
         </footer>
       )}
     </div>
