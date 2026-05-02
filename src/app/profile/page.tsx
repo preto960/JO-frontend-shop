@@ -606,7 +606,11 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
-            {editing && renderButton(handleSave, 'Guardar cambios', { primary: true, fullWidth: true, loading: saving, icon: <Check size={18} /> })}
+            {editing && (
+              <div style={{ marginTop: 24 }}>
+                {renderButton(handleSave, 'Guardar cambios', { primary: true, fullWidth: true, loading: saving, icon: <Check size={18} /> })}
+              </div>
+            )}
           </div>
         )}
 
