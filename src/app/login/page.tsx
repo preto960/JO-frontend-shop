@@ -256,7 +256,7 @@ export default function LoginPage() {
         }} />
 
         <div className="animate-fade-in" style={{
-          width: 100, height: 100, borderRadius: '50%',
+          width: 120, height: 120, borderRadius: 20,
           background: 'rgba(255,255,255,0.2)',
           backdropFilter: 'blur(10px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -264,7 +264,7 @@ export default function LoginPage() {
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
           {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 24, border: '2px solid rgba(255,255,255,0.3)' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
             <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
@@ -304,9 +304,9 @@ export default function LoginPage() {
           {/* Mobile Logo */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:hidden">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
-              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
+              <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
                 <span style={{ fontWeight: 800, fontSize: 30, color: '#fff', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
@@ -315,9 +315,9 @@ export default function LoginPage() {
           {/* Desktop Logo (small) */}
           <div style={{ display: 'none', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }} className="lg:flex">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
-              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
+              <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
                 <span style={{ fontWeight: 800, fontSize: 30, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}

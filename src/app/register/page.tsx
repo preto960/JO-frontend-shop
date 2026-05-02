@@ -157,7 +157,7 @@ export default function RegisterPage() {
 
         {/* Logo */}
         <div className="animate-fade-in" style={{
-          width: 100, height: 100, borderRadius: '50%',
+          width: 120, height: 120, borderRadius: 20,
           background: 'rgba(255,255,255,0.2)',
           backdropFilter: 'blur(10px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -165,7 +165,7 @@ export default function RegisterPage() {
           border: '2px solid rgba(255,255,255,0.3)',
         }}>
           {shopLogoUrl ? (
-            <img src={shopLogoUrl} alt={shopName} style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
+            <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
             <span style={{ fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
@@ -234,10 +234,10 @@ export default function RegisterPage() {
             marginBottom: 4,
           }} className="lg:hidden">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 70, height: 70, borderRadius: '50%', objectFit: 'cover', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{
-                width: 70, height: 70, borderRadius: '50%',
+                width: 80, height: 80, borderRadius: 16,
                 background: 'var(--primary-gradient)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginBottom: 8,
@@ -256,10 +256,10 @@ export default function RegisterPage() {
             marginBottom: 4,
           }} className="lg:flex">
             {shopLogoUrl ? (
-              <img src={shopLogoUrl} alt={shopName} style={{ width: 70, height: 70, borderRadius: '50%', objectFit: 'cover', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
+              <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{
-                width: 70, height: 70, borderRadius: '50%',
+                width: 80, height: 80, borderRadius: 16,
                 background: 'var(--primary-gradient)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginBottom: 8,
