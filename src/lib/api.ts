@@ -39,7 +39,12 @@ api.interceptors.response.use(
         window.location.href = '/';
       }
     }
-    return Promise.reject(error.response?.data || error);
+    const errData = error.response?.data || error;
+    // Normalize: backend returns {error: "msg"} but frontend reads .message
+    if (typeof errData === 'object' && errData.error && !errData.message) {
+      errData.message = errData.error;
+    }
+    return Promise.reject(errData);
   }
 );
 

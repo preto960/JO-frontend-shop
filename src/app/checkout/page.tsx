@@ -57,7 +57,7 @@ export default function CheckoutPage() {
       window.dispatchEvent(new Event('cartUpdated'));
       router.push('/my-orders');
     } catch (err: any) {
-      showToast(err?.message || 'Error al realizar el pedido', 'error');
+      showToast(err?.error || err?.message || 'Error al realizar el pedido', 'error');
     } finally {
       setPlacing(false);
     }
