@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email, password, role: ['admin', 'editor', 'customer'] });
 
       // Check for 2FA
       if (res.requiresOtp || res.data?.requiresOtp) {
@@ -188,7 +188,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const verifyOtp = useCallback(async (email: string, code: string, type?: string) => {
-    const res = await api.post('/auth/login-verify', { email, code, type: type || 'email' });
+    const res = await api.post('/auth/login-verify', { email, code, type: type || 'email', role: ['admin', 'editor', 'customer'] });
     const u = extractUser(res);
     const t = extractToken(res);
     const rt = extractRefreshToken(res);
