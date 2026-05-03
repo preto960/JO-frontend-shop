@@ -2,10 +2,14 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ConfigProvider } from '@/contexts/ConfigContext';
+import PageTitle from '@/components/PageTitle';
 
 export const metadata: Metadata = {
   title: 'JO-Shop',
   description: 'Tienda en línea JO-Shop',
+  icons: {
+    icon: '/api/favicon',
+  },
 };
 
 // Runs BEFORE React hydrates. Reads cached theme, applies colors to CSS vars
@@ -68,6 +72,7 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <link rel="icon" href="/api/favicon" type="image/png" />
       </head>
       <body>
         {/* Branded loading screen — visible until page is fully ready */}
@@ -77,6 +82,7 @@ export default function RootLayout({
 
         <AuthProvider>
           <ConfigProvider>
+            <PageTitle />
             {children}
           </ConfigProvider>
         </AuthProvider>
