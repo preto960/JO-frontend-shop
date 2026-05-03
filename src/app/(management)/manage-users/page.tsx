@@ -307,7 +307,22 @@ export default function AdminUsersPage() {
                   }}>
                     {getInitials(user.name)}
                   </div>
-                  <div>\n                    <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{user.name}</h3>\n                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{user.email}</p>\n                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>\n                      {(user.roles || []).map((r: any) => (\n                        <span key={r.id} style={{\n                          display: 'inline-block', padding: '3px 10px', borderRadius: 12,\n                          fontSize: 11, fontWeight: 600,\n                          background: getRoleBadgeColor(r.name) + '18',\n                          color: getRoleBadgeColor(r.name),\n                        }}>\n                          {getRoleLabel(r.name)}\n                        </span>\n                      ))}\n                    </div>\n                  </div>
+                  <div>
+                    <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{user.name}</h3>
+                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{user.email}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
+                      {(user.roles || []).map((r: any) => (
+                        <span key={r.id} style={{
+                          display: 'inline-block', padding: '3px 10px', borderRadius: 12,
+                          fontSize: 11, fontWeight: 600,
+                          background: getRoleBadgeColor(r.name) + '18',
+                          color: getRoleBadgeColor(r.name),
+                        }}>
+                          {getRoleLabel(r.name)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 {currentUser?.id !== user.id && (
                   <div style={{ display: 'flex', gap: 8 }}>
