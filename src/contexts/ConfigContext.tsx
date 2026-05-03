@@ -28,8 +28,8 @@ const defaultConfig: ShopConfig = {
   multi_store: 'false',
   shop_name: 'JO-Shop',
   shop_logo_url: '',
-  primary_color: '#FF6B35',
-  accent_color: '#E94560',
+  primary_color: '',
+  accent_color: '',
 };
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);

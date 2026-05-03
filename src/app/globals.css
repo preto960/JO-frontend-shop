@@ -6,19 +6,19 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Primary (Warm Orange) ── */
-  --primary: #FF6B35;
-  --primary-hover: #E85D2C;
-  --primary-light: #FFF0E9;
-  --primary-gradient: linear-gradient(135deg, #FF6B35 0%, #FF8C5E 100%);
+  /* ── Primary — neutral gray, overridden by config ── */
+  --primary: #B0B8C1;
+  --primary-hover: #9DA5AE;
+  --primary-light: #F1F3F5;
+  --primary-gradient: linear-gradient(135deg, #B0B8C1 0%, #C4CCD4 100%);
 
   /* ── Secondary (Deep Charcoal) ── */
   --secondary: #1A1D29;
   --secondary-light: #2D3040;
 
-  /* ── Accent ── */
-  --accent: #E94560;
-  --accent-light: #FDE8EC;
+  /* ── Accent — neutral gray, overridden by config ── */
+  --accent: #9DA5AE;
+  --accent-light: #F1F3F5;
 
   /* ── Semantic ── */
   --success: #00B894;
@@ -51,7 +51,7 @@
   --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
   --shadow-xl: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06);
-  --shadow-accent: 0 4px 14px rgba(255,107,53,0.3);
+  --shadow-accent: 0 4px 14px rgba(176,184,193,0.25);
   --shadow-success: 0 4px 14px rgba(0,184,148,0.3);
 
   /* ── Radius ── */
