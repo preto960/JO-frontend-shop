@@ -127,20 +127,28 @@ export default function AdminUsersPage() {
   useEffect(() => { fetchRoles(); fetchStores(); }, [isMultiStore]);
   useEffect(() => { fetchUsers(); }, [search]);
 
-  const openCreate = () => {
+  const openCreate = async () => {
+    // Asegurar que los roles estén cargados antes de abrir el modal
+    if (roles.length === 0) {
+      await fetchRoles();
+    }
     setEditingUser(null);
     setForm({ name: '', email: '', password: '', roleIds: [], storeIds: [] });
     setModalOpen(true);
   };
 
-  const openEdit = (user: any) => {
+  const openEdit = async (user: any) => {
+    // Asegurar que los roles estén cargados antes de abrir el modal
+    if (roles.length === 0) {
+      await fetchRoles();
+    }
     setEditingUser(user);
     setForm({
       name: user.name || '',
       email: user.email || '',
       password: '',
-      roleIds: user.roles?.map((r: any) => String(r.id)) || [],
-      storeIds: user.stores?.map((s: any) => String(s.id)) || [],
+      roleIds: (user.roles || []).map((r: any) => String(r.id)),
+      storeIds: (user.stores || []).map((s: any) => String(s.id)),
     });
     setModalOpen(true);
   };
