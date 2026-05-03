@@ -95,14 +95,14 @@ export default function AdminUsersPage() {
   const [deleteModal, setDeleteModal] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    name: '', email: '', password: '', role: 'customer', storeIds: [] as string[],
+    name: '', email: '', password: '', roleIds: [] as string[], storeIds: [] as string[],
   });
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      let url = '/auth/users';
-      if (search) url += `?search=${encodeURIComponent(search)}`;
+      let url = '/auth/users?role=customer';
+      if (search) url += `&search=${encodeURIComponent(search)}`;
       const res = await api.get(url);
       setUsers(extractData(res));
     } catch { /* ignore */ }
@@ -129,7 +129,7 @@ export default function AdminUsersPage() {
 
   const openCreate = () => {
     setEditingUser(null);
-    setForm({ name: '', email: '', password: '', role: 'customer', storeIds: [] });
+    setForm({ name: '', email: '', password: '', roleIds: [], storeIds: [] });
     setModalOpen(true);
   };
 
@@ -139,8 +139,8 @@ export default function AdminUsersPage() {
       name: user.name || '',
       email: user.email || '',
       password: '',
-      role: user.role || 'customer',
-      storeIds: user.storeIds || user.stores?.map((s: any) => s.id) || [],
+      roleIds: user.roles?.map((r: any) => String(r.id)) || [],
+      storeIds: user.stores?.map((s: any) => String(s.id)) || [],
     });
     setModalOpen(true);
   };
@@ -156,14 +156,19 @@ export default function AdminUsersPage() {
     }
     setSaving(true);
     try {
-      const payload: any = { name: form.name, email: form.email, role: form.role };
-      if (form.password) payload.password = form.password;
-      if (form.storeIds.length > 0) payload.storeIds = form.storeIds;
-
       if (editingUser) {
+        const payload: any = { name: form.name };
+        if (form.password) payload.password = form.password;
         await api.put(`/auth/users/${editingUser.id}`, payload);
+        // Actualizar roles por separado
+        if (form.roleIds.length > 0) {
+          await api.put(`/auth/users/${editingUser.id}/roles`, { roleIds: form.roleIds.map(Number) });
+        }
         showToast('Usuario actualizado', 'success');
       } else {
+        const payload: any = { name: form.name, email: form.email, roleIds: form.roleIds.map(Number) };
+        if (form.password) payload.password = form.password;
+        if (form.storeIds.length > 0) payload.storeIds = form.storeIds.map(Number);
         await api.post('/auth/users', payload);
         showToast('Usuario creado', 'success');
       }
@@ -199,11 +204,21 @@ export default function AdminUsersPage() {
     }));
   };
 
+  const toggleRole = (roleId: string) => {
+    setForm(prev => {
+      if (prev.roleIds.includes(roleId)) {
+        return { ...prev, roleIds: prev.roleIds.filter(r => r !== roleId) };
+      }
+      if (prev.roleIds.length >= 2) {
+        return { ...prev, roleIds: [...prev.roleIds.slice(1), roleId] };
+      }
+      return { ...prev, roleIds: [...prev.roleIds, roleId] };
+    });
+  };
+
   const debouncedSearch = React.useCallback(
     debounce((val: string) => setSearch(val), 400), []
   );
-
-  const userRoles = ['admin', 'editor', 'delivery', 'customer'];
 
   return (
     <div style={{ padding: 24 }}>
@@ -277,25 +292,14 @@ export default function AdminUsersPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{
                     width: 46, height: 46, borderRadius: '50%',
-                    background: getRoleBadgeColor(user.role),
+                    background: getRoleBadgeColor(user.roles?.[0]?.name),
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: 'var(--white)', fontSize: 16, fontWeight: 600, flexShrink: 0,
-                    boxShadow: `0 4px 12px ${getRoleBadgeColor(user.role)}40`,
+                    boxShadow: `0 4px 12px ${getRoleBadgeColor(user.roles?.[0]?.name)}40`,
                   }}>
                     {getInitials(user.name)}
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{user.name}</h3>
-                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{user.email}</p>
-                    <span style={{
-                      display: 'inline-block', marginTop: 6, padding: '3px 10px', borderRadius: 12,
-                      fontSize: 11, fontWeight: 600,
-                      background: getRoleBadgeColor(user.role) + '18',
-                      color: getRoleBadgeColor(user.role),
-                    }}>
-                      {getRoleLabel(user.role)}
-                    </span>
-                  </div>
+                  <div>\n                    <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{user.name}</h3>\n                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{user.email}</p>\n                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>\n                      {(user.roles || []).map((r: any) => (\n                        <span key={r.id} style={{\n                          display: 'inline-block', padding: '3px 10px', borderRadius: 12,\n                          fontSize: 11, fontWeight: 600,\n                          background: getRoleBadgeColor(r.name) + '18',\n                          color: getRoleBadgeColor(r.name),\n                        }}>\n                          {getRoleLabel(r.name)}\n                        </span>\n                      ))}\n                    </div>\n                  </div>
                 </div>
                 {currentUser?.id !== user.id && (
                   <div style={{ display: 'flex', gap: 8 }}>
@@ -379,40 +383,40 @@ export default function AdminUsersPage() {
               )}
             </div>
 
-            {/* Role selection */}
+            {/* Role selection - checkbox max 2 */}
             <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 10, color: 'var(--text)' }}>Rol</label>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 10, color: 'var(--text)' }}>Roles (max. 2)</label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                {userRoles.map((role) => (
-                  <label
-                    key={role}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-                      borderRadius: 10, border: `2px solid ${form.role === role ? getRoleBadgeColor(role) : 'var(--border)'}`,
-                      background: form.role === role ? getRoleBadgeColor(role) + '10' : 'var(--card)',
-                      cursor: 'pointer', transition: 'all 0.2s',
-                    }}
-                  >
-                    <input
-                      type="radio" name="role" value={role}
-                      checked={form.role === role}
-                      onChange={(e) => setForm({ ...form, role: e.target.value })}
-                      style={{ display: 'none' }}
-                    />
-                    <div style={{
-                      width: 16, height: 16, borderRadius: '50%',
-                      border: `2px solid ${form.role === role ? getRoleBadgeColor(role) : 'var(--border)'}`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      {form.role === role && (
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: getRoleBadgeColor(role) }} />
-                      )}
-                    </div>
-                    <span style={{ fontSize: 13, fontWeight: form.role === role ? 600 : 400, color: getRoleBadgeColor(role) }}>
-                      {getRoleLabel(role)}
-                    </span>
-                  </label>
-                ))}
+                {roles.map((role: any) => {
+                  const isSelected = form.roleIds.includes(String(role.id));
+                  const color = getRoleBadgeColor(role.name);
+                  return (
+                    <label
+                      key={role.id}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
+                        borderRadius: 10, border: `2px solid ${isSelected ? color : 'var(--border)'}`,
+                        background: isSelected ? color + '10' : 'var(--card)',
+                        cursor: 'pointer', transition: 'all 0.2s',
+                      }}
+                    >
+                      <div style={{
+                        width: 18, height: 18, borderRadius: 4,
+                        border: `2px solid ${isSelected ? color : 'var(--border)'}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: isSelected ? color : 'transparent',
+                      }}>
+                        {isSelected && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        )}
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: isSelected ? 600 : 400, color: isSelected ? color : 'var(--text-secondary)' }}>
+                        {role.description || role.name}
+                      </span>
+                      <input type="checkbox" checked={isSelected} onChange={() => toggleRole(String(role.id))} style={{ display: 'none' }} />
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
