@@ -35,8 +35,16 @@ export default function AdminChatPage() {
     try {
       setLoading(true);
       const res = await api.get('/chats/admin/messages');
-      const msgs = res?.messages || res?.data?.messages || [];
-      if (Array.isArray(msgs)) {
+      const rawMsgs = res?.data || [];
+      if (Array.isArray(rawMsgs)) {
+        const msgs = rawMsgs.map((msg: any) => ({
+          id: String(msg.id),
+          content: msg.content,
+          senderId: String(msg.senderId),
+          senderName: msg.sender?.name || 'Admin',
+          senderRole: msg.sender?.email ? 'admin' : '',
+          createdAt: msg.createdAt,
+        }));
         setMessages(msgs);
       }
     } catch (err: any) {
@@ -61,16 +69,24 @@ export default function AdminChatPage() {
     channelRef.current = channel;
 
     // Listen for new messages
-    channel.bind('admin-message', (data: any) => {
+    channel.bind('new-message', (data: any) => {
       setMessages(prev => {
-        if (prev.some(m => m.id === data.id)) return prev;
-        return [...prev, data];
+        const msg = {
+          id: String(data.id),
+          content: data.content,
+          senderId: String(data.senderId),
+          senderName: data.senderName || 'Admin',
+          senderRole: 'admin',
+          createdAt: data.createdAt,
+        };
+        if (prev.some(m => m.id === msg.id)) return prev;
+        return [...prev, msg];
       });
     });
 
     return () => {
       if (channelRef.current) {
-        channelRef.current.unbind('admin-message');
+        channelRef.current.unbind('new-message');
       }
     };
   }, [pusher, user, subscribeToAdminChat]);
