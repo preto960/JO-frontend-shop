@@ -29,6 +29,7 @@ export default function AdminChatPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const channelRef = useRef<any>(null);
   const hasSubscribed = useRef(false);
+  const isNearBottomRef = useRef(true);
 
   // Fetch messages
   const fetchMessages = useCallback(async () => {
@@ -117,9 +118,25 @@ export default function AdminChatPage() {
     }
   };
 
-  // Auto-scroll to bottom on new messages
+  // Track whether the user is near the bottom of the chat
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      isNearBottomRef.current = scrollHeight - scrollTop - clientHeight < 150;
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Auto-scroll to bottom on new messages only if user is near bottom
+  useEffect(() => {
+    if (isNearBottomRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
 
   // Focus input on mount
@@ -167,7 +184,7 @@ export default function AdminChatPage() {
   }));
 
   return (
-    <div style={{ padding: '24px', height: 'calc(100vh - 100px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ padding: '24px', height: 'calc(100dvh - 80px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* ── Header ── */}
       <div style={{
         background: 'var(--white)',
