@@ -14,6 +14,7 @@ import {
   Truck,
   Settings,
   Heart,
+  MessageCircle,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -87,6 +88,9 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
       }
       if (canViewModule('orders') || isAdmin) {
         items.push({ path: '/manage-orders', label: 'Pedidos', icon: ClipboardList });
+      }
+      if (isAdmin || isEditor) {
+        items.push({ path: '/admin-chat', label: 'Chat Admin', icon: MessageCircle });
       }
       if (isAdmin) {
         items.push({ path: '/settings', label: 'Configuracion', icon: Settings });
