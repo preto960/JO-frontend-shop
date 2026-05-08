@@ -66,8 +66,6 @@ function showBrowserNotification(title: string, body: string, icon?: string, onC
       icon: icon || '/api/favicon',
       badge: '/api/favicon',
       tag: `joshop-${Date.now()}`,
-      renotify: true,
-      silent: true, // We play our own sound
     });
 
     if (onClick) {
