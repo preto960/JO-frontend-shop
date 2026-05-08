@@ -1,6 +1,7 @@
 import Pusher from 'pusher-js';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://jo-backend-shop.vercel.app';
+// Strip trailing slash to avoid double-slash URLs
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://jo-backend-shop.vercel.app').replace(/\/+$/, '');
 
 let pusherInstance: Pusher | null = null;
 
@@ -12,23 +13,20 @@ export function getPusherClient(): Pusher {
     channelAuthorization: {
       endpoint: `${API_URL}/pusher/auth`,
       transport: 'ajax',
-      headers: {},
+      headersProvider: () => {
+        if (typeof window === 'undefined') return {};
+        try {
+          const stored = localStorage.getItem('joshop_auth');
+          if (stored) {
+            const { token } = JSON.parse(stored);
+            if (token) return { Authorization: `Bearer ${token}` };
+          }
+        } catch {}
+        return {};
+      },
       params: {},
     },
   });
-
-  // Dynamically attach the Authorization header for private channel auth
-  (pusherInstance as any).config.channelAuthorization.headers = () => {
-    if (typeof window === 'undefined') return {};
-    try {
-      const stored = localStorage.getItem('joshop_auth');
-      if (stored) {
-        const { token } = JSON.parse(stored);
-        if (token) return { Authorization: `Bearer ${token}` };
-      }
-    } catch {}
-    return {};
-  };
 
   return pusherInstance;
 }
