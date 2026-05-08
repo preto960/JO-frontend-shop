@@ -18,7 +18,7 @@ export function getPusherClient(): Pusher {
   });
 
   // Dynamically attach the Authorization header for private channel auth
-  pusherInstance.config.channelAuthorization!.headers = () => {
+  (pusherInstance as any).config.channelAuthorization.headers = () => {
     if (typeof window === 'undefined') return {};
     try {
       const stored = localStorage.getItem('joshop_auth');
