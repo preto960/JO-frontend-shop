@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, ChevronDown, ChevronUp, MapPin, Phone, User, Package } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, showToast } from '@/lib/utils';
+import { usePusher } from '@/contexts/PusherContext';
 
 export default function DeliveryPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -38,6 +39,42 @@ export default function DeliveryPage() {
   };
 
   useEffect(() => { fetchOrders(); }, []);
+
+  // ─── Real-time Pusher: auto-refresh for delivery ──────────────────────
+  const { isConnected } = usePusher();
+  const fetchOrdersRef = useCallback(fetchOrders, []);
+
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const onOrderUpdated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[deliveries] Pusher order-updated:', data);
+      showToast(data?.message || `Pedido #${data?.orderId} actualizado`, 'info');
+      fetchOrdersRef();
+    };
+    const onOrderCreated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[deliveries] Pusher order-created:', data);
+      showToast('Nuevo pedido disponible', 'success');
+      fetchOrdersRef();
+    };
+    const onDeliveryAssigned = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[deliveries] Pusher delivery-assigned:', data);
+      showToast('Tienes un nuevo pedido asignado', 'success');
+      fetchOrdersRef();
+    };
+
+    window.addEventListener('pusher:order-updated', onOrderUpdated);
+    window.addEventListener('pusher:order-created', onOrderCreated);
+    window.addEventListener('pusher:delivery-assigned', onDeliveryAssigned);
+    return () => {
+      window.removeEventListener('pusher:order-updated', onOrderUpdated);
+      window.removeEventListener('pusher:order-created', onOrderCreated);
+      window.removeEventListener('pusher:delivery-assigned', onDeliveryAssigned);
+    };
+  }, [isConnected, fetchOrdersRef]);
 
   const acceptOrder = async (order: any) => {
     try {

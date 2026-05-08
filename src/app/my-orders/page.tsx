@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { RefreshCw, ClipboardList } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePusher } from '@/contexts/PusherContext';
 import Header from '@/components/Header';
 
-import { getStatusLabel, getStatusColor, getStatusClass, formatPrice, formatDate } from '@/lib/utils';
+import { getStatusLabel, getStatusColor, getStatusClass, formatPrice, formatDate, showToast } from '@/lib/utils';
 
 const STATUS_TABS = [
   { value: '', label: 'Todos' },
@@ -51,6 +52,34 @@ export default function OrdersPage() {
   useEffect(() => {
     if (!isLoading && user) fetchOrders();
   }, [activeTab, isLoading, user]);
+
+  // ─── Real-time Pusher: listen for order updates ─────────────────────
+  const { isConnected } = usePusher();
+  const fetchOrdersRef = useCallback(fetchOrders, [activeTab]);
+
+  useEffect(() => {
+    if (!isConnected || !user) return;
+
+    const onOrderUpdated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[my-orders] Pusher order-updated:', data);
+      showToast(data?.message || `Pedido #${data?.orderId} actualizado`, 'info');
+      fetchOrdersRef();
+    };
+    const onOrderCreated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[my-orders] Pusher order-created:', data);
+      showToast(data?.message || 'Nuevo pedido creado', 'success');
+      fetchOrdersRef();
+    };
+
+    window.addEventListener('pusher:order-updated', onOrderUpdated);
+    window.addEventListener('pusher:order-created', onOrderCreated);
+    return () => {
+      window.removeEventListener('pusher:order-updated', onOrderUpdated);
+      window.removeEventListener('pusher:order-created', onOrderCreated);
+    };
+  }, [isConnected, user, fetchOrdersRef]);
 
   if (isLoading || !user) {
     return (

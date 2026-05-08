@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { PusherProvider } from '@/contexts/PusherContext';
 import { ConfigProvider } from '@/contexts/ConfigContext';
 import PageTitle from '@/components/PageTitle';
 
@@ -81,10 +82,12 @@ export default function RootLayout({
         </div>
 
         <AuthProvider>
-          <ConfigProvider>
-            <PageTitle />
-            {children}
-          </ConfigProvider>
+          <PusherProvider>
+            <ConfigProvider>
+              <PageTitle />
+              {children}
+            </ConfigProvider>
+          </PusherProvider>
         </AuthProvider>
       </body>
     </html>

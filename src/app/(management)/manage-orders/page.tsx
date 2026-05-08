@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api, { extractData } from '@/lib/api';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, showToast } from '@/lib/utils';
+import { usePusher } from '@/contexts/PusherContext';
 
 const STATUS_TABS = [
   { value: '', label: 'Todos' },
@@ -39,6 +40,34 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => { fetchOrders(); }, [activeTab]);
+
+  // ─── Real-time Pusher: auto-refresh on status changes ─────────────────
+  const { isConnected } = usePusher();
+  const fetchOrdersRef = useCallback(fetchOrders, [activeTab]);
+
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const onOrderUpdated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[manage-orders] Pusher order-updated:', data);
+      showToast(`Pedido #${String(data?.orderId).slice(-8).toUpperCase()} → ${getStatusLabel(data?.status)}`, 'info');
+      fetchOrdersRef();
+    };
+    const onOrderCreated = (e: Event) => {
+      const data = (e as CustomEvent).detail;
+      console.log('[manage-orders] Pusher order-created:', data);
+      showToast('Nuevo pedido recibido', 'success');
+      fetchOrdersRef();
+    };
+
+    window.addEventListener('pusher:order-updated', onOrderUpdated);
+    window.addEventListener('pusher:order-created', onOrderCreated);
+    return () => {
+      window.removeEventListener('pusher:order-updated', onOrderUpdated);
+      window.removeEventListener('pusher:order-created', onOrderCreated);
+    };
+  }, [isConnected, fetchOrdersRef]);
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     try {
