@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { PusherProvider } from '@/contexts/PusherContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ConfigProvider } from '@/contexts/ConfigContext';
 import PageTitle from '@/components/PageTitle';
+import GlobalPusherListener from '@/components/GlobalPusherListener';
 
 export const metadata: Metadata = {
   title: 'JO-Shop',
@@ -83,10 +85,13 @@ export default function RootLayout({
 
         <AuthProvider>
           <PusherProvider>
-            <ConfigProvider>
-              <PageTitle />
-              {children}
-            </ConfigProvider>
+            <NotificationProvider>
+              <ConfigProvider>
+                <GlobalPusherListener />
+                <PageTitle />
+                {children}
+              </ConfigProvider>
+            </NotificationProvider>
           </PusherProvider>
         </AuthProvider>
       </body>

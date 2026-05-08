@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import SidebarMenu from './SidebarMenu';
 import CartDropdown from './CartDropdown';
+import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   title: string;
@@ -144,6 +145,9 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               <Settings size={20} />
             </button>
           )}
+          {/* Notification bell */}
+          {isLoggedIn && <NotificationBell />}
+          
           {/* Cart icon with badge + dropdown */}
           {isLoggedIn && (
             <div style={{ position: 'relative' }}>

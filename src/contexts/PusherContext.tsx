@@ -11,6 +11,9 @@ interface PusherContextType {
   subscribeToUserChannel: () => any;
   subscribeToOrderChannel: (orderId: number | string) => any;
   unsubscribeFromOrderChannel: (orderId: number | string) => void;
+  // Admin chat presence channel
+  subscribeToAdminChat: () => any;
+  adminOnlineMembers: Map<string, any>;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
@@ -21,6 +24,8 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const userChannelRef = useRef<any>(null);
   const orderChannelsRef = useRef<Map<string, any>>(new Map());
+  const adminChatRef = useRef<any>(null);
+  const [adminOnlineMembers, setAdminOnlineMembers] = useState<Map<string, any>>(new Map());
 
   // Initialize Pusher when user is authenticated
   useEffect(() => {
@@ -100,6 +105,15 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
       userChannelRef.current?.unsubscribe();
       orderChannelsRef.current.forEach((ch) => ch.unsubscribe());
       orderChannelsRef.current.clear();
+      // Unsubscribe from admin chat
+      if (adminChatRef.current) {
+        adminChatRef.current.unbind('pusher:subscription_succeeded');
+        adminChatRef.current.unbind('pusher:member_added');
+        adminChatRef.current.unbind('pusher:member_removed');
+        adminChatRef.current.unsubscribe();
+        adminChatRef.current = null;
+        setAdminOnlineMembers(new Map());
+      }
     };
   }, [user, token]);
 
@@ -143,6 +157,44 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     }
   }, [pusher]);
 
+  // ─── Admin Chat Presence Channel (Fase 5 prep) ──────────────────────
+  const subscribeToAdminChat = useCallback(() => {
+    if (!pusher || !user) return null;
+    if (adminChatRef.current) return adminChatRef.current;
+
+    const channel = pusher.subscribe('presence-admin-chat');
+    adminChatRef.current = channel;
+
+    channel.bind('pusher:subscription_succeeded', (members: any) => {
+      console.log('[Pusher] Subscribed to presence-admin-chat, members:', members.count);
+      const map = new Map<string, any>();
+      members.each((m: any) => map.set(m.id, m.info));
+      setAdminOnlineMembers(map);
+    });
+
+    channel.bind('pusher:member_added', (member: any) => {
+      console.log('[Pusher] Admin online:', member.id);
+      setAdminOnlineMembers(prev => {
+        const next = new Map(prev);
+        next.set(member.id, member.info);
+        return next;
+      });
+      window.dispatchEvent(new CustomEvent('pusher:admin-online', { detail: member }));
+    });
+
+    channel.bind('pusher:member_removed', (member: any) => {
+      console.log('[Pusher] Admin offline:', member.id);
+      setAdminOnlineMembers(prev => {
+        const next = new Map(prev);
+        next.delete(member.id);
+        return next;
+      });
+      window.dispatchEvent(new CustomEvent('pusher:admin-offline', { detail: member }));
+    });
+
+    return channel;
+  }, [pusher, user]);
+
   return (
     <PusherContext.Provider value={{
       pusher,
@@ -150,6 +202,8 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
       subscribeToUserChannel,
       subscribeToOrderChannel,
       unsubscribeFromOrderChannel,
+      subscribeToAdminChat,
+      adminOnlineMembers,
     }}>
       {children}
     </PusherContext.Provider>

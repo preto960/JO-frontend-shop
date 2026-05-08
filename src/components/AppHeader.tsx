@@ -8,6 +8,7 @@ import { LogOut, Menu, ShoppingBag, ShoppingCart, Heart } from 'lucide-react';
 import SidebarMenu from '@/components/SidebarMenu';
 import CartDropdown from '@/components/CartDropdown';
 import FavoritesDropdown from '@/components/FavoritesDropdown';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function AppHeader() {
   const { logout, isEditor, user } = useAuth();
@@ -122,8 +123,10 @@ export default function AppHeader() {
           )}
         </div>
 
-        {/* Right: favorites + cart dropdown + logout */}
+        {/* Right: notifications + favorites + cart dropdown + logout */}
         <div style={{ position: 'absolute', right: 16, zIndex: 1, display: 'flex', gap: 8 }}>
+          {/* Notification bell */}
+          <NotificationBell />
           {/* Favorites icon with badge + dropdown */}
           <div style={{ position: 'relative' }}>
             <button
