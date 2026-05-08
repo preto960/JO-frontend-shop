@@ -19,10 +19,10 @@ export function getPusherClient(): Pusher {
           const stored = localStorage.getItem('joshop_auth');
           if (stored) {
             const { token } = JSON.parse(stored);
-            if (token) return { Authorization: `Bearer ${token}` };
+            if (token) return { Authorization: `Bearer ${token}`, 'X-Platform': 'frontend-shop' };
           }
         } catch {}
-        return {};
+        return { 'X-Platform': 'frontend-shop' };
       },
       params: {},
     },

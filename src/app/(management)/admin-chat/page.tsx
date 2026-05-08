@@ -177,11 +177,14 @@ export default function AdminChatPage() {
     } catch { return false; }
   };
 
-  const onlineCount = adminOnlineMembers.size;
-  const onlineMembersArray = Array.from(adminOnlineMembers.entries()).map(([id, info]) => ({
-    id,
-    ...info,
-  }));
+  // Filter: show only admins connected from landingpage (not self, not frontend-shop)
+  const onlineMembersArray = Array.from(adminOnlineMembers.entries())
+    .filter(([id, info]) => id !== String(user?.id) && info?.platform === 'landingpage')
+    .map(([id, info]) => ({
+      id,
+      ...info,
+    }));
+  const onlineCount = onlineMembersArray.length;
 
   return (
     <div style={{ padding: '24px', height: 'calc(100dvh - 80px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -226,7 +229,7 @@ export default function AdminChatPage() {
               </span>
               <span style={{ fontSize: 12, color: 'var(--text-light)' }}>·</span>
               <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-                {onlineCount} en línea
+                {onlineCount} admin{onlineCount !== 1 ? 's' : ''} en línea
               </span>
             </div>
           </div>
@@ -599,7 +602,7 @@ export default function AdminChatPage() {
                   textAlign: 'center',
                 }}>
                   <p style={{ fontSize: 13, color: 'var(--text-light)' }}>
-                    No hay administradores en línea
+                    No hay administradores del landingpage en línea
                   </p>
                 </div>
               ) : (
