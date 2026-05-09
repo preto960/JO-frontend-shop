@@ -24,7 +24,7 @@ export default function TrackingPage() {
   const orderId = params?.id as string;
 
   const { isLoading, user } = useAuth();
-  const { isConnected, subscribeToOrderChannel } = usePusher();
+  const { isConnected, subscribeToOrderChannel, unsubscribeFromOrderChannel } = usePusher();
 
   const [order, setOrder] = useState<any>(null);
   const [latestLocation, setLatestLocation] = useState<LocationPoint | null>(null);
@@ -76,7 +76,7 @@ export default function TrackingPage() {
   useEffect(() => {
     if (!isConnected || !orderId || !user) return;
 
-    const unsub = subscribeToOrderChannel(orderId);
+    subscribeToOrderChannel(orderId);
 
     const onLocationUpdate = (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -89,9 +89,9 @@ export default function TrackingPage() {
     window.addEventListener('pusher:location-update', onLocationUpdate);
     return () => {
       window.removeEventListener('pusher:location-update', onLocationUpdate);
-      if (unsub) unsub();
+      if (orderId) unsubscribeFromOrderChannel(orderId);
     };
-  }, [isConnected, orderId, user, subscribeToOrderChannel]);
+  }, [isConnected, orderId, user, subscribeToOrderChannel, unsubscribeFromOrderChannel]);
 
   // Build the iframe map URL
   const getMapUrl = () => {
@@ -150,6 +150,9 @@ export default function TrackingPage() {
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>
             Seguimiento de Envio
+          </p>
+          <p style={{ fontSize: 12, opacity: 0.85, margin: '2px 0 0' }}>
+            Pedido #{String(orderId).slice(-8).toUpperCase()}
           </p>
         </div>
         <div style={{
