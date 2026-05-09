@@ -78,10 +78,11 @@ export default function AdminChatPage() {
       const selectedNumericId = selectedMember.id.split('-')[0];
       const senderPlatform = data.senderPlatform || 'unknown';
 
-      // Must match BOTH user ID AND platform to isolate conversations
+      // Must match BOTH user ID, platform AND targetPlatform to isolate conversations
+      const targetPlatform = data.targetPlatform || 'all';
       const isFromSelected =
-        (numericSenderId === selectedNumericId && numericRecipientId === myUserId && senderPlatform === selectedMember.platform) ||
-        (numericSenderId === myUserId && numericRecipientId === selectedNumericId && senderPlatform === 'frontend-shop');
+        (numericSenderId === selectedNumericId && senderPlatform === selectedMember.platform && targetPlatform === 'frontend-shop') ||
+        (numericSenderId === myUserId && senderPlatform === 'frontend-shop' && targetPlatform === selectedMember.platform);
 
       if (isFromSelected) {
         setMessages(prev => {
@@ -126,7 +127,13 @@ export default function AdminChatPage() {
 
     setLoadingMessages(true);
     try {
-      const res: any = await api.get('/chats/admin/messages', { params: { recipientId } });
+      const res: any = await api.get('/chats/admin/messages', {
+        params: {
+          recipientId,
+          senderPlatform: 'frontend-shop',
+          recipientPlatform: member.platform || 'all',
+        },
+      });
       const rawMessages = res.data || [];
       setMessages(rawMessages.map((msg: any) => ({
         id: String(msg.id),
