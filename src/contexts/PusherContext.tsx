@@ -45,17 +45,23 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     const client = getPusherClient();
     setPusher(client);
 
-    // Connection state handlers
-    const onConnected = () => setIsConnected(true);
-    const onDisconnected = () => setIsConnected(false);
+    // Connection state handlers — MUST bind on client.connection, not on client
+    const onConnected = () => {
+      console.log('[Pusher] Connected');
+      setIsConnected(true);
+    };
+    const onDisconnected = () => {
+      console.log('[Pusher] Disconnected');
+      setIsConnected(false);
+    };
     const onError = (err: any) => {
       console.error('[Pusher] Connection error:', err);
       setIsConnected(false);
     };
 
-    client.bind('connected', onConnected);
-    client.bind('disconnected', onDisconnected);
-    client.bind('error', onError);
+    client.connection.bind('connected', onConnected);
+    client.connection.bind('disconnected', onDisconnected);
+    client.connection.bind('error', onError);
 
     // Check initial state
     if (client.connection?.state === 'connected') {
@@ -93,9 +99,9 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => {
-      client.unbind('connected', onConnected);
-      client.unbind('disconnected', onDisconnected);
-      client.unbind('error', onError);
+      client.connection.unbind('connected', onConnected);
+      client.connection.unbind('disconnected', onDisconnected);
+      client.connection.unbind('error', onError);
       userChannel.unbind('pusher:subscription_error');
       userChannel.unbind('pusher:subscription_succeeded');
       userChannel.unbind('order-updated');

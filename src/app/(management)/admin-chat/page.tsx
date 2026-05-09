@@ -95,7 +95,7 @@ export default function AdminChatPage() {
 
   useEffect(() => { fetchMessages(); }, [fetchMessages]);
 
-  // Subscribe to presence channel + new-message events
+  // Subscribe to presence channel (once)
   useEffect(() => {
     if (!pusher || !user || hasSubscribed.current) return;
     hasSubscribed.current = true;
@@ -103,9 +103,14 @@ export default function AdminChatPage() {
     const channel = subscribeToAdminChat();
     if (!channel) return;
     channelRef.current = channel;
+  }, [pusher, user, subscribeToAdminChat]);
 
-    // Listen for new messages
-    channel.bind('new-message', (data: any) => {
+  // Listen for new-message events (re-binds when selectedMember changes)
+  useEffect(() => {
+    const channel = channelRef.current;
+    if (!channel || !user) return;
+
+    const handleNewMessage = (data: any) => {
       const newMsg: AdminMessage = {
         id: String(data.id),
         content: data.content,
@@ -144,14 +149,14 @@ export default function AdminChatPage() {
           return [...prev, newMsg];
         });
       }
-    });
+    };
+
+    channel.bind('new-message', handleNewMessage);
 
     return () => {
-      if (channelRef.current) {
-        channelRef.current.unbind('new-message');
-      }
+      channel.unbind('new-message', handleNewMessage);
     };
-  }, [pusher, user, subscribeToAdminChat, selectedMember]);
+  }, [user, selectedMember]);
 
   // Select a member to chat with
   const openChat = (member: OnlineMember) => {
