@@ -13,6 +13,7 @@ interface AdminMessage {
   senderId: string;
   senderName: string;
   senderRole: string;
+  platform: string;
   createdAt: string;
 }
 
@@ -43,6 +44,7 @@ export default function AdminChatPage() {
           content: msg.content,
           senderId: String(msg.senderId),
           senderName: msg.sender?.name || 'Admin',
+          platform: msg.platform || 'unknown',
           senderRole: msg.sender?.email ? 'admin' : '',
           createdAt: msg.createdAt,
         }));
@@ -77,6 +79,7 @@ export default function AdminChatPage() {
           content: data.content,
           senderId: String(data.senderId),
           senderName: data.senderName || 'Admin',
+          platform: data.platform || 'unknown',
           senderRole: 'admin',
           createdAt: data.createdAt,
         };

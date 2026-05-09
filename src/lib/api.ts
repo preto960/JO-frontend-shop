@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-// Request interceptor - add auth token
+// Request interceptor - add auth token + platform header
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('joshop_auth');
@@ -23,6 +23,8 @@ api.interceptors.request.use((config) => {
       }
     }
   }
+  // Identify this client as frontend-shop for chat platform tracking
+  config.headers['X-Platform'] = 'frontend-shop';
   return config;
 });
 

@@ -54,6 +54,7 @@ export default function OrderChatModal({
           content: msg.content,
           senderId: String(msg.senderId),
           senderName: msg.sender?.name || '',
+          platform: msg.platform || 'unknown',
           createdAt: msg.createdAt,
           type: msg.type || 'text',
         }));
