@@ -63,19 +63,25 @@ export default function AdminChatPage() {
     const channel = subscribeToAdminChat();
     if (!channel) return;
     channelRef.current = channel;
+  }, [pusher, user, subscribeToAdminChat]);
 
-    // Listen for new messages
-    channel.bind('new-message', (data: any) => {
+  // Listen for new messages via Pusher (re-binds when selectedMember changes)
+  useEffect(() => {
+    const channel = channelRef.current;
+    if (!channel) return;
+
+    const handleNewMessage = (data: any) => {
       console.log('[AdminChat] Received new-message event:', data);
-      // Only add if it belongs to the currently selected conversation
       if (!selectedMember) return;
       const numericSenderId = String(data.senderId);
       const numericRecipientId = data.recipientId ? String(data.recipientId) : null;
       const selectedNumericId = selectedMember.id.split('-')[0];
+      const senderPlatform = data.senderPlatform || 'unknown';
 
+      // Must match BOTH user ID AND platform to isolate conversations
       const isFromSelected =
-        (numericSenderId === selectedNumericId && numericRecipientId === myUserId) ||
-        (numericSenderId === myUserId && numericRecipientId === selectedNumericId);
+        (numericSenderId === selectedNumericId && numericRecipientId === myUserId && senderPlatform === selectedMember.platform) ||
+        (numericSenderId === myUserId && numericRecipientId === selectedNumericId && senderPlatform === 'frontend-shop');
 
       if (isFromSelected) {
         setMessages(prev => {
@@ -85,15 +91,18 @@ export default function AdminChatPage() {
             content: data.content,
             senderId: numericSenderId,
             senderName: data.senderName || 'Admin',
-            senderPlatform: data.senderPlatform || 'unknown',
+            senderPlatform: senderPlatform,
             recipientId: numericRecipientId,
             targetPlatform: data.targetPlatform || 'all',
             createdAt: data.createdAt,
           }];
         });
       }
-    });
-  }, [pusher, user, subscribeToAdminChat, selectedMember, myUserId]);
+    };
+
+    channel.bind('new-message', handleNewMessage);
+    return () => channel.unbind('new-message', handleNewMessage);
+  }, [selectedMember, myUserId]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -159,11 +168,28 @@ export default function AdminChatPage() {
 
     setSendingMessage(true);
     try {
-      await api.post('/chats/admin/messages', {
+      const res: any = await api.post('/chats/admin/messages', {
         content: newMessage.trim(),
         recipientId,
         targetPlatform: selectedMember.platform || 'all',
       });
+      // Optimistic: add the sent message immediately so user sees it right away
+      const savedMsg = res?.message || res?.data;
+      if (savedMsg) {
+        setMessages(prev => {
+          if (prev.some(m => m.id === String(savedMsg.id))) return prev;
+          return [...prev, {
+            id: String(savedMsg.id),
+            content: savedMsg.content,
+            senderId: String(savedMsg.senderId),
+            senderName: savedMsg.sender?.name || 'Admin',
+            senderPlatform: savedMsg.platform || 'frontend-shop',
+            recipientId: savedMsg.recipientId ? String(savedMsg.recipientId) : null,
+            targetPlatform: savedMsg.targetPlatform || 'all',
+            createdAt: savedMsg.createdAt,
+          }];
+        });
+      }
       setNewMessage('');
     } catch (err) {
       console.error('[AdminChat] Error sending message:', err);
