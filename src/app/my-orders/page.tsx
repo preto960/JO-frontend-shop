@@ -65,6 +65,20 @@ export default function OrdersPage() {
   const { isConnected } = usePusher();
   const fetchOrdersRef = useCallback(fetchOrders, [activeTab]);
 
+  // Open chat modal
+  const openChat = (orderId: number, orderNumber: string, deliveryName: string) => {
+    setChatModal({
+      isOpen: true,
+      orderId,
+      orderNumber: String(orderNumber).slice(-8).toUpperCase(),
+      otherUserName: deliveryName || 'Delivery',
+    });
+  };
+
+  // Stable ref for openChat so the event listener can use it
+  const openChatRef = useRef(openChat);
+  openChatRef.current = openChat;
+
   // Listen for notification click to open chat
   useEffect(() => {
     const onOpenOrderChat = (e: Event) => {
@@ -78,10 +92,6 @@ export default function OrdersPage() {
     window.addEventListener('notification:open-order-chat', onOpenOrderChat);
     return () => window.removeEventListener('notification:open-order-chat', onOpenOrderChat);
   }, []);
-
-  // Stable ref for openChat so the event listener can use it
-  const openChatRef = useRef(openChat);
-  openChatRef.current = openChat;
 
   useEffect(() => {
     if (!isConnected || !user) return;
@@ -108,16 +118,6 @@ export default function OrdersPage() {
   // Toggle order expansion
   const toggleExpand = (orderId: string) => {
     setExpandedOrder(prev => prev === orderId ? null : orderId);
-  };
-
-  // Open chat modal
-  const openChat = (orderId: number, orderNumber: string, deliveryName: string) => {
-    setChatModal({
-      isOpen: true,
-      orderId,
-      orderNumber: String(orderNumber).slice(-8).toUpperCase(),
-      otherUserName: deliveryName || 'Delivery',
-    });
   };
 
   // Call delivery
