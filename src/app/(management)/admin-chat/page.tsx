@@ -211,7 +211,7 @@ export default function AdminChatPage() {
   };
 
   return (
-    <div style={{ padding: '16px 24px', height: 'calc(100dvh - 140px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ padding: '16px 24px', height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* ── Header (compact single line) ── */}
       <div style={{
         background: 'var(--white)',
@@ -364,7 +364,7 @@ export default function AdminChatPage() {
                   </div>
                 ) : (
                   messages.map((msg) => {
-                    const isMine = msg.senderId === myUserId;
+                    const isMine = msg.senderId === myUserId && msg.senderPlatform === 'frontend-shop';
                     return (
                       <div
                         key={msg.id}

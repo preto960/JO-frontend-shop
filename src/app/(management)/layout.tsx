@@ -25,9 +25,9 @@ export default function ManagementLayout({ children }: { children: React.ReactNo
   if (!user || (!isAdmin && !isEditor)) return null;
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <AppHeader />
-      <main style={{ minHeight: '100vh', background: 'var(--background)' }}>{children}</main>
-    </>
+      <main style={{ flex: 1, overflow: 'auto', background: 'var(--background)' }}>{children}</main>
+    </div>
   );
 }
