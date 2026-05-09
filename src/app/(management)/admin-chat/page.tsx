@@ -45,15 +45,11 @@ export default function AdminChatPage() {
   const isNearBottomRef = useRef(true);
 
   // Build online members list (from other platforms, not self)
-  // NOTE: Pusher user_id is now "1-frontend-shop" format (id + platform suffix)
-  // so the same user can be on multiple platforms simultaneously.
-  const myUserId = String(user?.id);
+  // Pusher user_id is now "1-frontend-shop" format (id + platform suffix).
+  // Filter ONLY by platform — don't exclude same-person-different-platform,
+  // because we want to see "Admin on Landingpage" even if it's the same user.
   const allOnlineMembers: OnlineMember[] = Array.from(adminOnlineMembers.entries())
-    .filter(([id, info]) => {
-      // id is like "1-landingpage", parse numeric part to compare
-      const numericId = String(parseInt(id));
-      return numericId !== myUserId && info?.platform !== 'frontend-shop';
-    })
+    .filter(([id, info]) => info?.platform !== 'frontend-shop')
     .map(([id, info]) => ({
       id,
       name: info?.name,
