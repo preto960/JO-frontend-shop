@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bell, X, Check, Trash2, Volume2, VolumeX } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useNotifications, AppNotification } from '@/contexts/NotificationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStatusLabel } from '@/lib/utils';
@@ -44,6 +45,7 @@ interface NotificationBellProps {
 export default function NotificationBell({ anchorRef: externalAnchorRef }: NotificationBellProps) {
   const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll, requestBrowserPermission, browserPermission } = useNotifications();
   const { user } = useAuth();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [notifSound, setNotifSound] = useState(true);
   const internalRef = useRef<HTMLButtonElement>(null);
@@ -219,7 +221,20 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
               notifications.map((notif) => (
                 <div
                   key={notif.id}
-                  onClick={() => markAsRead(notif.id)}
+                  onClick={() => {
+                    markAsRead(notif.id);
+                    setIsOpen(false);
+                    // Navigate based on notification type
+                    if ((notif.type === 'order-message') && notif.data?.orderId) {
+                      router.push('/my-orders');
+                      // Dispatch event so my-orders page can open the chat modal
+                      setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('notification:open-order-chat', {
+                          detail: { orderId: notif.data.orderId, senderName: notif.data.senderName },
+                        }));
+                      }, 500);
+                    }
+                  }}
                   style={{
                     display: 'flex',
                     gap: 12,

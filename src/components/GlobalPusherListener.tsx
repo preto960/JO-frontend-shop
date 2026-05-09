@@ -73,29 +73,27 @@ export default function GlobalPusherListener() {
     };
 
     // ─── Order message (from user channel) ──────────────────────────
+    // Only fires for OTHER users (not the sender), so no need to filter own messages.
+    // The "new-message" from order channel is handled by OrderChatModal directly;
+    // we intentionally skip it here to avoid duplicate notifications.
     const onOrderMessage = (e: Event) => {
       const data = (e as CustomEvent).detail;
       if (!data) return;
-      const senderName = data.senderName || data.userName || 'Alguien';
+      const senderName = data.senderName || 'Repartidor';
+      const orderId = String(data.orderId || '').slice(-8).toUpperCase();
       addNotification({
         type: 'order-message',
-        title: `Mensaje de ${senderName}`,
-        body: data.message || data.text || 'Nuevo mensaje en tu pedido',
-        data,
+        title: `Nuevo mensaje del repartidor`,
+        body: `${senderName} te escribio en la orden #${orderId}`,
+        data: { orderId: data.orderId, senderName },
       });
     };
 
     // ─── New message (from order channel) ───────────────────────────
-    const onNewMessage = (e: Event) => {
-      const data = (e as CustomEvent).detail;
-      if (!data) return;
-      const senderName = data.senderName || data.userName || 'Alguien';
-      addNotification({
-        type: 'new-message',
-        title: `Nuevo mensaje de ${senderName}`,
-        body: data.message || data.text || data.content || 'Tienes un nuevo mensaje',
-        data,
-      });
+    // Skip notifications here — OrderChatModal handles display.
+    // The user-channel "order-message" already creates the notification.
+    const onNewMessage = (_e: Event) => {
+      // No notification — avoid duplicate with order-message
     };
 
     // ─── Location update ────────────────────────────────────────────

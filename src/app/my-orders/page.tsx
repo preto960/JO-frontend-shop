@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { RefreshCw, ClipboardList, ChevronDown, ChevronUp, Phone, MessageCircle, Package, User as UserIcon } from 'lucide-react';
+import { RefreshCw, ClipboardList, ChevronDown, ChevronUp, Phone, MessageCircle, Package, User as UserIcon, MapPin } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePusher } from '@/contexts/PusherContext';
@@ -65,19 +65,35 @@ export default function OrdersPage() {
   const { isConnected } = usePusher();
   const fetchOrdersRef = useCallback(fetchOrders, [activeTab]);
 
+  // Listen for notification click to open chat
+  useEffect(() => {
+    const onOpenOrderChat = (e: Event) => {
+      const { orderId, senderName } = (e as CustomEvent).detail || {};
+      if (!orderId) return;
+      // Expand the order first
+      setExpandedOrder(String(orderId));
+      // Open chat modal
+      openChatRef.current(orderId, String(orderId), senderName || 'Repartidor');
+    };
+    window.addEventListener('notification:open-order-chat', onOpenOrderChat);
+    return () => window.removeEventListener('notification:open-order-chat', onOpenOrderChat);
+  }, []);
+
+  // Stable ref for openChat so the event listener can use it
+  const openChatRef = useRef(openChat);
+  openChatRef.current = openChat;
+
   useEffect(() => {
     if (!isConnected || !user) return;
 
     const onOrderUpdated = (e: Event) => {
       const data = (e as CustomEvent).detail;
       console.log('[my-orders] Pusher order-updated:', data);
-      showToast(data?.message || `Pedido #${data?.orderId} actualizado`, 'info');
       fetchOrdersRef();
     };
     const onOrderCreated = (e: Event) => {
       const data = (e as CustomEvent).detail;
       console.log('[my-orders] Pusher order-created:', data);
-      showToast(data?.message || 'Nuevo pedido creado', 'success');
       fetchOrdersRef();
     };
 
@@ -207,6 +223,7 @@ export default function OrdersPage() {
               const delivery = order.delivery || order.Delivery || null;
               const hasDelivery = delivery && (delivery.name || delivery.phone);
               const canChat = ['confirmed', 'preparing', 'shipped'].includes(status) && hasDelivery;
+              const isShipped = status === 'shipped';
 
               return (
                 <div
@@ -343,7 +360,7 @@ export default function OrdersPage() {
                                 </div>
                               </div>
                               <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', flexShrink: 0 }}>
-                                {formatPrice(item.price * item.quantity)}
+                                {formatPrice((item.price || item.unitPrice || item.priceAtPurchase || 0) * item.quantity)}
                               </p>
                             </div>
                           ))}
@@ -392,8 +409,34 @@ export default function OrdersPage() {
                             </div>
                           </div>
 
-                          {/* Action buttons: Call & Chat */}
+                          {/* Action buttons: Call, Chat & Track */}
                           <div style={{ display: 'flex', gap: 10 }}>
+                            {isShipped && hasDelivery && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/tracking/${orderIdStr}`);
+                                }}
+                                style={{
+                                  flex: 1,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                                  padding: '10px 16px',
+                                  borderRadius: 10,
+                                  border: 'none',
+                                  background: '#9B59B6',
+                                  color: 'var(--white)',
+                                  fontSize: 13, fontWeight: 600,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s ease',
+                                  fontFamily: 'inherit',
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = '#8E44AD'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = '#9B59B6'; }}
+                              >
+                                <MapPin size={16} />
+                                Seguimiento
+                              </button>
+                            )}
                             {delivery.phone && (
                               <button
                                 onClick={(e) => {
