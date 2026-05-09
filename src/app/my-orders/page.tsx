@@ -360,7 +360,7 @@ export default function OrdersPage() {
                                 </div>
                               </div>
                               <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', flexShrink: 0 }}>
-                                {formatPrice((item.price || item.unitPrice || item.priceAtPurchase || 0) * item.quantity)}
+                                {formatPrice(item.subtotal || (item.productPrice || item.price || item.unitPrice || 0) * item.quantity)}
                               </p>
                             </div>
                           ))}
