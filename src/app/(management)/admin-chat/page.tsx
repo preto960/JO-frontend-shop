@@ -74,8 +74,8 @@ export default function AdminChatPage() {
       const selectedNumericId = selectedMember.id.split('-')[0];
 
       const isFromSelected =
-        (numericSenderId === selectedNumericId && (numericRecipientId === myUserId || numericRecipientId === null)) ||
-        (numericSenderId === myUserId && (numericRecipientId === selectedNumericId || data.targetPlatform === selectedMember.platform));
+        (numericSenderId === selectedNumericId && numericRecipientId === myUserId) ||
+        (numericSenderId === myUserId && numericRecipientId === selectedNumericId);
 
       if (isFromSelected) {
         setMessages(prev => {
