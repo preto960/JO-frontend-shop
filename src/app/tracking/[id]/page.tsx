@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, User, Phone, Clock, Navigation, Package } from 'lucide-react';
+import { ArrowLeft, MapPin, User, Phone, Package } from 'lucide-react';
 import api, { extractItem, extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePusher } from '@/contexts/PusherContext';
-import { getStatusLabel, getStatusColor, formatDate, formatDateTime, formatPrice, showToast } from '@/lib/utils';
+import { getStatusLabel, getStatusColor } from '@/lib/utils';
 
 interface LocationPoint {
   id: number;
@@ -36,15 +36,15 @@ export default function TrackingPage() {
   const markerRef = useRef<any>(null);
   const mapInstanceRef = useRef<any>(null);
 
-  // Inject leaflet CSS
+  // Inject leaflet CSS inline (avoids tracking-prevention blocking CDN)
   useEffect(() => {
-    if (document.getElementById('leaflet-css')) return;
-    const link = document.createElement('link');
-    link.id = 'leaflet-css';
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    document.head.appendChild(link);
-    return () => { link.remove(); };
+    if (document.getElementById('leaflet-inline-css')) return;
+    const style = document.createElement('style');
+    style.id = 'leaflet-inline-css';
+    style.textContent = `
+.leaflet-container{width:100%;height:100%;position:relative;z-index:0}.leaflet-map-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden;-ms-touch-action:none;touch-action:none}.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;-moz-user-select:none;user-select:none}.leaflet-tile::selection{background:transparent}.leaflet-image-layer{z-index:1}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0}.leaflet-tile-container img{max-width:none!important;max-height:none!important;display:block;position:absolute}.leaflet-container img.leaflet-tile{transform-origin:0 0}.leaflet-marker-icon{display:block}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{margin-left:10px;margin-top:10px}.leaflet-control-zoom{box-shadow:0 0 0 2px rgba(0,0,0,.2);border-radius:4px;background:#fff;border:1px solid #bfbfbf;width:36px;height:36px;line-height:34px;text-align:center;font-size:18px;color:#333;cursor:pointer}.leaflet-control-zoom a{width:100%;height:100%;display:block;text-decoration:none;color:inherit}.leaflet-control-zoom a:hover{background:#f4f4f4}.leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.7);margin:0;padding:0 5px;font-size:11px;color:#333}.leaflet-control-attribution a{color:#0078A8}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 19px;line-height:1.4}.leaflet-popup-tip-container{width:40px;height:20px;position:relative;left:50%;margin-left:-20px;overflow:hidden;pointer-events:auto}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;transform:rotate(45deg)}.leaflet-popup-close-button{position:absolute;top:0;right:0;padding:4px 4px 0 0;text-align:center;width:18px;height:14px;font:16px/14px Tahoma,Verdana,sans-serif;color:#c3c3c3;text-decoration:none;font-weight:bold;background:transparent}.leaflet-popup-close-button:hover{color:#999}.leaflet-div-icon{background:transparent;border:none}`;
+    document.head.appendChild(style);
+    return () => { style.remove(); };
   }, []);
 
   // Redirect if not logged in
@@ -410,52 +410,6 @@ export default function TrackingPage() {
               </div>
             )}
 
-            {/* Order Info Card */}
-            <div style={{
-              background: 'var(--white)',
-              borderRadius: 14,
-              padding: 16,
-              boxShadow: 'var(--shadow)',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
-              }}>
-                <Package size={16} color={getStatusColor(status)} />
-                <p style={{
-                  fontSize: 12, fontWeight: 700, color: getStatusColor(status),
-                  textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0,
-                }}>
-                  Detalles del pedido
-                </p>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Estado</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: getStatusColor(status) }}>
-                    {getStatusLabel(status)}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Fecha</span>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
-                    {formatDate(order.createdAt || order.created_at)}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Articulos</span>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
-                    {order.totalItems || (Array.isArray(order.items) ? order.items.length : 0)} {order.totalItems === 1 || (Array.isArray(order.items) && order.items.length === 1) ? 'articulo' : 'articulos'}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Total</span>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
-                    {formatPrice(order.total || order.totalAmount || 0)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
             {/* Address Card */}
             {order.customerAddr && (
               <div style={{
@@ -477,34 +431,6 @@ export default function TrackingPage() {
                 </div>
                 <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.5, margin: 0 }}>
                   {order.customerAddr}
-                </p>
-              </div>
-            )}
-
-            {/* Last update */}
-            {latestLocation && (
-              <div style={{
-                background: 'var(--white)',
-                borderRadius: 14,
-                padding: 16,
-                boxShadow: 'var(--shadow)',
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8,
-                }}>
-                  <Navigation size={16} color="#3498DB" />
-                  <p style={{
-                    fontSize: 12, fontWeight: 700, color: '#3498DB',
-                    textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0,
-                  }}>
-                    Ultima actualizacion
-                  </p>
-                </div>
-                <p style={{ fontSize: 13, color: 'var(--text)', margin: 0 }}>
-                  {formatDateTime(latestLocation.createdAt)}
-                </p>
-                <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '4px 0 0' }}>
-                  Coordenadas: {(latestLocation.lat ?? 0).toFixed(6)}, {(latestLocation.lng ?? 0).toFixed(6)}
                 </p>
               </div>
             )}
