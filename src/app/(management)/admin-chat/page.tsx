@@ -45,8 +45,15 @@ export default function AdminChatPage() {
   const isNearBottomRef = useRef(true);
 
   // Build online members list (from other platforms, not self)
+  // NOTE: Pusher user_id is now "1-frontend-shop" format (id + platform suffix)
+  // so the same user can be on multiple platforms simultaneously.
+  const myUserId = String(user?.id);
   const allOnlineMembers: OnlineMember[] = Array.from(adminOnlineMembers.entries())
-    .filter(([id, info]) => id !== String(user?.id) && info?.platform !== 'frontend-shop')
+    .filter(([id, info]) => {
+      // id is like "1-landingpage", parse numeric part to compare
+      const numericId = String(parseInt(id));
+      return numericId !== myUserId && info?.platform !== 'frontend-shop';
+    })
     .map(([id, info]) => ({
       id,
       name: info?.name,
@@ -134,12 +141,16 @@ export default function AdminChatPage() {
         return;
       }
 
+      // Parse numeric ID from composite Pusher user_id (e.g. "1-landingpage" → "1")
+      // Pusher event senderId is the numeric DB ID, but selectedMember.id includes platform suffix
+      const selectedNumericId = String(parseInt(selectedMember.id));
+
       // If a chat is selected, only show messages relevant to that conversation
       const isRelevant =
         // I sent this message to the selected member
-        (newMsg.senderId === String(user?.id) && newMsg.recipientId === selectedMember.id) ||
+        (newMsg.senderId === String(user?.id) && newMsg.recipientId === selectedNumericId) ||
         // The selected member sent this message to me
-        (newMsg.senderId === selectedMember.id && (newMsg.recipientId === String(user?.id) || !newMsg.recipientId)) ||
+        (newMsg.senderId === selectedNumericId && (newMsg.recipientId === String(user?.id) || !newMsg.recipientId)) ||
         // I sent a broadcast message
         (newMsg.senderId === String(user?.id) && !newMsg.recipientId);
 
