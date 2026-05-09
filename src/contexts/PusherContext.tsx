@@ -59,11 +59,14 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     };
     const onError = (err: any) => {
       const msg = err?.data?.message || err?.message || '';
+      const code = err?.data?.code;
       // "No current subscription" is a benign race condition — the subscription
-      // completes successfully right after. Don't mark as disconnected for this.
+      // completes successfully right after. Don't mark as disconnected.
       const isSubscriptionRace = msg.includes('No current subscription') || msg.includes('subscription in progress');
-      if (isSubscriptionRace) {
-        console.warn('[Pusher] Subscription race condition (benign):', msg);
+      // 1006 = abnormal WebSocket close (proxy timeout, network blip). Pusher auto-reconnects.
+      const isAbnormalClose = code === 1006;
+      if (isSubscriptionRace || isAbnormalClose) {
+        console.warn('[Pusher] Benign error (suppressed):', code || msg || 'unknown');
         return;
       }
       console.error('[Pusher] Connection error:', JSON.stringify(err));
