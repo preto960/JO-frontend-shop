@@ -128,6 +128,7 @@ export default function TrackingPage() {
   // Initialize map when location is available
   useEffect(() => {
     if (!latestLocation || !mapRef.current) return;
+    if (latestLocation.lat == null || latestLocation.lng == null) return;
 
     const initMap = async () => {
       try {
@@ -503,7 +504,7 @@ export default function TrackingPage() {
                   {formatDateTime(latestLocation.createdAt)}
                 </p>
                 <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '4px 0 0' }}>
-                  Coordenadas: {latestLocation.lat.toFixed(6)}, {latestLocation.lng.toFixed(6)}
+                  Coordenadas: {(latestLocation.lat ?? 0).toFixed(6)}, {(latestLocation.lng ?? 0).toFixed(6)}
                 </p>
               </div>
             )}
