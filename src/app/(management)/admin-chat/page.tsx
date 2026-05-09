@@ -340,7 +340,7 @@ export default function AdminChatPage() {
             ) : (
               <>
                 {messages.map((msg, idx) => {
-                  const isOwn = msg.senderId === user?.id;
+                  const isOwn = msg.senderId === String(user?.id);
                   const showSeparator = shouldShowDateSeparator(msg, messages[idx - 1]);
 
                   return (
