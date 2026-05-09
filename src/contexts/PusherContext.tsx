@@ -58,6 +58,14 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
       setIsConnected(false);
     };
     const onError = (err: any) => {
+      const msg = err?.data?.message || err?.message || '';
+      // "No current subscription" is a benign race condition — the subscription
+      // completes successfully right after. Don't mark as disconnected for this.
+      const isSubscriptionRace = msg.includes('No current subscription') || msg.includes('subscription in progress');
+      if (isSubscriptionRace) {
+        console.warn('[Pusher] Subscription race condition (benign):', msg);
+        return;
+      }
       console.error('[Pusher] Connection error:', JSON.stringify(err));
       if (err?.data) {
         console.error('[Pusher] Error data:', JSON.stringify(err.data));
