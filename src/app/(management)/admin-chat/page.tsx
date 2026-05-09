@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Users, Circle, MessageCircle, X, Loader2 } from 'lucide-react';
+import { Send, Users, Circle, MessageCircle, X, Loader2, ArrowLeft, Search } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePusher } from '@/contexts/PusherContext';
@@ -13,8 +13,18 @@ interface AdminMessage {
   senderId: string;
   senderName: string;
   senderRole: string;
-  platform: string;
+  senderPlatform: string;
+  recipientId: string | null;
+  targetPlatform: string;
   createdAt: string;
+}
+
+interface OnlineMember {
+  id: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  platform?: string;
 }
 
 export default function AdminChatPage() {
@@ -25,6 +35,8 @@ export default function AdminChatPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<OnlineMember | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -32,11 +44,30 @@ export default function AdminChatPage() {
   const hasSubscribed = useRef(false);
   const isNearBottomRef = useRef(true);
 
-  // Fetch messages
+  // Build online members list (from other platforms, not self)
+  const allOnlineMembers: OnlineMember[] = Array.from(adminOnlineMembers.entries())
+    .filter(([id, info]) => id !== String(user?.id) && info?.platform !== 'frontend-shop')
+    .map(([id, info]) => ({
+      id,
+      name: info?.name,
+      email: info?.email,
+      role: info?.role || 'admin',
+      platform: info?.platform,
+    }));
+
+  const filteredMembers = allOnlineMembers.filter(m =>
+    (m.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (m.email || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const onlineCount = allOnlineMembers.length;
+
+  // Fetch messages (filtered by recipient if one is selected)
   const fetchMessages = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await api.get('/chats/admin/messages');
+      const params = selectedMember ? `?recipientId=${selectedMember.id}` : '';
+      const res = await api.get(`/chats/admin/messages${params}`);
       const rawMsgs = res?.data || [];
       if (Array.isArray(rawMsgs)) {
         const msgs = rawMsgs.map((msg: any) => ({
@@ -44,7 +75,9 @@ export default function AdminChatPage() {
           content: msg.content,
           senderId: String(msg.senderId),
           senderName: msg.sender?.name || 'Admin',
-          platform: msg.platform || 'unknown',
+          senderPlatform: msg.platform || 'unknown',
+          recipientId: msg.recipientId ? String(msg.recipientId) : null,
+          targetPlatform: msg.targetPlatform || 'all',
           senderRole: msg.sender?.email ? 'admin' : '',
           createdAt: msg.createdAt,
         }));
@@ -58,11 +91,11 @@ export default function AdminChatPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedMember]);
 
   useEffect(() => { fetchMessages(); }, [fetchMessages]);
 
-  // Subscribe to presence channel + admin-message events
+  // Subscribe to presence channel + new-message events
   useEffect(() => {
     if (!pusher || !user || hasSubscribed.current) return;
     hasSubscribed.current = true;
@@ -73,19 +106,44 @@ export default function AdminChatPage() {
 
     // Listen for new messages
     channel.bind('new-message', (data: any) => {
-      setMessages(prev => {
-        const msg = {
-          id: String(data.id),
-          content: data.content,
-          senderId: String(data.senderId),
-          senderName: data.senderName || 'Admin',
-          platform: data.platform || 'unknown',
-          senderRole: 'admin',
-          createdAt: data.createdAt,
-        };
-        if (prev.some(m => m.id === msg.id)) return prev;
-        return [...prev, msg];
-      });
+      const newMsg: AdminMessage = {
+        id: String(data.id),
+        content: data.content,
+        senderId: String(data.senderId),
+        senderName: data.senderName || 'Admin',
+        senderPlatform: data.senderPlatform || data.platform || 'unknown',
+        recipientId: data.recipientId ? String(data.recipientId) : null,
+        targetPlatform: data.targetPlatform || 'all',
+        senderRole: 'admin',
+        createdAt: data.createdAt,
+      };
+
+      // If no chat is selected, only show broadcast messages
+      if (!selectedMember) {
+        if (!newMsg.recipientId) {
+          setMessages(prev => {
+            if (prev.some(m => m.id === newMsg.id)) return prev;
+            return [...prev, newMsg];
+          });
+        }
+        return;
+      }
+
+      // If a chat is selected, only show messages relevant to that conversation
+      const isRelevant =
+        // I sent this message to the selected member
+        (newMsg.senderId === String(user?.id) && newMsg.recipientId === selectedMember.id) ||
+        // The selected member sent this message to me
+        (newMsg.senderId === selectedMember.id && (newMsg.recipientId === String(user?.id) || !newMsg.recipientId)) ||
+        // I sent a broadcast message
+        (newMsg.senderId === String(user?.id) && !newMsg.recipientId);
+
+      if (isRelevant) {
+        setMessages(prev => {
+          if (prev.some(m => m.id === newMsg.id)) return prev;
+          return [...prev, newMsg];
+        });
+      }
     });
 
     return () => {
@@ -93,7 +151,21 @@ export default function AdminChatPage() {
         channelRef.current.unbind('new-message');
       }
     };
-  }, [pusher, user, subscribeToAdminChat]);
+  }, [pusher, user, subscribeToAdminChat, selectedMember]);
+
+  // Select a member to chat with
+  const openChat = (member: OnlineMember) => {
+    setSelectedMember(member);
+    setMessages([]);
+    setInputText('');
+  };
+
+  // Go back to user list
+  const closeChat = () => {
+    setSelectedMember(null);
+    setMessages([]);
+    setInputText('');
+  };
 
   // Send message
   const sendMessage = async () => {
@@ -102,8 +174,12 @@ export default function AdminChatPage() {
     setInputText('');
     setSending(true);
     try {
-      await api.post('/chats/admin/messages', { content });
-      // Re-focus the input after sending
+      const body: any = { content };
+      if (selectedMember) {
+        body.recipientId = parseInt(selectedMember.id);
+        body.targetPlatform = selectedMember.platform || 'all';
+      }
+      await api.post('/chats/admin/messages', body);
       inputRef.current?.focus();
     } catch (err: any) {
       showToast(err?.message || 'Error al enviar mensaje', 'error');
@@ -133,7 +209,7 @@ export default function AdminChatPage() {
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [selectedMember]);
 
   // Auto-scroll to bottom on new messages only if user is near bottom
   useEffect(() => {
@@ -142,12 +218,12 @@ export default function AdminChatPage() {
     }
   }, [messages]);
 
-  // Focus input on mount
+  // Focus input when chat opens
   useEffect(() => {
-    if (!loading) {
+    if (!loading && selectedMember) {
       inputRef.current?.focus();
     }
-  }, [loading]);
+  }, [loading, selectedMember]);
 
   // Format time
   const formatTime = (dateStr: string) => {
@@ -180,14 +256,25 @@ export default function AdminChatPage() {
     } catch { return false; }
   };
 
-  // Filter: show only admins connected from landingpage (not self, not frontend-shop)
-  const onlineMembersArray = Array.from(adminOnlineMembers.entries())
-    .filter(([id, info]) => id !== String(user?.id) && info?.platform === 'landingpage')
-    .map(([id, info]) => ({
-      id,
-      ...info,
-    }));
-  const onlineCount = onlineMembersArray.length;
+  const getPlatformLabel = (platform?: string) => {
+    switch (platform) {
+      case 'landingpage': return 'Landing';
+      case 'frontend-shop': return 'Tienda';
+      case 'app-shop': return 'App Shop';
+      case 'app-delivery': return 'App Delivery';
+      default: return '';
+    }
+  };
+
+  const getPlatformColor = (platform?: string) => {
+    switch (platform) {
+      case 'landingpage': return '#C9A84C';
+      case 'frontend-shop': return '#3b82f6';
+      case 'app-shop': return '#22c55e';
+      case 'app-delivery': return '#f97316';
+      default: return 'var(--text-light)';
+    }
+  };
 
   return (
     <div style={{ padding: '24px', height: 'calc(100dvh - 80px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -256,18 +343,6 @@ export default function AdminChatPage() {
             transition: 'all 0.2s ease',
             fontFamily: 'inherit',
           }}
-          onMouseEnter={(e) => {
-            if (!showMembers) {
-              e.currentTarget.style.borderColor = 'var(--primary)';
-              e.currentTarget.style.color = 'var(--primary)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showMembers) {
-              e.currentTarget.style.borderColor = 'var(--border)';
-              e.currentTarget.style.color = 'var(--text-secondary)';
-            }
-          }}
         >
           <Users size={16} />
           <span>{onlineCount}</span>
@@ -276,276 +351,564 @@ export default function AdminChatPage() {
 
       {/* ── Main content area ── */}
       <div style={{ flex: 1, display: 'flex', gap: 16, overflow: 'hidden', minHeight: 0 }}>
-        {/* ── Messages area ── */}
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'var(--white)',
-          borderRadius: 16,
-          boxShadow: 'var(--shadow)',
-          overflow: 'hidden',
-          minWidth: 0,
-        }}>
-          {/* Messages list */}
-          <div
-            ref={messagesContainerRef}
-            style={{
-              flex: 1,
-              overflowY: 'auto',
+
+        {/* ════════════════════════════════════════════════════════
+            VIEW 1: USER LIST (no chat selected)
+           ════════════════════════════════════════════════════════ */}
+        {!selectedMember ? (
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'var(--white)',
+            borderRadius: 16,
+            boxShadow: 'var(--shadow)',
+            overflow: 'hidden',
+            minWidth: 0,
+          }}>
+            {/* Search bar */}
+            <div style={{
               padding: '16px 20px',
+              borderBottom: '1px solid var(--border)',
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '10px 14px',
+                borderRadius: 12,
+                border: '2px solid var(--border)',
+                background: 'var(--input-bg)',
+              }}>
+                <Search size={16} color="var(--text-light)" />
+                <input
+                  type="text"
+                  placeholder="Buscar administrador..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    flex: 1,
+                    border: 'none',
+                    background: 'transparent',
+                    fontSize: 14,
+                    color: 'var(--text)',
+                    outline: 'none',
+                    fontFamily: 'inherit',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Members list */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+              {filteredMembers.length === 0 ? (
+                <div style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 12,
+                  padding: '60px 20px',
+                }}>
+                  <div style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    background: 'var(--primary-light)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Users size={32} color="var(--primary)" style={{ opacity: 0.5 }} />
+                  </div>
+                  <p style={{
+                    fontSize: 15,
+                    color: 'var(--text-secondary)',
+                    textAlign: 'center',
+                    fontWeight: 500,
+                  }}>
+                    {searchTerm ? 'No se encontraron administradores' : 'No hay administradores de otras plataformas en línea'}
+                  </p>
+                  <p style={{
+                    fontSize: 13,
+                    color: 'var(--text-light)',
+                    textAlign: 'center',
+                  }}>
+                    {searchTerm ? 'Intenta con otro término de búsqueda' : 'Los administradores conectados desde landingpage o las apps aparecerán aquí'}
+                  </p>
+                </div>
+              ) : (
+                filteredMembers.map((member) => {
+                  const memberName = member.name || member.email || 'Admin';
+                  const memberPlatform = member.platform || 'unknown';
+                  const platformLabel = getPlatformLabel(memberPlatform);
+                  const platformColor = getPlatformColor(memberPlatform);
+
+                  return (
+                    <div
+                      key={member.id}
+                      onClick={() => openChat(member)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '14px 20px',
+                        cursor: 'pointer',
+                        transition: 'background 0.15s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'var(--input-bg)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      {/* Avatar with online indicator */}
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: '50%',
+                          background: 'var(--primary-light)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: 'var(--primary)',
+                        }}>
+                          {getInitials(memberName)}
+                        </div>
+                        <div style={{
+                          position: 'absolute',
+                          bottom: 1,
+                          right: 1,
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          background: 'var(--success)',
+                          border: '2px solid var(--white)',
+                        }} />
+                      </div>
+
+                      {/* Name + platform */}
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <p style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: 'var(--text)',
+                          margin: 0,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {memberName}
+                        </p>
+                        <span style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: platformColor,
+                          padding: '1px 8px',
+                          borderRadius: 'var(--radius-full)',
+                          background: platformColor + '18',
+                        }}>
+                          {platformLabel}
+                        </span>
+                      </div>
+
+                      {/* Arrow */}
+                      <div style={{
+                        color: 'var(--text-light)',
+                        fontSize: 18,
+                        flexShrink: 0,
+                      }}>
+                        ›
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Broadcast messages section (if any) */}
+            {!searchTerm && messages.length > 0 && (
+              <div style={{
+                borderTop: '1px solid var(--border)',
+                maxHeight: 200,
+                overflowY: 'auto',
+              }}>
+                <div style={{
+                  padding: '8px 20px',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: 'var(--text-light)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}>
+                  Mensajes recientes (general)
+                </div>
+                {messages.slice(-5).map((msg) => (
+                  <div key={msg.id} style={{
+                    padding: '6px 20px',
+                    display: 'flex',
+                    gap: 8,
+                    alignItems: 'center',
+                  }}>
+                    <span style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: getPlatformColor(msg.senderPlatform),
+                      padding: '1px 6px',
+                      borderRadius: 'var(--radius-full)',
+                      background: getPlatformColor(msg.senderPlatform) + '18',
+                      flexShrink: 0,
+                    }}>
+                      {msg.senderName.split(' ')[0]}
+                    </span>
+                    <span style={{
+                      fontSize: 13,
+                      color: 'var(--text-secondary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {msg.content}
+                    </span>
+                    <span style={{
+                      fontSize: 10,
+                      color: 'var(--text-light)',
+                      flexShrink: 0,
+                      marginLeft: 'auto',
+                    }}>
+                      {formatTime(msg.createdAt)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* ════════════════════════════════════════════════════════
+              VIEW 2: CHAT CONVERSATION (member selected)
+             ════════════════════════════════════════════════════════ */
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'var(--white)',
+            borderRadius: 16,
+            boxShadow: 'var(--shadow)',
+            overflow: 'hidden',
+            minWidth: 0,
+          }}>
+            {/* Chat header with back button */}
+            <div style={{
+              padding: '14px 20px',
+              borderBottom: '1px solid var(--border)',
               display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-            }}
-          >
-            {loading ? (
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              alignItems: 'center',
+              gap: 12,
+            }}>
+              <button
+                onClick={closeChat}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: 'var(--input-bg)',
+                  color: 'var(--text-secondary)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  fontFamily: 'inherit',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--border)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--input-bg)';
+                }}
+              >
+                <ArrowLeft size={16} />
+              </button>
+
+              <div style={{ position: 'relative', flexShrink: 0 }}>
                 <div style={{
                   width: 36,
                   height: 36,
-                  border: '3px solid var(--border)',
-                  borderTopColor: 'var(--primary)',
-                  borderRadius: '50%',
-                  animation: 'spin 0.8s linear infinite',
-                }} />
-              </div>
-            ) : messages.length === 0 ? (
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 12,
-                padding: '40px 20px',
-              }}>
-                <div style={{
-                  width: 72,
-                  height: 72,
                   borderRadius: '50%',
                   background: 'var(--primary-light)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: 'var(--primary)',
                 }}>
-                  <MessageCircle size={32} color="var(--primary)" style={{ opacity: 0.5 }} />
+                  {getInitials(selectedMember.name || 'Admin')}
                 </div>
-                <p style={{
-                  fontSize: 15,
-                  color: 'var(--text-secondary)',
-                  textAlign: 'center',
-                  fontWeight: 500,
-                }}>
-                  No hay mensajes. Inicia una conversación.
-                </p>
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: 'var(--success)',
+                  border: '2px solid var(--white)',
+                }} />
               </div>
-            ) : (
-              <>
-                {messages.map((msg, idx) => {
-                  const isOwn = msg.senderId === String(user?.id);
-                  const showSeparator = shouldShowDateSeparator(msg, messages[idx - 1]);
 
-                  return (
-                    <React.Fragment key={msg.id}>
-                      {/* Date separator */}
-                      {showSeparator && (
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 12,
-                          margin: '12px 0',
-                        }}>
-                          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-                          <span style={{
-                            fontSize: 11,
-                            fontWeight: 600,
-                            color: 'var(--text-light)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                            whiteSpace: 'nowrap',
-                          }}>
-                            {formatDateSeparator(msg.createdAt)}
-                          </span>
-                          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-                        </div>
-                      )}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <p style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: 'var(--text)',
+                  margin: 0,
+                }}>
+                  {selectedMember.name || selectedMember.email || 'Admin'}
+                </p>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: getPlatformColor(selectedMember.platform),
+                }}>
+                  {getPlatformLabel(selectedMember.platform)} · En línea
+                </span>
+              </div>
+            </div>
 
-                      {/* Message bubble */}
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: isOwn ? 'flex-end' : 'flex-start',
-                        maxWidth: '75%',
-                        alignSelf: isOwn ? 'flex-end' : 'flex-start',
-                      }}>
-                        {/* Sender info (only for other users' messages) */}
-                        {!isOwn && (
+            {/* Messages list */}
+            <div
+              ref={messagesContainerRef}
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '16px 20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}
+            >
+              {loading ? (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{
+                    width: 36,
+                    height: 36,
+                    border: '3px solid var(--border)',
+                    borderTopColor: 'var(--primary)',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite',
+                  }} />
+                </div>
+              ) : messages.length === 0 ? (
+                <div style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 12,
+                  padding: '40px 20px',
+                }}>
+                  <div style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    background: 'var(--primary-light)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <MessageCircle size={32} color="var(--primary)" style={{ opacity: 0.5 }} />
+                  </div>
+                  <p style={{
+                    fontSize: 15,
+                    color: 'var(--text-secondary)',
+                    textAlign: 'center',
+                    fontWeight: 500,
+                  }}>
+                    Inicia una conversación con {selectedMember.name || 'este administrador'}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {messages.map((msg, idx) => {
+                    const isOwn = msg.senderId === String(user?.id);
+                    const showSeparator = shouldShowDateSeparator(msg, messages[idx - 1]);
+
+                    return (
+                      <React.Fragment key={msg.id}>
+                        {/* Date separator */}
+                        {showSeparator && (
                           <div style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 8,
-                            marginBottom: 4,
-                            paddingLeft: 4,
+                            gap: 12,
+                            margin: '12px 0',
                           }}>
-                            {/* Avatar */}
-                            <div style={{
-                              width: 22,
-                              height: 22,
-                              borderRadius: '50%',
-                              background: getRoleBadgeColor(msg.senderRole),
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: 9,
-                              fontWeight: 700,
-                              color: 'var(--white)',
-                              flexShrink: 0,
-                            }}>
-                              {getInitials(msg.senderName)}
-                            </div>
-                            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>
-                              {msg.senderName}
-                            </span>
+                            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
                             <span style={{
-                              fontSize: 10,
+                              fontSize: 11,
                               fontWeight: 600,
-                              color: getRoleBadgeColor(msg.senderRole),
-                              padding: '1px 6px',
-                              borderRadius: 'var(--radius-full)',
-                              background: getRoleBadgeColor(msg.senderRole) + '18',
+                              color: 'var(--text-light)',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px',
+                              whiteSpace: 'nowrap',
                             }}>
-                              {msg.senderRole}
+                              {formatDateSeparator(msg.createdAt)}
                             </span>
+                            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
                           </div>
                         )}
 
-                        {/* Bubble */}
+                        {/* Message bubble */}
                         <div style={{
-                          padding: '10px 14px',
-                          borderRadius: isOwn
-                            ? '14px 14px 4px 14px'
-                            : '14px 14px 14px 4px',
-                          background: isOwn
-                            ? 'var(--primary)'
-                            : 'var(--input-bg)',
-                          color: isOwn
-                            ? 'var(--white)'
-                            : 'var(--text)',
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                          wordBreak: 'break-word',
-                          boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
-                          transition: 'transform 0.15s ease',
-                        }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.01)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                          }}
-                        >
-                          {msg.content}
-                        </div>
-
-                        {/* Timestamp */}
-                        <span style={{
-                          fontSize: 10,
-                          color: 'var(--text-light)',
-                          marginTop: 2,
-                          padding: '0 4px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: isOwn ? 'flex-end' : 'flex-start',
+                          maxWidth: '75%',
+                          alignSelf: isOwn ? 'flex-end' : 'flex-start',
                         }}>
-                          {formatTime(msg.createdAt)}
-                        </span>
-                      </div>
-                    </React.Fragment>
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </>
-            )}
-          </div>
+                          {/* Sender info (only for other users' messages) */}
+                          {!isOwn && (
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                              marginBottom: 4,
+                              paddingLeft: 4,
+                            }}>
+                              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>
+                                {msg.senderName}
+                              </span>
+                              <span style={{
+                                fontSize: 10,
+                                fontWeight: 600,
+                                color: getPlatformColor(msg.senderPlatform),
+                                padding: '1px 6px',
+                                borderRadius: 'var(--radius-full)',
+                                background: getPlatformColor(msg.senderPlatform) + '18',
+                              }}>
+                                {getPlatformLabel(msg.senderPlatform)}
+                              </span>
+                            </div>
+                          )}
 
-          {/* ── Input area ── */}
-          <div style={{
-            padding: '12px 16px',
-            borderTop: '1px solid var(--border)',
-            display: 'flex',
-            alignItems: 'flex-end',
-            gap: 10,
-            background: 'var(--white)',
-          }}>
-            <textarea
-              ref={inputRef}
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Escribe un mensaje..."
-              rows={1}
-              style={{
-                flex: 1,
-                padding: '10px 16px',
-                borderRadius: 12,
-                border: '2px solid var(--border)',
-                background: 'var(--input-bg)',
-                color: 'var(--text)',
-                fontSize: 14,
-                lineHeight: 1.5,
-                outline: 'none',
-                resize: 'none',
-                fontFamily: 'inherit',
-                maxHeight: 120,
-                minHeight: 42,
-                transition: 'border-color 0.2s',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'var(--primary)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border)';
-              }}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!inputText.trim() || sending}
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 12,
-                border: 'none',
-                background: inputText.trim() && !sending
-                  ? 'var(--primary)'
-                  : 'var(--border)',
-                color: inputText.trim() && !sending
-                  ? 'var(--white)'
-                  : 'var(--text-light)',
-                cursor: inputText.trim() && !sending ? 'pointer' : 'not-allowed',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease',
-                flexShrink: 0,
-              }}
-              onMouseEnter={(e) => {
-                if (inputText.trim() && !sending) {
-                  e.currentTarget.style.background = 'var(--primary-hover)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (inputText.trim() && !sending) {
-                  e.currentTarget.style.background = 'var(--primary)';
-                }
-              }}
-              title="Enviar mensaje"
-            >
-              {sending ? (
-                <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-              ) : (
-                <Send size={20} style={{ transform: 'rotate(-45deg)' }} />
+                          {/* Bubble */}
+                          <div style={{
+                            padding: '10px 14px',
+                            borderRadius: isOwn
+                              ? '14px 14px 4px 14px'
+                              : '14px 14px 14px 4px',
+                            background: isOwn
+                              ? 'var(--primary)'
+                              : 'var(--input-bg)',
+                            color: isOwn
+                              ? 'var(--white)'
+                              : 'var(--text)',
+                            fontSize: 14,
+                            lineHeight: 1.5,
+                            wordBreak: 'break-word',
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+                          }}>
+                            {msg.content}
+                          </div>
+
+                          {/* Timestamp */}
+                          <span style={{
+                            fontSize: 10,
+                            color: 'var(--text-light)',
+                            marginTop: 2,
+                            padding: '0 4px',
+                          }}>
+                            {formatTime(msg.createdAt)}
+                          </span>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
+                </>
               )}
-            </button>
+            </div>
+
+            {/* ── Input area ── */}
+            <div style={{
+              padding: '12px 16px',
+              borderTop: '1px solid var(--border)',
+              display: 'flex',
+              alignItems: 'flex-end',
+              gap: 10,
+              background: 'var(--white)',
+            }}>
+              <textarea
+                ref={inputRef}
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={`Escribe un mensaje a ${selectedMember.name || 'admin'}...`}
+                rows={1}
+                style={{
+                  flex: 1,
+                  padding: '10px 16px',
+                  borderRadius: 12,
+                  border: '2px solid var(--border)',
+                  background: 'var(--input-bg)',
+                  color: 'var(--text)',
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  outline: 'none',
+                  resize: 'none',
+                  fontFamily: 'inherit',
+                  maxHeight: 120,
+                  minHeight: 42,
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                }}
+              />
+              <button
+                onClick={sendMessage}
+                disabled={!inputText.trim() || sending}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 12,
+                  border: 'none',
+                  background: inputText.trim() && !sending
+                    ? 'var(--primary)'
+                    : 'var(--border)',
+                  color: inputText.trim() && !sending
+                    ? 'var(--white)'
+                    : 'var(--text-light)',
+                  cursor: inputText.trim() && !sending ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease',
+                  flexShrink: 0,
+                }}
+                title="Enviar mensaje"
+              >
+                {sending ? (
+                  <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+                ) : (
+                  <Send size={20} style={{ transform: 'rotate(-45deg)' }} />
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── Online members sidebar ── */}
         <div style={{
@@ -599,39 +962,41 @@ export default function AdminChatPage() {
               overflowY: 'auto',
               padding: '8px 0',
             }}>
-              {onlineMembersArray.length === 0 ? (
+              {allOnlineMembers.length === 0 ? (
                 <div style={{
                   padding: '24px 16px',
                   textAlign: 'center',
                 }}>
                   <p style={{ fontSize: 13, color: 'var(--text-light)' }}>
-                    No hay administradores del landingpage en línea
+                    No hay administradores de otras plataformas en línea
                   </p>
                 </div>
               ) : (
-                onlineMembersArray.map((member) => {
-                  const isCurrentUser = member.id === user?.id;
-                  const memberName = member.name || member.username || 'Admin';
-                  const memberRole = member.role || 'admin';
+                allOnlineMembers.map((member) => {
+                  const memberName = member.name || member.email || 'Admin';
+                  const memberPlatform = member.platform || 'unknown';
+                  const isSelected = selectedMember?.id === member.id;
 
                   return (
                     <div
                       key={member.id}
+                      onClick={() => openChat(member)}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 10,
                         padding: '10px 16px',
+                        cursor: 'pointer',
                         transition: 'background 0.15s ease',
-                        background: isCurrentUser ? 'var(--primary-light)' : 'transparent',
+                        background: isSelected ? 'var(--primary-light)' : 'transparent',
                       }}
                       onMouseEnter={(e) => {
-                        if (!isCurrentUser) {
+                        if (!isSelected) {
                           e.currentTarget.style.background = 'var(--input-bg)';
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (!isCurrentUser) {
+                        if (!isSelected) {
                           e.currentTarget.style.background = 'transparent';
                         }
                       }}
@@ -642,13 +1007,13 @@ export default function AdminChatPage() {
                           width: 36,
                           height: 36,
                           borderRadius: '50%',
-                          background: getRoleBadgeColor(memberRole),
+                          background: getPlatformColor(memberPlatform) + '20',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: 12,
                           fontWeight: 700,
-                          color: 'var(--white)',
+                          color: getPlatformColor(memberPlatform),
                         }}>
                           {getInitials(memberName)}
                         </div>
@@ -664,7 +1029,7 @@ export default function AdminChatPage() {
                         }} />
                       </div>
 
-                      {/* Name + role */}
+                      {/* Name + platform */}
                       <div style={{ minWidth: 0, flex: 1 }}>
                         <p style={{
                           fontSize: 13,
@@ -676,16 +1041,13 @@ export default function AdminChatPage() {
                           whiteSpace: 'nowrap',
                         }}>
                           {memberName}
-                          {isCurrentUser && (
-                            <span style={{ color: 'var(--text-light)', fontWeight: 400 }}> (Tú)</span>
-                          )}
                         </p>
                         <span style={{
                           fontSize: 11,
                           fontWeight: 600,
-                          color: getRoleBadgeColor(memberRole),
+                          color: getPlatformColor(memberPlatform),
                         }}>
-                          {memberRole}
+                          {getPlatformLabel(memberPlatform)}
                         </span>
                       </div>
                     </div>
