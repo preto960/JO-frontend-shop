@@ -985,23 +985,15 @@ export default function HomePage() {
         }}>
           {/* Logo left + features right */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 16 }}>
-            {/* Logo */}
+            {/* Logo: si hay logo solo se muestra el logo, si no se muestra el nombre */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
               {shopLogoUrl ? (
-                <img src={shopLogoUrl} alt={shopName} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+                <img src={shopLogoUrl} alt={shopName} style={{ height: 40, width: 'auto', objectFit: 'contain', maxWidth: 160 }} />
               ) : (
-                <div style={{
-                  width: 40, height: 40, borderRadius: '50%',
-                  background: 'var(--primary-gradient)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: 14, color: 'var(--white)',
-                }}>
-                  {shopName.slice(0, 2).toUpperCase()}
-                </div>
+                <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
+                  {shopName}
+                </span>
               )}
-              <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
-                {shopName}
-              </span>
             </div>
             {/* Feature pills */}
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>

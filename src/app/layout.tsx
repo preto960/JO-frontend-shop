@@ -16,13 +16,15 @@ export const metadata: Metadata = {
 };
 
 // Runs BEFORE React hydrates. Reads cached theme, applies colors to CSS vars
-// and the loader overlay. The loader disappears only when ConfigContext fires
+// and the loader overlay. If a loader image URL was saved, it replaces the
+// text-initials fallback. The loader disappears only when ConfigContext fires
 // the 'theme-ready' event after fetching the latest config from the API.
 const themeInitScript = `
 (function() {
   var loader = document.getElementById('theme-loader');
   var r = document.documentElement;
   var shopName = 'JO-Shop';
+  var loaderUrl = '';
 
   // Apply cached colors from previous visit
   try {
@@ -42,12 +44,27 @@ const themeInitScript = `
       shopName = t.shop_name;
       document.title = shopName;
     }
+    if (t.shop_loader_url) {
+      loaderUrl = t.shop_loader_url;
+    }
   } catch(e) {}
 
-  // Update loader logo text with shop initials
+  // Update loader: show image if available, otherwise show initials
   if (loader) {
-    var logoEl = loader.querySelector('.loader-logo');
-    if (logoEl) logoEl.textContent = shopName.slice(0, 2).toUpperCase();
+    if (loaderUrl) {
+      var logoEl = loader.querySelector('.loader-logo');
+      if (logoEl) {
+        logoEl.textContent = '';
+        logoEl.style.backgroundImage = 'url(' + loaderUrl + ')';
+        logoEl.style.backgroundSize = 'contain';
+        logoEl.style.backgroundRepeat = 'no-repeat';
+        logoEl.style.backgroundPosition = 'center';
+        logoEl.classList.add('loader-has-image');
+      }
+    } else {
+      var logoEl = loader.querySelector('.loader-logo');
+      if (logoEl) logoEl.textContent = shopName.slice(0, 2).toUpperCase();
+    }
   }
 
   // Dismiss loader when ConfigContext finishes loading from API

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Palette, Upload, Trash2, Type, Image, Check, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Palette, Upload, Trash2, Type, Image, Check, RefreshCw, ArrowLeft, Loader2 } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { showToast } from '@/lib/utils';
@@ -9,14 +9,16 @@ import { showToast } from '@/lib/utils';
 export default function AppearanceSettingsPage() {
   const router = useRouter();
   const { isAdmin } = useAuth();
-  const { config, isSaving, updateConfig, uploadLogo, deleteLogo } = useConfig();
+  const { config, isSaving, updateConfig, uploadLogo, deleteLogo, uploadLoader, deleteLoader } = useConfig();
 
   const [shopName, setShopName] = useState(config.shop_name || 'JO-Shop');
   const [primaryColor, setPrimaryColor] = useState(config.primary_color || '#FF6B35');
   const [accentColor, setAccentColor] = useState(config.accent_color || 'var(--accent)');
   const [savingAppearance, setSavingAppearance] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
+  const [loaderUploading, setLoaderUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const loaderFileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSaveAppearance = async () => {
     setSavingAppearance(true);
@@ -59,6 +61,37 @@ export default function AppearanceSettingsPage() {
   const handleDeleteLogo = async () => {
     try {
       await deleteLogo();
+    } catch {
+      // error handled
+    }
+  };
+
+  const handleLoaderUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('La imagen no debe superar 2MB', 'error');
+      return;
+    }
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif'];
+    if (!allowed.includes(file.type)) {
+      showToast('Formatos permitidos: JPG, PNG, WebP, SVG, GIF', 'error');
+      return;
+    }
+    setLoaderUploading(true);
+    try {
+      await uploadLoader(file);
+    } catch {
+      // error handled
+    } finally {
+      setLoaderUploading(false);
+      if (loaderFileInputRef.current) loaderFileInputRef.current.value = '';
+    }
+  };
+
+  const handleDeleteLoader = async () => {
+    try {
+      await deleteLoader();
     } catch {
       // error handled
     }
@@ -241,6 +274,55 @@ export default function AppearanceSettingsPage() {
                 </button>
               )}
               <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 2MB. Formatos: JPG, PNG, WebP, SVG</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Loader Image Upload */}
+        <div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>
+            <Loader2 size={16} color="var(--text-secondary)" /> Imagen de carga (Loader)
+          </label>
+          <p style={{ fontSize: 11, color: 'var(--text-light)', marginBottom: 10, margin: '0 0 10px 0' }}>
+            Imagen que se muestra mientras la pagina carga. Si no subes una, se usan las iniciales del nombre con animacion.
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Current loader image */}
+            <div style={{
+              width: 80, height: 80, borderRadius: 18, border: '2px dashed var(--border)',
+              background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              overflow: 'hidden', flexShrink: 0, position: 'relative',
+            }}>
+              {config.shop_loader_url ? (
+                <img src={config.shop_loader_url} alt="Loader" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 16 }} />
+              ) : (
+                <Loader2 size={28} color="var(--text-light)" />
+              )}
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <input ref={loaderFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif" onChange={handleLoaderUpload} style={{ display: 'none' }} />
+              <button onClick={() => loaderFileInputRef.current?.click()} disabled={loaderUploading || isSaving}
+                style={{
+                  padding: '10px 16px', borderRadius: 10, border: '2px solid var(--border)',
+                  background: 'var(--input-bg)', color: 'var(--text)', fontSize: 13, fontWeight: 600,
+                  cursor: (loaderUploading || isSaving) ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                  opacity: (loaderUploading || isSaving) ? 0.6 : 1,
+                }}>
+                {loaderUploading ? <div style={{ width: 14, height: 14, border: '2px solid var(--border)', borderTopColor: 'var(--text)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Upload size={16} />}
+                {loaderUploading ? 'Subiendo...' : 'Subir imagen de carga'}
+              </button>
+              {config.shop_loader_url && (
+                <button onClick={handleDeleteLoader} disabled={isSaving}
+                  style={{
+                    padding: '8px 16px', borderRadius: 10, border: 'none',
+                    background: 'var(--accent-light)', color: 'var(--danger)', fontSize: 13, fontWeight: 600,
+                    cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                    opacity: isSaving ? 0.6 : 1,
+                  }}>
+                  <Trash2 size={14} /> Eliminar imagen de carga
+                </button>
+              )}
+              <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>Maximo 2MB. Formatos: JPG, PNG, WebP, SVG, GIF</p>
             </div>
           </div>
         </div>

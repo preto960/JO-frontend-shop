@@ -8,6 +8,7 @@ interface ShopConfig {
   multi_store: string;
   shop_name: string;
   shop_logo_url: string;
+  shop_loader_url: string;
   primary_color: string;
   accent_color: string;
   [key: string]: string;
@@ -22,12 +23,15 @@ interface ConfigContextType {
   updateConfig: (settings: Record<string, string>) => Promise<void>;
   uploadLogo: (file: File) => Promise<string>;
   deleteLogo: () => Promise<void>;
+  uploadLoader: (file: File) => Promise<string>;
+  deleteLoader: () => Promise<void>;
 }
 
 const defaultConfig: ShopConfig = {
   multi_store: 'false',
   shop_name: 'JO-Shop',
   shop_logo_url: '',
+  shop_loader_url: '',
   primary_color: '',
   accent_color: '',
 };
@@ -106,6 +110,44 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const uploadLoader = useCallback(async (file: File): Promise<string> => {
+    try {
+      setIsSaving(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('/config/upload-loader', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const url = res?.url || res?.data?.url;
+      if (url) {
+        setConfig(prev => ({ ...prev, shop_loader_url: url }));
+      }
+      showToast('Imagen del loader actualizada', 'success');
+      return url;
+    } catch (err: any) {
+      console.error('Error uploading loader:', err);
+      showToast(err?.error || err?.message || 'Error al subir imagen del loader', 'error');
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  }, []);
+
+  const deleteLoader = useCallback(async () => {
+    try {
+      setIsSaving(true);
+      await api.delete('/config/upload-loader');
+      setConfig(prev => ({ ...prev, shop_loader_url: '' }));
+      showToast('Imagen del loader eliminada', 'success');
+    } catch (err: any) {
+      console.error('Error deleting loader:', err);
+      showToast(err?.error || err?.message || 'Error al eliminar imagen del loader', 'error');
+      throw err;
+    } finally {
+      setIsSaving(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchConfig();
   }, [fetchConfig]);
@@ -137,6 +179,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
         primary_color: config.primary_color,
         accent_color: config.accent_color,
         shop_name: config.shop_name,
+        shop_loader_url: config.shop_loader_url,
       }));
     } catch { /* ignore */ }
 
@@ -148,7 +191,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   const isMultiStore = config.multi_store === 'true' || config.multi_store === true as any;
 
   return (
-    <ConfigContext.Provider value={{ config, isMultiStore, isLoading, isSaving, refresh: fetchConfig, updateConfig, uploadLogo, deleteLogo }}>
+    <ConfigContext.Provider value={{ config, isMultiStore, isLoading, isSaving, refresh: fetchConfig, updateConfig, uploadLogo, deleteLogo, uploadLoader, deleteLoader }}>
       {children}
     </ConfigContext.Provider>
   );

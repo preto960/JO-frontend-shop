@@ -123,6 +123,17 @@
   to { transform: rotate(360deg); }
 }
 
+/* Hide animated border when showing a custom loader image */
+#theme-loader .loader-logo.loader-has-image::before,
+#theme-loader .loader-logo.loader-has-image::after {
+  display: none;
+}
+
+#theme-loader .loader-logo.loader-has-image {
+  background-color: transparent;
+  border: none;
+}
+
 /* Hide loader when theme is ready — page behind it is already fully loaded */
 html[data-theme-ready] #theme-loader {
   opacity: 0;
