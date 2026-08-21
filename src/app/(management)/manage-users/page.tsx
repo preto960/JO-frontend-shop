@@ -101,8 +101,8 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      let url = '/auth/users?role=customer';
-      if (search) url += `&search=${encodeURIComponent(search)}`;
+      let url = '/auth/users';
+      if (search) url += `?search=${encodeURIComponent(search)}`;
       const res = await api.get(url);
       setUsers(extractData(res));
     } catch { /* ignore */ }
