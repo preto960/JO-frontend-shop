@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Plus, Edit2, Trash2, X, ArrowLeft } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, X, ArrowLeft, Users } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -27,7 +27,7 @@ const styles = {
     color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   searchInput: {
     paddingLeft: 40, paddingRight: 16, background: 'var(--card)',
@@ -38,26 +38,26 @@ const styles = {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
     color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
     border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
 };
 
@@ -66,7 +66,7 @@ function PasswordCheck({ label, met }: { label: string; met: boolean }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
       <div style={{
         width: 18, height: 18, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: met ? 'var(--success)' : 'var(--border)', transition: 'all 0.2s ease', flexShrink: 0,
+        background: met ? 'var(--success)' : 'var(--border)', transition: 'var(--transition)', flexShrink: 0,
       }}>
         {met && (
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -248,11 +248,11 @@ export default function AdminUsersPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Usuarios</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)' }}>Usuarios</h1>
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nuevo usuario
@@ -280,7 +280,9 @@ export default function AdminUsersPage() {
         </div>
       ) : users.length === 0 ? (
         <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
-          <p style={{ fontSize: 48, marginBottom: 12 }}>👥</p>
+          <div style={{ marginBottom: 12, color: 'var(--text-light)' }}>
+            <Users size={44} strokeWidth={1.5} />
+          </div>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay usuarios</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Los usuarios aparecerán aquí cuando se registren</p>
         </div>
@@ -291,9 +293,9 @@ export default function AdminUsersPage() {
               key={user.id} className="animate-fade-in"
               style={{
                 background: 'var(--card)', borderRadius: 14, padding: 18,
-                boxShadow: 'var(--shadow)', transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow)', transition: 'var(--transition)',
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'none'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -303,7 +305,7 @@ export default function AdminUsersPage() {
                     background: getRoleBadgeColor(user.roles?.[0]?.name),
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: 'var(--white)', fontSize: 16, fontWeight: 600, flexShrink: 0,
-                    boxShadow: `0 4px 12px ${getRoleBadgeColor(user.roles?.[0]?.name)}40`,
+                    boxShadow: 'var(--shadow-md)',
                   }}>
                     {getInitials(user.name)}
                   </div>
@@ -315,7 +317,7 @@ export default function AdminUsersPage() {
                         <span key={r.id} style={{
                           display: 'inline-block', padding: '3px 10px', borderRadius: 12,
                           fontSize: 11, fontWeight: 600,
-                          background: getRoleBadgeColor(r.name) + '18',
+                          background: `color-mix(in srgb, ${getRoleBadgeColor(r.name)} 10%, transparent)`,
                           color: getRoleBadgeColor(r.name),
                         }}>
                           {getRoleLabel(r.name)}
@@ -328,14 +330,14 @@ export default function AdminUsersPage() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => openEdit(user)} style={styles.editBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                     >
                       <Edit2 size={15} />
                     </button>
                     <button
                       onClick={() => setDeleteModal(user)} style={styles.deleteBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                     >
                       <Trash2 size={15} />
@@ -355,14 +357,14 @@ export default function AdminUsersPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingUser ? 'Editar usuario' : 'Nuevo usuario'}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{editingUser ? 'Editar usuario' : 'Nuevo usuario'}</h2>
             <button
               onClick={() => setModalOpen(false)}
               style={{
                 width: 32, height: 32, borderRadius: '50%', border: 'none',
                 background: 'var(--input-bg)', color: 'var(--text-secondary)',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.2s ease',
+                transition: 'var(--transition)',
               }}
             >
               <X size={16} />
@@ -419,8 +421,8 @@ export default function AdminUsersPage() {
                       style={{
                         display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
                         borderRadius: 10, border: `2px solid ${isSelected ? color : 'var(--border)'}`,
-                        background: isSelected ? color + '10' : 'var(--card)',
-                        cursor: 'pointer', transition: 'all 0.2s',
+                        background: isSelected ? `color-mix(in srgb, ${color} 8%, transparent)` : 'var(--card)',
+                        cursor: 'pointer', transition: 'var(--transition)',
                       }}
                     >
                       <div style={{
@@ -458,7 +460,7 @@ export default function AdminUsersPage() {
                           borderRadius: 10,
                           border: `2px solid ${isChecked ? 'var(--primary)' : 'var(--border)'}`,
                           background: isChecked ? 'var(--primary-light)' : 'var(--card)',
-                          cursor: 'pointer', transition: 'all 0.2s',
+                          cursor: 'pointer', transition: 'var(--transition)',
                         }}
                       >
                         <input

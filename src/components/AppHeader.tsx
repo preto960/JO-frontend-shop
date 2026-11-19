@@ -118,7 +118,7 @@ export default function AppHeader() {
           ) : (
             <>
               <ShoppingBag size={26} strokeWidth={2.5} />
-              <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>{shopName}</h1>
+              <h1 style={{ fontSize: 22, fontWeight: 600 }}>{shopName}</h1>
             </>
           )}
         </div>
@@ -154,7 +154,7 @@ export default function AppHeader() {
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
                   background: 'var(--danger)', color: 'var(--white)',
-                  fontSize: 10, fontWeight: 700,
+                  fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',
@@ -196,7 +196,7 @@ export default function AppHeader() {
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
                   background: 'var(--danger)', color: 'var(--white)',
-                  fontSize: 10, fontWeight: 700,
+                  fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',

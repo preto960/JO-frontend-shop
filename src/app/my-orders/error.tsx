@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 export default function OrdersError({
   error,
@@ -33,10 +34,10 @@ export default function OrdersError({
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 20,
         }}>
-          <span style={{ fontSize: 28 }}>&#9888;</span>
+          <AlertTriangle size={28} strokeWidth={1.5} color="var(--danger)" />
         </div>
         <h2 style={{
-          fontSize: 20, fontWeight: 700, color: 'var(--text)',
+          fontSize: 20, fontWeight: 600, color: 'var(--text)',
           marginBottom: 8,
         }}>
           Error al cargar pedidos

@@ -46,13 +46,13 @@
   --input-bg: #F1F3F5;
   --border: #DFE4EA;
 
-  /* ── Shadows ── */
+  /* ── Shadows (neutrales: la profundidad no lleva color de marca) ── */
   --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
   --shadow-xl: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06);
-  --shadow-accent: 0 4px 14px rgba(176,184,193,0.25);
-  --shadow-success: 0 4px 14px rgba(0,184,148,0.3);
+  --shadow-accent: 0 4px 14px rgba(23,43,33,0.08);
+  --shadow-success: 0 4px 14px rgba(23,43,33,0.08);
 
   /* ── Radius ── */
   --radius-sm: 8px;
@@ -61,9 +61,9 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* ── Transitions ── */
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── Transitions (propiedades nombradas, nunca 'all') ── */
+  --transition: background-color 0.25s ease-out, border-color 0.25s ease-out, box-shadow 0.25s ease-out, color 0.25s ease-out, opacity 0.25s ease-out, transform 0.25s ease-out;
+  --transition-fast: background-color 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out, color 0.15s ease-out, opacity 0.15s ease-out, transform 0.15s ease-out;
 }
 
 /* ═══ Theme Loader: branded loading screen until page is fully ready ═══ */

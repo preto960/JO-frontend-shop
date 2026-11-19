@@ -50,17 +50,17 @@ export function getStatusLabel(status: string): string {
   return labels[status] || status;
 }
 
-// Get status color
+// Get status color — tokens del tema (nunca hex crudo; respetan el theming del admin)
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    pending: '#F39C12',
-    confirmed: '#3498DB',
-    preparing: '#9B59B6',
-    shipped: '#2ECC71',
-    delivered: '#27AE60',
-    cancelled: '#E94560',
+    pending: 'var(--warning)',
+    confirmed: 'var(--info)',
+    preparing: 'var(--purple)',
+    shipped: 'var(--teal)',
+    delivered: 'var(--success)',
+    cancelled: 'var(--danger)',
   };
-  return colors[status] || '#7F8C8D';
+  return colors[status] || 'var(--text-secondary)';
 }
 
 // Get status CSS class
@@ -122,15 +122,15 @@ export function getRoleLabel(role: string): string {
   return labels[role] || role;
 }
 
-// Get role badge color
+// Get role badge color — tokens del tema
 export function getRoleBadgeColor(role: string): string {
   const colors: Record<string, string> = {
-    admin: '#E94560',
-    editor: '#3498DB',
-    delivery: '#F39C12',
-    customer: '#2ECC71',
+    admin: 'var(--danger)',
+    editor: 'var(--info)',
+    delivery: 'var(--warning)',
+    customer: 'var(--success)',
   };
-  return colors[role] || '#7F8C8D';
+  return colors[role] || 'var(--text-secondary)';
 }
 
 // Show toast notification

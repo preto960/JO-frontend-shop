@@ -164,13 +164,13 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
               width: 32, height: 32, borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--danger), var(--primary))',
+              background: 'var(--danger)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <Heart size={16} color="white" fill="white" />
             </div>
             <div>
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
                 Mis Favoritos
               </h3>
               <p style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
@@ -258,7 +258,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
                       {product.name || 'Sin nombre'}
                     </p>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 2 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)' }}>
                         {formatPrice(finalPrice)}
                       </span>
                       {discount > 0 && (
@@ -320,7 +320,7 @@ export default function FavoritesDropdown({ isOpen, onClose, anchorRef }: Favori
                 border: '2px solid var(--border)', background: 'var(--white)',
                 color: 'var(--text)', cursor: 'pointer',
                 fontWeight: 600, fontSize: 13,
-                transition: 'all 0.2s',
+                transition: 'var(--transition)',
               }}
             >
               Ver todos los favoritos

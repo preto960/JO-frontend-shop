@@ -225,12 +225,14 @@ export default function AdminChatPage() {
   };
 
   const getPlatformColor = (platform?: string) => {
+    // Tokens del tema: los operadores se distinguen por tono del sistema,
+    // no por colores inventados por pantalla.
     switch (platform) {
-      case 'landingpage': return '#C9A84C';
-      case 'frontend-shop': return '#3b82f6';
-      case 'app-shop': return '#22c55e';
-      case 'app-delivery': return '#f97316';
-      default: return 'var(--text-light)';
+      case 'landingpage': return 'var(--warning)';
+      case 'frontend-shop': return 'var(--info)';
+      case 'app-shop': return 'var(--success)';
+      case 'app-delivery': return 'var(--teal)';
+      default: return 'var(--text-secondary)';
     }
   };
 
@@ -259,7 +261,7 @@ export default function AdminChatPage() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <MessageCircle size={16} color="var(--primary)" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
+          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>
             Chat de Administradores
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -268,7 +270,7 @@ export default function AdminChatPage() {
               height: 6,
               borderRadius: '50%',
               background: isConnected ? 'var(--success)' : 'var(--text-light)',
-              boxShadow: isConnected ? '0 0 5px rgba(46,204,113,0.5)' : 'none',
+              boxShadow: 'none',
             }} />
             <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
               {isConnected ? 'Conectado' : 'Desconectado'}
@@ -294,7 +296,7 @@ export default function AdminChatPage() {
             fontWeight: 600,
             fontSize: 12,
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
+            transition: 'var(--transition)',
             fontFamily: 'inherit',
           }}
         >
@@ -338,7 +340,7 @@ export default function AdminChatPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: 11,
-                      fontWeight: 700,
+                      fontWeight: 600,
                       color: getPlatformColor(selectedMember.platform),
                     }}>
                       {getInitials(selectedMember.name || 'Admin')}
@@ -473,7 +475,7 @@ export default function AdminChatPage() {
                     background: newMessage.trim() ? 'var(--primary)' : 'var(--border)',
                     color: newMessage.trim() ? 'var(--white)' : 'var(--text-light)',
                     cursor: newMessage.trim() ? 'pointer' : 'default',
-                    transition: 'all 0.2s ease',
+                    transition: 'var(--transition)',
                   }}
                 >
                   <Send size={16} />
@@ -515,7 +517,7 @@ export default function AdminChatPage() {
         <div style={{
           width: showMembers ? 260 : 0,
           opacity: showMembers ? 1 : 0,
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'var(--transition)',
           overflow: 'hidden',
           flexShrink: 0,
         }}>
@@ -539,13 +541,13 @@ export default function AdminChatPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Users size={14} color="var(--primary)" />
-                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>
                   En línea
                 </span>
               </div>
               <span style={{
                 fontSize: 11,
-                fontWeight: 700,
+                fontWeight: 600,
                 color: 'var(--white)',
                 background: 'var(--success)',
                 borderRadius: 'var(--radius-full)',
@@ -602,7 +604,7 @@ export default function AdminChatPage() {
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: 11,
-                          fontWeight: 700,
+                          fontWeight: 600,
                           color: platformColor,
                         }}>
                           {getInitials(memberName)}

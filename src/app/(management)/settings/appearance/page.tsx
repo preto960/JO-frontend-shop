@@ -110,7 +110,7 @@ export default function AppearanceSettingsPage() {
           <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <Palette size={28} color="#EF4444" />
           </div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>No autorizado</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>No autorizado</h2>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 20 }}>No tienes permisos para acceder a esta seccion.</p>
           <button
             onClick={() => router.push('/settings')}
@@ -147,7 +147,7 @@ export default function AppearanceSettingsPage() {
       </button>
 
       {/* Section header */}
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: '0 0 4px 0' }}>Apariencia</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)', margin: '0 0 4px 0' }}>Apariencia</h1>
 
       <div style={{ height: 1, background: 'var(--border)', margin: '16px 0 28px 0' }} />
 
@@ -219,10 +219,10 @@ export default function AppearanceSettingsPage() {
 
         {/* Color Preview */}
         <div>
-          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-light)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Vista previa</p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-light)', marginBottom: 8 }}>Vista previa</p>
           <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
             <div style={{ flex: 1, padding: 16, borderRadius: 12, background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 80 }}>
-              <span style={{ color: 'var(--white)', fontWeight: 800, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
+              <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
               <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>Tu tienda de confianza</span>
             </div>
             <div style={{ width: 80, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -337,8 +337,8 @@ export default function AppearanceSettingsPage() {
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
               background: savingAppearance ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-              color: 'var(--white)', fontSize: 14, fontWeight: 700, cursor: savingAppearance ? 'wait' : 'pointer',
-              display: 'flex', alignItems: 'center', gap: 8, boxShadow: savingAppearance ? 'none' : '0 4px 14px rgba(233,69,96,0.3)',
+              color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: savingAppearance ? 'wait' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: 8, boxShadow: savingAppearance ? 'none' : 'var(--shadow-md)',
               opacity: savingAppearance ? 0.7 : 1,
             }}>
             {savingAppearance ? <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={16} />}

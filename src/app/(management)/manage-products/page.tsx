@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Plus, Edit2, Trash2, X, Layers, Upload, ImagePlus, Star, GripVertical, AlertTriangle } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, X, Layers, Upload, ImagePlus, Star, GripVertical, AlertTriangle, Package } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -29,7 +29,7 @@ const styles = {
     color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   searchInput: {
     paddingLeft: 40, paddingRight: 16, background: 'var(--card)',
@@ -44,26 +44,26 @@ const styles = {
     width: 34, height: 34, borderRadius: '50%', border: 'none',
     background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%', border: 'none',
     background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
     color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
     border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
 };
 
@@ -358,7 +358,7 @@ export default function AdminProductsPage() {
     <div style={{ padding: 24 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Productos</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)' }}>Productos</h1>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button
             onClick={() => router.push('/product-batches')}
@@ -366,7 +366,7 @@ export default function AdminProductsPage() {
               ...styles.newBtn,
               background: 'var(--danger)',
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
           >
             <Layers size={18} /> Lotes de descuento
@@ -374,7 +374,7 @@ export default function AdminProductsPage() {
           <button
             onClick={openCreate}
             style={styles.newBtn}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           >
             <Plus size={18} /> Nuevo producto
@@ -396,10 +396,10 @@ export default function AdminProductsPage() {
               border: '2px solid var(--border)',
               boxShadow: 'var(--shadow)',
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
           >
-            📥 Carga masiva CSV
+            <Upload size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />Carga masiva CSV
           </button>
         </div>
       </div>
@@ -474,7 +474,7 @@ export default function AdminProductsPage() {
                             {getProductImage(product) ? (
                               <img src={getProductImage(product)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER_IMG; }} />
                             ) : (
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)', fontSize: 18 }}>📦</div>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)' }}><Package size={18} /></div>
                             )}
                           </div>
                           <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>
@@ -482,7 +482,7 @@ export default function AdminProductsPage() {
                           </span>
                         </div>
                       </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: 'var(--primary)' }}>
                         {formatPrice(product.price)}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? 'var(--danger)' : 'var(--text)' }}>
@@ -495,7 +495,7 @@ export default function AdminProductsPage() {
                           <button
                             onClick={() => openEdit(product)}
                             style={styles.editBtn}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                           >
                             <Edit2 size={15} />
@@ -503,7 +503,7 @@ export default function AdminProductsPage() {
                           <button
                             onClick={() => setDeleteModal(product)}
                             style={styles.deleteBtn}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                           >
                             <Trash2 size={15} />
@@ -518,7 +518,9 @@ export default function AdminProductsPage() {
           </div>
           {products.length === 0 && (
             <div style={{ textAlign: 'center', padding: '48px 24px' }}>
-              <p style={{ fontSize: 48, marginBottom: 12 }}>📦</p>
+              <div style={{ marginBottom: 12, color: 'var(--text-light)' }}>
+                <Package size={44} strokeWidth={1.5} />
+              </div>
               <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay productos</p>
               <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Crea tu primer producto para empezar</p>
             </div>
@@ -532,14 +534,14 @@ export default function AdminProductsPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingProduct ? 'Editar producto' : 'Nuevo producto'}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{editingProduct ? 'Editar producto' : 'Nuevo producto'}</h2>
             <button
               onClick={() => setModalOpen(false)}
               style={{
                 width: 32, height: 32, borderRadius: '50%', border: 'none',
                 background: 'var(--input-bg)', color: 'var(--text-secondary)',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.2s ease',
+                transition: 'var(--transition)',
               }}
             >
               <X size={16} />
@@ -607,7 +609,7 @@ export default function AdminProductsPage() {
                     border: '1px solid var(--border)', background: 'var(--card)',
                     color: 'var(--text)', fontSize: 13, fontWeight: 500, cursor: uploading ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', gap: 6,
-                    transition: 'all 0.2s ease',
+                    transition: 'var(--transition)',
                     opacity: uploading ? 0.6 : 1,
                   }}
                 >
@@ -635,7 +637,7 @@ export default function AdminProductsPage() {
                     background: urlInput.trim() ? 'var(--primary-gradient)' : 'var(--input-bg)',
                     color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
                     display: 'flex', alignItems: 'center', gap: 5,
-                    transition: 'all 0.2s ease',
+                    transition: 'var(--transition)',
                   }}
                 >
                   <ImagePlus size={15} />
@@ -660,7 +662,7 @@ export default function AdminProductsPage() {
                         overflow: 'hidden',
                         border: idx === 0 ? '2px solid var(--primary)' : '2px solid transparent',
                         cursor: 'pointer',
-                        transition: 'all 0.2s ease',
+                        transition: 'var(--transition)',
                         flexShrink: 0,
                       }}
                       onClick={() => handleSetPrimary(idx)}
@@ -680,7 +682,7 @@ export default function AdminProductsPage() {
                           position: 'absolute', top: 2, left: 2,
                           background: 'var(--primary)',
                           color: 'var(--white)', borderRadius: '0 0 6px 0',
-                          padding: '1px 5px', fontSize: 8, fontWeight: 700,
+                          padding: '1px 5px', fontSize: 8, fontWeight: 600,
                           display: 'flex', alignItems: 'center', gap: 2,
                         }}>
                           <Star size={8} fill="white" />

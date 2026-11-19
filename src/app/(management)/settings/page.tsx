@@ -178,7 +178,7 @@ export default function SettingsPage() {
             <Settings size={22} color="var(--primary)" />
           </div>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
               Configuracion
             </h1>
           </div>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
             <Info size={18} color="#A29BFE" />
           </div>
           <div>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Acerca de</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0 }}>Acerca de</h2>
             <p style={{ fontSize: 12, color: 'var(--text-light)', margin: 0 }}>Informacion de la aplicacion</p>
           </div>
         </div>
@@ -335,7 +335,7 @@ function NavigationCard({
 
       {/* Text */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
+        <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
           {card.title}
         </p>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 0', lineHeight: 1.4 }}>
@@ -402,7 +402,7 @@ function MultiStoreToggleCard({
 
       {/* Text + toggle */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
+        <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.3 }}>
           {enabled ? 'Multi-Tienda' : 'Tienda Unica'}
         </p>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 0', lineHeight: 1.4 }}>

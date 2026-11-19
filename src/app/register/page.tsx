@@ -134,7 +134,7 @@ export default function RegisterPage() {
           {shopLogoUrl ? (
             <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontWeight: 800, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+            <span style={{ fontWeight: 600, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
         </div>
 
@@ -166,14 +166,14 @@ export default function RegisterPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 90, height: 90, borderRadius: 16, objectFit: 'contain', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 70, height: 70, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 24, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 600, fontSize: 24, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
 
           {/* Title */}
           <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Crear cuenta</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Crear cuenta</h1>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Regístrate para empezar a usar {shopName}</p>
           </div>
 
@@ -200,7 +200,7 @@ export default function RegisterPage() {
                         flex: 1, background: isSelected ? option.bgColor : 'var(--input-bg)',
                         borderRadius: 12, border: `1.5px solid ${isSelected ? option.color : 'var(--border)'}`,
                         padding: '10px 8px', display: 'flex', alignItems: 'center', gap: 8,
-                        position: 'relative', cursor: 'pointer', transition: 'all 0.2s ease',
+                        position: 'relative', cursor: 'pointer', transition: 'var(--transition)',
                         boxShadow: isSelected ? `0 2px 8px ${option.color}22` : 'none',
                       }}>
                       {isSelected && (
@@ -212,7 +212,7 @@ export default function RegisterPage() {
                         <Icon size={18} color={isSelected ? 'var(--white)' : option.color} />
                       </div>
                       <div style={{ textAlign: 'left' }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: isSelected ? option.color : 'var(--text)', display: 'block' }}>{option.label}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: isSelected ? option.color : 'var(--text)', display: 'block' }}>{option.label}</span>
                         <span style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.2 }}>{option.description}</span>
                       </div>
                     </button>
@@ -300,11 +300,11 @@ export default function RegisterPage() {
             <button type="submit" disabled={loading} style={{
               width: '100%', height: 48, borderRadius: 12,
               background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-              color: 'var(--white)', fontSize: 15, fontWeight: 700, border: 'none',
+              color: 'var(--white)', fontSize: 15, fontWeight: 600, border: 'none',
               cursor: loading ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
               boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1,
-              transition: 'all 0.25s ease', marginTop: 2,
+              transition: 'var(--transition)', marginTop: 2,
             }}>
               {loading && (
                 <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />

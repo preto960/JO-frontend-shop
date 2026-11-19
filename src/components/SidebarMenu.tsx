@@ -176,7 +176,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 24,
                 color: 'var(--white)',
                 boxShadow: 'var(--shadow-accent)',
@@ -186,7 +186,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
               </div>
             )}
             <div>
-              <p style={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.3px' }}>{shopName}</p>
+              <p style={{ fontWeight: 600, fontSize: 18 }}>{shopName}</p>
               <p style={{ fontSize: 12, opacity: 0.7, marginTop: 1 }}>
                 {user?.name || 'Usuario'}
               </p>
@@ -267,7 +267,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                     background: 'var(--primary)',
                     color: 'var(--white)',
                     fontSize: 11,
-                    fontWeight: 700,
+                    fontWeight: 600,
                     minWidth: 20,
                     height: 20,
                     borderRadius: 10,

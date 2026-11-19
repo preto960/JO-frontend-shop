@@ -45,32 +45,32 @@ const styles = {
     color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
     color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
     border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
 };
 
@@ -278,11 +278,11 @@ export default function AdminRolesPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Roles y Permisos</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)' }}>Roles y Permisos</h1>
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nuevo rol
@@ -321,10 +321,10 @@ export default function AdminRolesPage() {
                 style={{
                   background: 'var(--card)', borderRadius: 14, padding: 18,
                   boxShadow: 'var(--shadow)',
-                  transition: 'all 0.2s ease',
+                  transition: 'var(--transition)',
                   cursor: 'pointer',
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'none'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -365,7 +365,7 @@ export default function AdminRolesPage() {
                         ...styles.editBtn,
                         background: 'var(--primary-light)', color: 'var(--primary)',
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--primary-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
                       title="Gestionar permisos"
                     >
@@ -374,7 +374,7 @@ export default function AdminRolesPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); openEdit(role); }}
                       style={styles.editBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                       title="Editar rol"
                     >
@@ -383,7 +383,7 @@ export default function AdminRolesPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); setDeleteModal(role); }}
                       style={styles.deleteBtn}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                       title="Eliminar rol"
                     >
@@ -406,7 +406,7 @@ export default function AdminRolesPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={{ ...styles.modal, maxWidth: 440 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingRole ? 'Editar rol' : 'Nuevo rol'}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{editingRole ? 'Editar rol' : 'Nuevo rol'}</h2>
             <button
               onClick={() => setModalOpen(false)}
               style={{
@@ -468,7 +468,7 @@ export default function AdminRolesPage() {
                 <Shield size={20} />
               </div>
               <div>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>{selectedRole?.name}</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>{selectedRole?.name}</h2>
                 {selectedRole?.description && (
                   <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{selectedRole.description}</p>
                 )}
@@ -505,8 +505,8 @@ export default function AdminRolesPage() {
                   {/* Module header */}
                   <div style={{
                     padding: '10px 16px',
-                    fontSize: 13, fontWeight: 700, color: 'var(--text)',
-                    textTransform: 'uppercase', letterSpacing: '0.5px',
+                    fontSize: 13, fontWeight: 600, color: 'var(--text)',
+                    
                     borderBottom: '1px solid var(--border)',
                   }}>
                     {moduleLabels[mod] || mod}
@@ -544,7 +544,7 @@ export default function AdminRolesPage() {
                             width: 40, height: 24, borderRadius: 12, border: 'none',
                             background: assigned ? 'var(--success)' : 'var(--border)',
                             cursor: 'pointer', position: 'relative',
-                            transition: 'all 0.25s ease',
+                            transition: 'var(--transition)',
                             opacity: isToggling ? 0.6 : 1,
                             flexShrink: 0, marginLeft: 12,
                           }}

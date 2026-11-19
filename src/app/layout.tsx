@@ -34,7 +34,7 @@ const themeInitScript = `
       r.style.setProperty('--primary-hover', t.primary_color);
       r.style.setProperty('--primary-light', t.primary_color + '1A');
       r.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + t.primary_color + ' 0%, ' + t.primary_color + 'CC 100%)');
-      r.style.setProperty('--shadow-accent', '0 4px 14px ' + t.primary_color + '4D');
+      // Las sombras son neutrales: la profundidad no lleva el color de marca.
     }
     if (t.accent_color) {
       r.style.setProperty('--accent', t.accent_color);

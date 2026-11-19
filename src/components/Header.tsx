@@ -119,7 +119,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
         </div>
 
         {/* Center title */}
-        <h1 style={{ fontSize: 18, fontWeight: 700, textAlign: 'center', letterSpacing: '-0.2px', zIndex: 1 }}>{title}</h1>
+        <h1 style={{ fontSize: 18, fontWeight: 600, textAlign: 'center', zIndex: 1 }}>{title}</h1>
 
         {/* Right section */}
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, alignItems: 'center', zIndex: 1 }}>
@@ -176,7 +176,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
                   <span style={{
                     position: 'absolute', top: 2, right: 2,
                     background: 'var(--danger)', color: 'var(--white)',
-                    fontSize: 10, fontWeight: 700,
+                    fontSize: 10, fontWeight: 600,
                     minWidth: 16, height: 16, borderRadius: 8,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     padding: '0 4px',

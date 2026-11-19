@@ -26,7 +26,7 @@ const styles: any = {
     color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   tableCard: {
     background: 'var(--card)', borderRadius: 14,
@@ -37,19 +37,19 @@ const styles: any = {
     background: 'var(--primary-gradient)',
     color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
     border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   iconBtn: (bg: string, color: string) => ({
     width: 34, height: 34, borderRadius: '50%', border: 'none',
     background: bg, color: color, cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   }),
 };
 
@@ -225,7 +225,7 @@ export default function ProductBatchesPage() {
             <ArrowLeft size={16} />
           </button>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Lotes de productos</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)', margin: 0 }}>Lotes de productos</h1>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '2px 0 0' }}>
               Aplica descuentos por lotes a productos existentes
             </p>
@@ -259,13 +259,13 @@ export default function ProductBatchesPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--input-bg)' }}>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Lote</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Descuento</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Productos</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Estado</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Creador</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fecha</th>
-                  <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Acciones</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Lote</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Descuento</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Productos</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Estado</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Creador</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Fecha</th>
+                  <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,7 +285,7 @@ export default function ProductBatchesPage() {
                     </td>
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{
-                        fontSize: 14, fontWeight: 700,
+                        fontSize: 14, fontWeight: 600,
                         color: batch.discountPercent > 0 ? 'var(--success)' : 'var(--text-secondary)',
                         background: batch.discountPercent > 0 ? 'var(--success-light)' : 'var(--input-bg)',
                         padding: '4px 12px', borderRadius: 20,
@@ -319,7 +319,7 @@ export default function ProductBatchesPage() {
                           <button
                             onClick={() => openEdit(batch)}
                             style={styles.iconBtn('var(--info-light)', 'var(--info)')}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
                           >
                             <Edit2 size={15} />
@@ -329,7 +329,7 @@ export default function ProductBatchesPage() {
                           <button
                             onClick={() => setDeleteModal(batch)}
                             style={styles.iconBtn('var(--danger-light)', 'var(--danger)')}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
                           >
                             <Trash2 size={15} />
@@ -346,7 +346,7 @@ export default function ProductBatchesPage() {
           {/* Expanded row showing batch products */}
           {viewBatch && viewBatch.items && (
             <div style={{ background: 'var(--input-bg)', padding: '16px 20px', borderTop: '1px solid var(--border)' }}>
-              <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 12 }}>
+              <h4 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 12 }}>
                 <Package size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
                 Productos en lote ({viewBatch.items.length})
               </h4>
@@ -367,7 +367,7 @@ export default function ProductBatchesPage() {
                         {getProductImage(prod) ? (
                           <img src={getProductImage(prod)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 14 }}>📦</div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)' }}><Package size={14} /></div>
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -404,7 +404,7 @@ export default function ProductBatchesPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>
               {editingBatch ? 'Editar lote' : 'Nuevo lote de descuento'}
             </h2>
             <button
@@ -450,7 +450,7 @@ export default function ProductBatchesPage() {
             {selectedProductIds.length > 0 && (
               <div style={{ background: 'var(--success-light)', borderRadius: 12, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--success)' }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--success)' }}>
                     {selectedProductIds.length} producto{selectedProductIds.length > 1 ? 's' : ''} seleccionado{selectedProductIds.length > 1 ? 's' : ''}
                   </span>
                   <button
@@ -477,7 +477,7 @@ export default function ProductBatchesPage() {
 
             {/* Product search & selection */}
             <div style={{ borderTop: '2px solid var(--border)', paddingTop: 16 }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 12 }}>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 12 }}>
                 Seleccionar productos
               </h3>
               <div style={{ position: 'relative', marginBottom: 12 }}>
@@ -515,7 +515,7 @@ export default function ProductBatchesPage() {
                           width: 22, height: 22, borderRadius: 6, border: isSelected ? '2px solid var(--primary)' : '2px solid var(--border)',
                           background: isSelected ? 'var(--primary)' : 'transparent',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                          transition: 'all 0.15s ease',
+                          transition: 'var(--transition)',
                         }}>
                           {isSelected && <Check size={14} color="white" strokeWidth={3} />}
                         </div>
@@ -527,7 +527,7 @@ export default function ProductBatchesPage() {
                           {getProductImage(product) ? (
                             <img src={getProductImage(product)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 16 }}>📦</div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-light)' }}><Package size={16} /></div>
                           )}
                         </div>
                         {/* Info */}
@@ -578,7 +578,7 @@ export default function ProductBatchesPage() {
         onClick={() => setDeleteModal(null)}
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={{ ...styles.modal, maxWidth: 420 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 12 }}>Eliminar lote</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 12 }}>Eliminar lote</h2>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 8 }}>
             El lote <strong>&quot;{deleteModal?.name}&quot;</strong> sera eliminado.
           </p>
@@ -589,7 +589,7 @@ export default function ProductBatchesPage() {
             <button onClick={() => setDeleteModal(null)} style={styles.cancelBtn}>Cancelar</button>
             <button
               onClick={handleDelete}
-              style={{ ...styles.saveBtn, background: 'var(--danger)', boxShadow: '0 4px 14px rgba(255,107,107,0.3)' }}
+              style={{ ...styles.saveBtn, background: 'var(--danger)', boxShadow: 'var(--shadow-md)' }}
             >
               Eliminar lote
             </button>

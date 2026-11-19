@@ -148,7 +148,7 @@ export default function TrackingPage() {
           <ArrowLeft size={22} />
         </button>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>
+          <p style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>
             Seguimiento de Envio
           </p>
           <p style={{ fontSize: 12, opacity: 0.85, margin: '2px 0 0' }}>
@@ -220,7 +220,7 @@ export default function TrackingPage() {
               }}>
                 <div style={{
                   width: 8, height: 8, borderRadius: '50%',
-                  background: '#2ECC71',
+                  background: 'var(--success)',
                   animation: 'pulse 2s ease infinite',
                 }} />
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#333' }}>En vivo</span>
@@ -313,10 +313,10 @@ export default function TrackingPage() {
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10,
                     }}>
-                      <User size={14} color="#1ABC9C" />
+                      <User size={14} color="var(--teal)" />
                       <p style={{
-                        fontSize: 11, fontWeight: 700, color: '#1ABC9C',
-                        textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0,
+                        fontSize: 11, fontWeight: 600, color: 'var(--teal)',
+                        margin: 0,
                       }}>
                         Tu repartidor
                       </p>
@@ -324,11 +324,11 @@ export default function TrackingPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div style={{
                         width: 40, height: 40, borderRadius: '50%',
-                        background: '#1ABC9C15',
+                        background: 'var(--teal-light)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         flexShrink: 0,
                       }}>
-                        <User size={20} color="#1ABC9C" />
+                        <User size={20} color="var(--teal)" />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>
@@ -345,7 +345,7 @@ export default function TrackingPage() {
                           onClick={() => callDelivery(delivery.phone)}
                           style={{
                             width: 40, height: 40, borderRadius: '50%',
-                            background: '#1ABC9C',
+                            background: 'var(--teal)',
                             border: 'none',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             cursor: 'pointer',
@@ -381,11 +381,11 @@ export default function TrackingPage() {
                     alignItems: 'flex-start',
                     gap: 10,
                   }}>
-                    <MapPin size={16} color="#E74C3C" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <MapPin size={16} color="var(--danger)" style={{ flexShrink: 0, marginTop: 2 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{
-                        fontSize: 11, fontWeight: 700, color: '#E74C3C',
-                        textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 4px',
+                        fontSize: 11, fontWeight: 600, color: 'var(--danger)',
+                        margin: '0 0 4px',
                       }}>
                         Direccion de entrega
                       </p>

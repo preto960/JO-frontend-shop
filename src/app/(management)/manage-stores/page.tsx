@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Edit2, Trash2, X, Package, ArrowLeft, Camera, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Package, ArrowLeft, Camera, Upload, Store, MapPin, Phone } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import ConfirmModal from '@/components/ConfirmModal';
 import { showToast } from '@/lib/utils';
@@ -24,32 +24,32 @@ const styles = {
     color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   editBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--info-light)', color: 'var(--info)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   deleteBtn: {
     width: 34, height: 34, borderRadius: '50%' as const, border: 'none',
     background: 'var(--danger-light)', color: 'var(--danger)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
     color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
   cancelBtn: {
     padding: '10px 20px', borderRadius: 10,
     border: '2px solid var(--border)', background: 'var(--card)',
     color: 'var(--text)', cursor: 'pointer', fontSize: 14,
-    transition: 'all 0.2s ease',
+    transition: 'var(--transition)',
   },
 };
 
@@ -192,11 +192,11 @@ export default function AdminStoresPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>Tiendas</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)' }}>Tiendas</h1>
         <button
           onClick={openCreate}
           style={styles.newBtn}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-accent)'; }}
         >
           <Plus size={18} /> Nueva tienda
@@ -213,7 +213,9 @@ export default function AdminStoresPage() {
         </div>
       ) : stores.length === 0 ? (
         <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
-          <p style={{ fontSize: 48, marginBottom: 12 }}>🏪</p>
+          <div style={{ marginBottom: 12, color: 'var(--text-light)' }}>
+            <Store size={44} strokeWidth={1.5} />
+          </div>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay tiendas</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Crea tu primera tienda para empezar a vender</p>
         </div>
@@ -224,9 +226,9 @@ export default function AdminStoresPage() {
               key={store.id} className="animate-fade-in"
               style={{
                 background: 'var(--card)', borderRadius: 14, padding: 18,
-                boxShadow: 'var(--shadow)', transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow)', transition: 'var(--transition)',
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; (e.currentTarget as HTMLElement).style.transform = 'none'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -242,15 +244,17 @@ export default function AdminStoresPage() {
                     {store.logo ? (
                       <img src={store.logo} alt={store.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
                     ) : (
-                      <span style={{ fontSize: 22 }}>🏪</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)' }}>
+                        <Store size={22} strokeWidth={1.5} />
+                      </div>
                     )}
                   </div>
                   <div>
                     <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
                       {store.name || store.nombre}
                     </h3>
-                    {store.address && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 2 }}>📍 {store.address}</p>}
-                    {store.phone && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 2 }}>📞 {store.phone}</p>}
+                    {store.address && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={14} /> {store.address}</p>}
+                    {store.phone && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}><Phone size={14} /> {store.phone}</p>}
                     {store.description && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>{store.description}</p>}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
                       <Package size={14} style={{ color: 'var(--primary)' }} />
@@ -263,14 +267,14 @@ export default function AdminStoresPage() {
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button
                     onClick={() => openEdit(store)} style={styles.editBtn}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--info)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--info-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--info)'; }}
                   >
                     <Edit2 size={15} />
                   </button>
                   <button
                     onClick={() => setDeleteModal(store)} style={styles.deleteBtn}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.background = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                   >
                     <Trash2 size={15} />
@@ -289,14 +293,14 @@ export default function AdminStoresPage() {
       >
         <div className="animate-fade-in" onClick={(e) => e.stopPropagation()} style={styles.modal}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{editingStore ? 'Editar tienda' : 'Nueva tienda'}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{editingStore ? 'Editar tienda' : 'Nueva tienda'}</h2>
             <button
               onClick={() => setModalOpen(false)}
               style={{
                 width: 32, height: 32, borderRadius: '50%', border: 'none',
                 background: 'var(--input-bg)', color: 'var(--text-secondary)',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.2s ease',
+                transition: 'var(--transition)',
               }}
             >
               <X size={16} />

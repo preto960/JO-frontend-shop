@@ -154,7 +154,7 @@ export default function DeliveryPage() {
             color: activeTab === 'available' ? 'var(--white)' : 'var(--text-secondary)',
             fontSize: 14, fontWeight: activeTab === 'available' ? 700 : 500,
             boxShadow: activeTab === 'available' ? 'var(--shadow-accent)' : 'none',
-            transition: 'all 0.25s ease',
+            transition: 'var(--transition)',
           }}
         >
           Disponibles ({orders.length})
@@ -167,7 +167,7 @@ export default function DeliveryPage() {
             color: activeTab === 'mine' ? 'var(--white)' : 'var(--text-secondary)',
             fontSize: 14, fontWeight: activeTab === 'mine' ? 700 : 500,
             boxShadow: activeTab === 'mine' ? 'var(--shadow-accent)' : 'none',
-            transition: 'all 0.25s ease',
+            transition: 'var(--transition)',
           }}
         >
           Mis entregas ({myOrders.length})
@@ -189,7 +189,7 @@ export default function DeliveryPage() {
             }}>
               {activeTab === 'available' ? <Package size={36} style={{ color: 'var(--text-light)' }} /> : <User size={36} style={{ color: 'var(--text-light)' }} />}
             </div>
-            <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
+            <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
               {activeTab === 'available' ? 'No hay entregas disponibles' : 'No tienes entregas activas'}
             </p>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
@@ -218,7 +218,7 @@ export default function DeliveryPage() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+                        <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
                           #{String(order.id).slice(-8).toUpperCase()}
                         </span>
                         <span style={{
@@ -229,7 +229,7 @@ export default function DeliveryPage() {
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>{formatPrice(total)}</p>
+                        <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>{formatPrice(total)}</p>
                         {isExpanded ? <ChevronUp size={18} style={{ color: 'var(--text-light)' }} /> : <ChevronDown size={18} style={{ color: 'var(--text-light)' }} />}
                       </div>
                     </div>
@@ -310,8 +310,8 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); acceptOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'linear-gradient(135deg, var(--success), var(--teal))', color: 'var(--white)', fontSize: 15,
-                            fontWeight: 700, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
+                            background: 'var(--success)', color: 'var(--white)', fontSize: 15,
+                            fontWeight: 600, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}
                         >
@@ -323,8 +323,8 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); deliverOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'linear-gradient(135deg, var(--success), var(--teal))', color: 'var(--white)', fontSize: 15,
-                            fontWeight: 700, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
+                            background: 'var(--success)', color: 'var(--white)', fontSize: 15,
+                            fontWeight: 600, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}
                         >

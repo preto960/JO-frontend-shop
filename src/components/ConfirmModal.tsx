@@ -49,7 +49,7 @@ export default function ConfirmModal({
       >
         {/* Header row */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>{title}</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{title}</h2>
           <button
             onClick={onCancel}
             style={{
@@ -120,7 +120,7 @@ export default function ConfirmModal({
               transition: 'var(--transition-fast)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.transform = 'none';
               e.currentTarget.style.boxShadow = 'var(--shadow-accent)';
             }}
             onMouseLeave={(e) => {

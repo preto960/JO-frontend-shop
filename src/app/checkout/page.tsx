@@ -137,7 +137,7 @@ export default function CheckoutPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}><ArrowLeft size={22} /></button>
         </div>
-        <h1 style={{ fontSize: 18, fontWeight: 700, zIndex: 1 }}>Confirmar Pedido</h1>
+        <h1 style={{ fontSize: 18, fontWeight: 600, zIndex: 1 }}>Confirmar Pedido</h1>
         <div style={{ position: 'absolute', right: 16, display: 'flex', gap: 8, zIndex: 1 }}>
           <button onClick={logout} style={{
             background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
@@ -152,11 +152,11 @@ export default function CheckoutPage() {
         {cart.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60 }}>
             <ShoppingBag size={48} style={{ color: 'var(--text-light)', margin: '0 auto 16px' }} />
-            <p style={{ fontSize: 18, fontWeight: 700 }}>Tu carrito esta vacio</p>
+            <p style={{ fontSize: 18, fontWeight: 600 }}>Tu carrito esta vacio</p>
             <button onClick={() => router.push('/')} style={{
               marginTop: 16, padding: '12px 28px', borderRadius: 'var(--radius-full)',
               background: 'var(--primary-gradient)', color: 'var(--white)', border: 'none',
-              cursor: 'pointer', fontWeight: 700, boxShadow: 'var(--shadow-accent)',
+              cursor: 'pointer', fontWeight: 600, boxShadow: 'var(--shadow-accent)',
             }}>Explorar productos</button>
           </div>
         ) : (
@@ -174,7 +174,7 @@ export default function CheckoutPage() {
                 }}>
                   <MapPin size={18} style={{ color: 'var(--primary)' }} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>Direccion de entrega</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Direccion de entrega</h3>
               </div>
 
               {/* Mode toggle */}
@@ -185,14 +185,14 @@ export default function CheckoutPage() {
                 }}>
                   <button onClick={() => setAddressMode('saved')} style={{
                     flex: 1, padding: '8px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                    border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+                    border: 'none', cursor: 'pointer', transition: 'var(--transition)',
                     background: addressMode === 'saved' ? 'var(--white)' : 'transparent',
                     color: addressMode === 'saved' ? 'var(--text)' : 'var(--text-secondary)',
                     boxShadow: addressMode === 'saved' ? 'var(--shadow)' : 'none',
                   }}>Direccion guardada</button>
                   <button onClick={() => setAddressMode('manual')} style={{
                     flex: 1, padding: '8px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                    border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+                    border: 'none', cursor: 'pointer', transition: 'var(--transition)',
                     background: addressMode === 'manual' ? 'var(--white)' : 'transparent',
                     color: addressMode === 'manual' ? 'var(--text)' : 'var(--text-secondary)',
                     boxShadow: addressMode === 'manual' ? 'var(--shadow)' : 'none',
@@ -209,12 +209,12 @@ export default function CheckoutPage() {
                       padding: '12px 14px', borderRadius: 10, width: '100%',
                       background: selectedAddressId === addr.id ? 'var(--primary-light)' : 'var(--input-bg)',
                       border: selectedAddressId === addr.id ? '2px solid var(--primary)' : '2px solid transparent',
-                      cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
+                      cursor: 'pointer', textAlign: 'left', transition: 'var(--transition)',
                     }}>
                       <div style={{
                         width: 20, height: 20, borderRadius: '50%',
                         border: selectedAddressId === addr.id ? '6px solid var(--primary)' : '2px solid var(--border)',
-                        flexShrink: 0, transition: 'all 0.2s',
+                        flexShrink: 0, transition: 'var(--transition)',
                       }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{addr.label}</p>
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                 }}>
                   <FileText size={18} style={{ color: 'var(--info)' }} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>Notas de entrega</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>Notas de entrega</h3>
               </div>
               <input
                 type="text"
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
 
             {/* ─── Order Summary ─── */}
             <div>
-              <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Resumen del pedido</h2>
+              <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>Resumen del pedido</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {cart.map(item => (
                   <div key={item.id} style={{
@@ -294,7 +294,7 @@ export default function CheckoutPage() {
                       <p style={{ fontSize: 14, fontWeight: 600 }}>{item.name || 'Producto'}</p>
                       <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Cant.: {item.quantity}</p>
                     </div>
-                    <p style={{ fontSize: 15, fontWeight: 700 }}>{formatPrice(item.price * item.quantity)}</p>
+                    <p style={{ fontSize: 15, fontWeight: 600 }}>{formatPrice(item.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
@@ -311,12 +311,12 @@ export default function CheckoutPage() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, maxWidth: 900, margin: '0 auto' }}>
             <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>Total</span>
-            <span style={{ fontSize: 20, fontWeight: 800 }}>{formatPrice(total)}</span>
+            <span style={{ fontSize: 20, fontWeight: 600 }}>{formatPrice(total)}</span>
           </div>
           <button onClick={placeOrder} disabled={placing} style={{
             width: '100%', height: 50, borderRadius: 12,
             background: placing ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-            color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none',
+            color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none',
             cursor: placing ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: 'var(--shadow-accent)', opacity: placing ? 0.8 : 1, maxWidth: 900, margin: '0 auto',

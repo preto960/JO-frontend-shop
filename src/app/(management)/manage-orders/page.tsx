@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api, { extractData } from '@/lib/api';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, showToast } from '@/lib/utils';
+import { ClipboardList } from 'lucide-react';
 import { usePusher } from '@/contexts/PusherContext';
 
 const STATUS_TABS = [
@@ -92,7 +93,7 @@ export default function AdminOrdersPage() {
   return (
     <div style={{ padding: 24 }}>
       {/* Header */}
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', marginBottom: 20 }}>Pedidos</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)', marginBottom: 20 }}>Pedidos</h1>
 
       {/* Status tabs */}
       <div className="scrollbar-hide" style={{
@@ -108,7 +109,7 @@ export default function AdminOrdersPage() {
               background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--card)',
               color: activeTab === tab.value ? 'var(--white)' : 'var(--text-secondary)',
               boxShadow: 'var(--shadow)',
-              transition: 'all 0.2s ease',
+              transition: 'var(--transition)',
             }}
           >
             {tab.label}
@@ -126,7 +127,9 @@ export default function AdminOrdersPage() {
         </div>
       ) : orders.length === 0 ? (
         <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
-          <p style={{ fontSize: 48, marginBottom: 12 }}>📋</p>
+          <div style={{ marginBottom: 12, color: 'var(--text-light)' }}>
+            <ClipboardList size={44} strokeWidth={1.5} />
+          </div>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>No hay pedidos</p>
           <p style={{ fontSize: 13, color: 'var(--text-light)', marginTop: 4 }}>Los pedidos aparecerán aquí cuando los clientes compren</p>
         </div>
@@ -147,7 +150,7 @@ export default function AdminOrdersPage() {
                   background: 'var(--card)', borderRadius: 14,
                   boxShadow: isExpanded ? 'var(--shadow-md)' : 'var(--shadow)',
                   overflow: 'hidden',
-                  transition: 'all 0.2s ease',
+                  transition: 'var(--transition)',
                 }}
               >
                 {/* Order header */}
@@ -157,7 +160,7 @@ export default function AdminOrdersPage() {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
                         #{String(order.id).slice(-8).toUpperCase()}
                       </span>
                       <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
@@ -166,7 +169,7 @@ export default function AdminOrdersPage() {
                     </div>
                     <span style={{
                       padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                      background: statusColor + '18', color: statusColor,
+                      background: `color-mix(in srgb, ${statusColor} 12%, transparent)`, color: statusColor,
                     }}>
                       {getStatusLabel(status)}
                     </span>
@@ -175,7 +178,7 @@ export default function AdminOrdersPage() {
                     <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                       {order.user?.name || order.userName || 'Cliente'} · {items.length} artículo(s)
                     </p>
-                    <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)' }}>{formatPrice(total)}</p>
+                    <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>{formatPrice(total)}</p>
                   </div>
                 </div>
 
@@ -208,9 +211,9 @@ export default function AdminOrdersPage() {
                             background: 'var(--primary-gradient)',
                             color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                             boxShadow: 'var(--shadow-accent)',
-                            transition: 'all 0.2s ease',
+                            transition: 'var(--transition)',
                           }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
                           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
                         >
                           Marcar como {getStatusLabel(nextStatus)}
@@ -223,7 +226,7 @@ export default function AdminOrdersPage() {
                             padding: '10px 18px', borderRadius: 10,
                             border: '2px solid var(--danger)', background: 'var(--card)',
                             color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                            transition: 'all 0.2s ease',
+                            transition: 'var(--transition)',
                           }}
                           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-light)'; }}
                           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}

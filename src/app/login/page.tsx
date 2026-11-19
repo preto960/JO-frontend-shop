@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { showToast } from '@/lib/utils';
-import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, RefreshCw, Smartphone, KeyRound, Copy, Check, Eye, EyeOff, Pizza, Sandwich, Salad, ShoppingCart } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -249,11 +249,6 @@ export default function LoginPage() {
           width: 180, height: 180, borderRadius: '50%',
           background: 'rgba(255,255,255,0.06)',
         }} />
-        <div style={{
-          position: 'absolute', top: '40%', right: '10%',
-          width: 60, height: 60, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.1)',
-        }} />
 
         <div className="animate-fade-in" style={{
           width: 120, height: 120, borderRadius: 20,
@@ -266,22 +261,23 @@ export default function LoginPage() {
           {shopLogoUrl ? (
             <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontWeight: 800, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+            <span style={{ fontWeight: 600, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
         </div>
 
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           {shopName}
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center' }}>
           Tu tienda en línea
         </p>
 
-        <div style={{ display: 'flex', gap: 20, fontSize: 36 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🍕</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🍔</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🥗</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>🛒</span>
+        <div style={{ display: 'flex', gap: 20 }}>
+          {[Pizza, Sandwich, Salad, ShoppingCart].map((Icon, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.15)' }}>
+              <Icon size={30} color="rgba(255,255,255,0.9)" strokeWidth={1.5} />
+            </span>
+          ))}
         </div>
       </div>
 
@@ -307,7 +303,7 @@ export default function LoginPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 30, color: 'var(--white)', letterSpacing: -0.5 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 600, fontSize: 30, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -318,7 +314,7 @@ export default function LoginPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 16, objectFit: 'contain', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 800, fontSize: 30, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 600, fontSize: 30, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -352,7 +348,7 @@ export default function LoginPage() {
                 </div>
 
                 <button type="submit" disabled={loading}
-                  style={{ width: '100%', height: 46, borderRadius: 10, background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1, transition: 'all 0.25s ease' }}>
+                  style={{ width: '100%', height: 46, borderRadius: 10, background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1, transition: 'var(--transition)' }}>
                   {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                   {loading ? 'Ingresando...' : 'Iniciar sesión'}
                 </button>
@@ -364,7 +360,7 @@ export default function LoginPage() {
               <div style={{ textAlign: 'center', marginBottom: 24 }}>
                 <div style={{
                   width: 64, height: 64, borderRadius: '50%',
-                  background: isTOTP ? 'rgba(59,130,246,0.1)' : 'var(--info-light)',
+                  background: isTOTP ? 'var(--info-light)' : 'var(--info-light)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   margin: '0 auto 16px',
                 }}>
@@ -373,7 +369,7 @@ export default function LoginPage() {
                     : <ShieldCheck size={32} style={{ color: 'var(--info)' }} />
                   }
                 </div>
-                <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>
+                <h1 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>
                   Verificación en dos pasos
                 </h1>
                 <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -383,7 +379,7 @@ export default function LoginPage() {
                   }
                 </p>
                 {!isTOTP && (
-                  <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginTop: 4 }}>{otpEmail}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginTop: 4 }}>{otpEmail}</p>
                 )}
               </div>
 
@@ -412,13 +408,13 @@ export default function LoginPage() {
                       {otpCode.map((digit, index) => (
                         <input key={index} ref={(el) => { inputRefs.current[index] = el; }} type="text" inputMode="numeric" maxLength={1} value={digit}
                           onChange={(e) => handleOtpChange(index, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          style={{ width: 48, height: 56, borderRadius: 12, border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`, background: digit ? 'var(--primary-light)' : 'var(--white)', textAlign: 'center', fontSize: 24, fontWeight: 700, color: 'var(--text)', outline: 'none', transition: 'all 0.2s ease', boxShadow: digit ? 'var(--shadow-accent)' : 'none' }} />
+                          style={{ width: 48, height: 56, borderRadius: 12, border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`, background: digit ? 'var(--primary-light)' : 'var(--white)', textAlign: 'center', fontSize: 24, fontWeight: 600, color: 'var(--text)', outline: 'none', transition: 'var(--transition)', boxShadow: digit ? 'var(--shadow-accent)' : 'none' }} />
                       ))}
                     </div>
 
                     {/* Verify button */}
                     <button type="submit" disabled={loading || codeString.length !== 6}
-                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || codeString.length !== 6) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)', opacity: (loading || codeString.length !== 6) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || codeString.length !== 6) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none', cursor: (loading || codeString.length !== 6) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || codeString.length !== 6) ? 'none' : 'var(--shadow-accent)', opacity: (loading || codeString.length !== 6) ? 0.7 : 1, transition: 'var(--transition)' }}>
                       {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                       {loading ? 'Verificando...' : 'Verificar código'}
                     </button>
@@ -435,7 +431,7 @@ export default function LoginPage() {
                     </div>
 
                     <button type="submit" disabled={loading || !backupCodeInput.trim()}
-                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || !backupCodeInput.trim()) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none', cursor: (loading || !backupCodeInput.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || !backupCodeInput.trim()) ? 'none' : 'var(--shadow-accent)', opacity: (loading || !backupCodeInput.trim()) ? 0.7 : 1, transition: 'all 0.25s ease' }}>
+                      style={{ width: '100%', height: 46, borderRadius: 10, background: (loading || !backupCodeInput.trim()) ? 'var(--primary-hover)' : 'var(--primary-gradient)', color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none', cursor: (loading || !backupCodeInput.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: (loading || !backupCodeInput.trim()) ? 'none' : 'var(--shadow-accent)', opacity: (loading || !backupCodeInput.trim()) ? 0.7 : 1, transition: 'var(--transition)' }}>
                       {loading && (<div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />)}
                       {loading ? 'Verificando...' : 'Verificar código de recuperación'}
                     </button>
@@ -453,7 +449,7 @@ export default function LoginPage() {
                     </span>
                   ) : (
                     <button onClick={handleResendCode} disabled={resendLoading}
-                      style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)', background: 'none', border: 'none', cursor: resendLoading ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: resendLoading ? 0.6 : 1 }}>
+                      style={{ fontSize: 14, fontWeight: 600, color: 'var(--primary)', background: 'none', border: 'none', cursor: resendLoading ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: resendLoading ? 0.6 : 1 }}>
                       {resendLoading && <RefreshCw size={14} style={{ animation: 'spin 0.8s linear infinite' }} />}
                       Reenviar código
                     </button>
@@ -476,7 +472,7 @@ export default function LoginPage() {
           {!otpEmail && (
             <div style={{ textAlign: 'center', marginTop: 20 }}>
               <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>¿No tienes cuenta? </span>
-              <a href="/register" style={{ fontSize: 14, color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', transition: 'color 0.2s ease' }}>Regístrate</a>
+              <a href="/register" style={{ fontSize: 14, color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s ease' }}>Regístrate</a>
             </div>
           )}
 

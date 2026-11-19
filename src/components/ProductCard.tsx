@@ -61,7 +61,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
         flexDirection: 'column',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-3px)';
+        e.currentTarget.style.transform = 'none';
         e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
       }}
       onMouseLeave={(e) => {
@@ -171,14 +171,14 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             background: 'var(--danger)',
             color: 'var(--white)',
             fontSize: 11,
-            fontWeight: 700,
+            fontWeight: 600,
             padding: '4px 10px',
             borderRadius: 'var(--radius-full)',
             letterSpacing: '0.2px',
             display: 'flex',
             alignItems: 'center',
             gap: 3,
-            boxShadow: '0 2px 8px rgba(255,107,107,0.4)',
+            boxShadow: 'var(--shadow-sm)',
             zIndex: 3,
           }}>
             <Percent size={10} />
@@ -216,7 +216,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             )}
             <span style={{
               fontSize: hasDiscount ? 16 : 18,
-              fontWeight: 700,
+              fontWeight: 600,
               color: hasDiscount ? 'var(--danger)' : 'var(--primary)',
               letterSpacing: '-0.3px',
             }}>
@@ -236,7 +236,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.boxShadow = 'var(--shadow-accent)';
-                e.currentTarget.style.transform = 'scale(1.08)';
+                e.currentTarget.style.transform = 'none';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = 'none';

@@ -238,7 +238,7 @@ export default function OrderChatModal({
               <MessageCircle size={20} color="var(--primary)" />
             </div>
             <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0 }}>
                 Chat Pedido #{orderNumber}
               </h2>
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: 0 }}>
@@ -255,7 +255,7 @@ export default function OrderChatModal({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer',
               color: 'var(--text-secondary)',
-              transition: 'all 0.2s',
+              transition: 'var(--transition)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--input-bg)';
@@ -316,7 +316,7 @@ export default function OrderChatModal({
                         <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
                         <span style={{
                           fontSize: 11, fontWeight: 600, color: 'var(--text-light)',
-                          textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap',
+                          whiteSpace: 'nowrap',
                         }}>
                           {formatDateSeparator(msg.createdAt)}
                         </span>
@@ -336,7 +336,7 @@ export default function OrderChatModal({
                             width: 20, height: 20, borderRadius: '50%',
                             background: '#F39C12',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 8, fontWeight: 700, color: 'var(--white)',
+                            fontSize: 8, fontWeight: 600, color: 'var(--white)',
                           }}>
                             {msg.senderName ? msg.senderName[0].toUpperCase() : <User size={10} />}
                           </div>
@@ -401,7 +401,7 @@ export default function OrderChatModal({
               color: inputText.trim() && !sending ? 'var(--white)' : 'var(--text-light)',
               cursor: inputText.trim() && !sending ? 'pointer' : 'not-allowed',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'all 0.2s ease', flexShrink: 0,
+              transition: 'var(--transition)', flexShrink: 0,
             }}
           >
             {sending ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={20} style={{ transform: 'rotate(-45deg)' }} />}

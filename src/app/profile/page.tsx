@@ -152,8 +152,8 @@ export default function ProfilePage() {
             width: 46, height: 52, borderRadius: 10,
             border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`,
             background: digit ? 'var(--primary-light)' : 'var(--white)',
-            textAlign: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text)',
-            outline: 'none', transition: 'all 0.2s ease',
+            textAlign: 'center', fontSize: 22, fontWeight: 600, color: 'var(--text)',
+            outline: 'none', transition: 'var(--transition)',
             boxShadow: digit ? 'var(--shadow-accent)' : 'none',
           }}
         />
@@ -491,12 +491,12 @@ export default function ProfilePage() {
         padding: '14px 20px', borderRadius: 12,
         background: opts.danger ? 'var(--white)' : opts.primary ? 'var(--primary-gradient)' : 'var(--input-bg)',
         color: opts.danger ? 'var(--danger)' : opts.primary ? 'var(--white)' : 'var(--text-secondary)',
-        fontSize: 15, fontWeight: 700,
+        fontSize: 15, fontWeight: 600,
         border: opts.danger ? '2px solid var(--danger)' : 'none',
         cursor: (opts.disabled || opts.loading) ? 'not-allowed' : 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
         opacity: (opts.disabled || opts.loading) ? 0.7 : 1,
-        transition: 'all 0.25s ease',
+        transition: 'var(--transition)',
         boxShadow: opts.primary && !opts.loading ? 'var(--shadow-accent)' : 'none',
       }}>
       {opts.loading && <div style={{ width: 18, height: 18, border: `2.5px solid ${opts.danger ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.3)'}`, borderTopColor: opts.danger ? 'var(--danger)' : 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
@@ -531,8 +531,8 @@ export default function ProfilePage() {
             width: 46, height: 52, borderRadius: 10,
             border: `2px solid ${digit ? 'var(--primary)' : 'var(--border)'}`,
             background: digit ? 'var(--primary-light)' : 'var(--white)',
-            textAlign: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text)',
-            outline: 'none', transition: 'all 0.2s ease',
+            textAlign: 'center', fontSize: 22, fontWeight: 600, color: 'var(--text)',
+            outline: 'none', transition: 'var(--transition)',
             boxShadow: digit ? 'var(--shadow-accent)' : 'none',
           }}
         />
@@ -548,7 +548,7 @@ export default function ProfilePage() {
         </span>
       ) : (
         <button onClick={onResend} disabled={loading}
-          style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', background: 'none', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: loading ? 0.6 : 1 }}>
+          style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', background: 'none', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: loading ? 0.6 : 1 }}>
           {loading ? <RefreshCw size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Mail size={14} />}
           Reenviar código
         </button>
@@ -566,12 +566,12 @@ export default function ProfilePage() {
           <div style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 80, background: 'var(--primary-gradient)', opacity: 0.1 }} />
             <div style={{ position: 'relative' }}>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 800, color: 'var(--white)', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 600, color: 'var(--white)', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
                 {getInitials(user?.name || '')}
               </div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>{user?.name || 'Usuario'}</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>{user?.name || 'Usuario'}</h2>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 12 }}>{user?.email || ''}</p>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 16px', borderRadius: 'var(--radius-full)', background: roleColor + '15', fontSize: 13, fontWeight: 600, color: roleColor }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 16px', borderRadius: 'var(--radius-full)', background: `color-mix(in srgb, ${roleColor} 12%, transparent)`, fontSize: 13, fontWeight: 600, color: roleColor }}>
                 <Shield size={14} />{getRoleLabel(userRole)}
               </span>
             </div>
@@ -582,7 +582,7 @@ export default function ProfilePage() {
         {renderCard(
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>Información personal</h3>
+              <h3 style={{ fontSize: 17, fontWeight: 600, color: 'var(--text)' }}>Información personal</h3>
               <button onClick={() => { if (editing) { setPhone(user?.phone || ''); setBirthdate(user?.birthdate || ''); } setEditing(!editing); }}
                 style={{ padding: '8px 16px', borderRadius: 'var(--radius)', background: editing ? 'var(--input-bg)' : 'var(--primary-gradient)', color: editing ? 'var(--text)' : 'var(--white)', fontSize: 13, fontWeight: 600, boxShadow: editing ? 'none' : 'var(--shadow-accent)' }}>
                 {editing ? 'Cancelar' : 'Editar'}
@@ -599,7 +599,7 @@ export default function ProfilePage() {
                     <field.icon size={18} style={{ color: 'var(--text-secondary)' }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{field.label}</p>
+                    <p style={{ fontSize: 11, color: 'var(--text-light)', fontWeight: 600, marginBottom: 4 }}>{field.label}</p>
                     <input type={field.type || 'text'} value={field.value} onChange={(e) => field.onChange?.(e.target.value)} disabled={field.disabled} placeholder={field.placeholder}
                       style={{ background: 'var(--input-bg)', opacity: field.disabled ? 0.7 : 1, height: 40, fontSize: 14, width: '100%', boxSizing: 'border-box' }} />
                   </div>
@@ -625,7 +625,7 @@ export default function ProfilePage() {
                   <MapPin size={22} style={{ color: 'var(--info)' }} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Mis direcciones</h3>
+                  <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>Mis direcciones</h3>
                   <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                     {addresses.length === 0 ? 'Sin direcciones guardadas' : `${addresses.length} dirección${addresses.length !== 1 ? 'es' : ''}`}
                   </p>
@@ -653,7 +653,7 @@ export default function ProfilePage() {
                   <div key={addr.id} style={{
                     padding: 14, borderRadius: 12, background: addr.isDefault ? 'var(--primary-light)' : 'var(--input-bg)',
                     border: addr.isDefault ? '2px solid var(--primary)' : '2px solid transparent',
-                    transition: 'all 0.2s ease',
+                    transition: 'var(--transition)',
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -671,20 +671,20 @@ export default function ProfilePage() {
                       <div style={{ display: 'flex', gap: 4, flexShrink: 0, marginLeft: 8 }}>
                         {!addr.isDefault && (
                           <button onClick={() => handleSetDefault(addr.id)} title="Marcar como principal"
-                            style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                            style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'var(--transition)' }}
                             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
                             <Star size={15} />
                           </button>
                         )}
                         <button onClick={() => openAddrModal(addr)} title="Editar"
-                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'var(--transition)' }}
                           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)'; }}
                           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
                           <Edit3 size={14} />
                         </button>
                         <button onClick={() => setDeleteAddrId(addr.id)} title="Eliminar"
-                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'all 0.15s ease' }}
+                          style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--white)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)', transition: 'var(--transition)' }}
                           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--danger)'; (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
                           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-light)'; }}>
                           <Trash2 size={14} />
@@ -703,7 +703,7 @@ export default function ProfilePage() {
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 16 }} onClick={() => setAddrModalOpen(false)}>
             <div style={{ background: 'var(--white)', borderRadius: 20, padding: 28, maxWidth: 480, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>
                   {editingAddrId ? 'Editar dirección' : 'Nueva dirección'}
                 </h3>
                 <button onClick={() => setAddrModalOpen(false)} style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--input-bg)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
@@ -737,7 +737,7 @@ export default function ProfilePage() {
                     Cancelar
                   </button>
                   <button onClick={handleSaveAddress} disabled={addrSaving}
-                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 15, fontWeight: 700, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 15, fontWeight: 600, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     {addrSaving ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={18} />}
                     {addrSaving ? 'Guardando...' : 'Guardar'}
                   </button>
@@ -754,7 +754,7 @@ export default function ProfilePage() {
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--danger-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                 <Trash2 size={24} style={{ color: 'var(--danger)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>Eliminar dirección</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Eliminar dirección</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24, lineHeight: 1.5 }}>
                 ¿Estás seguro de que deseas eliminar esta dirección? Esta acción no se puede deshacer.
               </p>
@@ -764,7 +764,7 @@ export default function ProfilePage() {
                   Cancelar
                 </button>
                 <button onClick={handleDeleteAddress}
-                  style={{ flex: 1, height: 48, borderRadius: 12, border: '2px solid var(--danger)', background: 'var(--white)', color: 'var(--danger)', fontSize: 15, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                  style={{ flex: 1, height: 48, borderRadius: 12, border: '2px solid var(--danger)', background: 'var(--white)', color: 'var(--danger)', fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'var(--transition)' }}>
                   Eliminar
                 </button>
               </div>
@@ -783,7 +783,7 @@ export default function ProfilePage() {
                   {isEnabled ? <ShieldCheck size={22} style={{ color: 'var(--success)' }} /> : <ShieldOff size={22} style={{ color: 'var(--info)' }} />}
                 </div>
                 <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Autenticación en dos pasos</h3>
+                  <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>Autenticación en dos pasos</h3>
                   <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                     {isEnabled
                       ? `Protección activada (${isEnabledTOTP ? 'App Authenticator' : 'Email'})`
@@ -795,7 +795,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Status banner */}
-            <div style={{ padding: '14px 16px', borderRadius: 12, marginBottom: 18, background: isEnabled ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))' : 'linear-gradient(135deg, rgba(255,149,0,0.08), rgba(255,149,0,0.03))', border: `1px solid ${isEnabled ? 'rgba(34,197,94,0.15)' : 'rgba(255,149,0,0.15)'}` }}>
+            <div style={{ padding: '14px 16px', borderRadius: 12, marginBottom: 18, background: isEnabled ? 'var(--success-light)' : 'var(--warning-light)', border: `1px solid ${isEnabled ? 'var(--success)' : 'var(--warning)'}33` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {isEnabled ? <Lock size={18} style={{ color: 'var(--success)', flexShrink: 0 }} /> : <Unlock size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} />}
                 <div>
@@ -852,7 +852,7 @@ export default function ProfilePage() {
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--success-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <ShieldCheck size={28} style={{ color: 'var(--success)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Elige el método de verificación</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Elige el método de verificación</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Selecciona cómo quieres recibir tu código de verificación al iniciar sesión.
               </p>
@@ -860,12 +860,12 @@ export default function ProfilePage() {
 
             {/* Option A: Email */}
             <button onClick={handleEmail2FA} disabled={twoFaLoading}
-              style={{ width: '100%', padding: '20px', borderRadius: 14, background: 'var(--white)', border: '2px solid var(--border)', cursor: twoFaLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'all 0.2s ease', textAlign: 'left' }}>
-              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(255,107,53,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              style={{ width: '100%', padding: '20px', borderRadius: 14, background: 'var(--white)', border: '2px solid var(--border)', cursor: twoFaLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'var(--transition)', textAlign: 'left' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--warning-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Mail size={24} style={{ color: 'var(--primary)' }} />
               </div>
               <div style={{ flex: 1 }}>
-                <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Por correo electrónico</h4>
+                <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Por correo electrónico</h4>
                 <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   Recibirás un código de 6 dígitos en tu correo cada vez que inicies sesión.
                 </p>
@@ -875,12 +875,12 @@ export default function ProfilePage() {
 
             {/* Option B: TOTP Authenticator */}
             <button onClick={handleTotpSetup} disabled={twoFaLoading}
-              style={{ width: '100%', padding: '20px', borderRadius: 14, background: 'var(--white)', border: '2px solid var(--border)', cursor: twoFaLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'all 0.2s ease', textAlign: 'left' }}>
-              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              style={{ width: '100%', padding: '20px', borderRadius: 14, background: 'var(--white)', border: '2px solid var(--border)', cursor: twoFaLoading ? 'not-allowed' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'var(--transition)', textAlign: 'left' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--info-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Smartphone size={24} style={{ color: 'var(--info)' }} />
               </div>
               <div style={{ flex: 1 }}>
-                <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>App Authenticator</h4>
+                <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>App Authenticator</h4>
                 <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   Usa Google Authenticator, Authy u otra app para generar códigos offline.
                 </p>
@@ -901,11 +901,11 @@ export default function ProfilePage() {
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--success-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <Mail size={28} style={{ color: 'var(--success)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Verificar email - Activar 2FA</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Verificar email - Activar 2FA</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Ingresa el código de 6 dígitos enviado a tu correo:
               </p>
-              <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginTop: 6 }}>{user?.email}</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginTop: 6 }}>{user?.email}</p>
             </div>
 
             <button onClick={handleCancel} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 16, padding: 0 }}>
@@ -925,10 +925,10 @@ export default function ProfilePage() {
         {twoFaStep === 'totp_verify' && renderCard(
           <div>
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--info-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <Smartphone size={28} style={{ color: 'var(--info)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Configurar App Authenticator</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Configurar App Authenticator</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Escanea el código QR con Google Authenticator, Authy u otra app compatible.
               </p>
@@ -949,7 +949,7 @@ export default function ProfilePage() {
                 Si no puedes escanear, ingresa este código manualmente:
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
-                <code style={{ fontSize: 13, fontWeight: 600, color: 'var(--info)', background: 'rgba(59,130,246,0.08)', padding: '8px 14px', borderRadius: 8, letterSpacing: 1, wordBreak: 'break-all', flex: 1, textAlign: 'center' }}>
+                <code style={{ fontSize: 13, fontWeight: 600, color: 'var(--info)', background: 'var(--info-light)', padding: '8px 14px', borderRadius: 8, letterSpacing: 1, wordBreak: 'break-all', flex: 1, textAlign: 'center' }}>
                   {totpSecret}
                 </code>
                 <button onClick={() => copyToClipboard(totpSecret, setTotpCopied)}
@@ -961,7 +961,7 @@ export default function ProfilePage() {
 
             {/* Verification code */}
             <div style={{ marginBottom: 4 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', textAlign: 'center', marginBottom: 12 }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', textAlign: 'center', marginBottom: 12 }}>
                 Ingresa el código de 6 dígitos que muestra tu app:
               </p>
             </div>
@@ -982,7 +982,7 @@ export default function ProfilePage() {
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--success-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <ShieldCheck size={28} style={{ color: 'var(--success)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>
                 2FA activado exitosamente
               </h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -991,7 +991,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Warning */}
-            <div style={{ padding: '12px 16px', borderRadius: 10, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ padding: '12px 16px', borderRadius: 10, background: 'var(--warning-light)', border: '1px solid var(--border)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
               <AlertTriangle size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} />
               <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.5 }}>
                 Estos códigos <strong>solo se muestran esta vez</strong>. Cada código es de un solo uso.
@@ -1029,10 +1029,10 @@ export default function ProfilePage() {
         {twoFaStep === 'backup_codes_view' && renderCard(
           <div>
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--info-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <KeyRound size={28} style={{ color: 'var(--info)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Códigos de recuperación</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Códigos de recuperación</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Estos son tus códigos de recuperación actuales. Úsalos si pierdes acceso a tu app authenticator.
               </p>
@@ -1071,11 +1071,11 @@ export default function ProfilePage() {
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--danger-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <ShieldOff size={28} style={{ color: 'var(--danger)' }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Desactivar 2FA</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Desactivar 2FA</h3>
               <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Ingresa el código de 6 dígitos enviado a tu correo para confirmar la desactivación:
               </p>
-              <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginTop: 6 }}>{user?.email}</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginTop: 6 }}>{user?.email}</p>
             </div>
 
             <button onClick={handleCancel} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 16, padding: 0 }}>

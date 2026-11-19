@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search, PackageSearch, ShoppingCart, Star, TrendingUp,
-  Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, LayoutGrid,
+  Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, LayoutGrid, Tag, Store,
   Menu, LogIn, LogOut, User, Heart,
 } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
@@ -249,7 +249,7 @@ export default function HomePage() {
           {shopLogoUrl ? (
             <img src={shopLogoUrl} alt={shopName} style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontSize: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>{shopName}</span>
+            <span style={{ fontSize: 16, fontWeight: 600, whiteSpace: 'nowrap' }}>{shopName}</span>
           )}
           {isLoggedIn && (
             <button
@@ -312,7 +312,7 @@ export default function HomePage() {
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
                   background: 'var(--danger)', color: 'var(--white)',
-                  fontSize: 10, fontWeight: 700,
+                  fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',
@@ -343,7 +343,7 @@ export default function HomePage() {
               <span style={{
                 position: 'absolute', top: 2, right: 2,
                 background: 'var(--danger)', color: 'var(--white)',
-                fontSize: 10, fontWeight: 700,
+                fontSize: 10, fontWeight: 600,
                 minWidth: 16, height: 16, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '0 4px',
@@ -486,7 +486,7 @@ export default function HomePage() {
                         border: 'none',
                         background: idx === currentBanner ? 'var(--white)' : 'rgba(255,255,255,0.5)',
                         cursor: 'pointer',
-                        transition: 'all 0.3s ease',
+                        transition: 'var(--transition)',
                         padding: 0,
                       }}
                       aria-label={`Ir al banner ${idx + 1}`}
@@ -567,7 +567,7 @@ export default function HomePage() {
                         onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                       />
                     ) : (
-                      <span style={{ fontSize: 26 }}>🏷️</span>
+                      <Tag size={26} style={{ color: 'var(--text-light)' }} />
                     )}
                   </div>
                   <span style={{
@@ -646,7 +646,7 @@ export default function HomePage() {
                         onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                       />
                     ) : (
-                      <span style={{ fontSize: 22 }}>🏪</span>
+                      <Store size={22} style={{ color: 'var(--text-light)' }} />
                     )}
                   </div>
                   <span style={{
@@ -679,7 +679,7 @@ export default function HomePage() {
                 }}>
                   <TrendingUp size={16} color="var(--primary)" />
                 </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>
                   Mas vendidos
                 </h3>
               </div>
@@ -756,7 +756,7 @@ export default function HomePage() {
                 }}>
                   <Percent size={16} color="var(--danger)" />
                 </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>
                   Ofertas
                 </h3>
               </div>
@@ -838,7 +838,7 @@ export default function HomePage() {
             }}>
               <LayoutGrid size={16} color="var(--primary)" />
             </div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>
               {hasActiveFilters
                 ? `Resultados${search ? ` de "${search}"` : ''} (${products.length})`
                 : 'Todos los productos'
@@ -915,7 +915,7 @@ export default function HomePage() {
               <PackageSearch size={36} color="var(--primary)" />
             </div>
             <p style={{
-              fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+              fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6,
             }}>
               No se encontraron productos
             </p>
@@ -937,10 +937,10 @@ export default function HomePage() {
                 color: 'var(--white)',
                 border: 'none',
                 cursor: 'pointer',
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: 14,
                 boxShadow: 'var(--shadow-accent)',
-                transition: 'all 0.25s ease',
+                transition: 'var(--transition)',
               }}
             >
               Explorar productos
@@ -990,7 +990,7 @@ export default function HomePage() {
               {shopLogoUrl ? (
                 <img src={shopLogoUrl} alt={shopName} style={{ height: 40, width: 'auto', objectFit: 'contain', maxWidth: 160 }} />
               ) : (
-                <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>
+                <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>
                   {shopName}
                 </span>
               )}

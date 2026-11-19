@@ -95,7 +95,7 @@ function ChartCard({ title, icon: Icon, children }: ChartCardProps) {
           <Icon size={18} color="var(--primary)" />
         </div>
         <h3 style={{
-          fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0,
+          fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: 0,
         }}>
           {title}
         </h3>
@@ -110,12 +110,12 @@ function ChartCard({ title, icon: Icon, children }: ChartCardProps) {
    ═══════════════════════════════════════════════════════════════ */
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; bar: string }> = {
-  pending:    { bg: 'var(--warning-light)', text: 'var(--text-secondary)', bar: '#F0C929' },
-  confirmed:  { bg: 'var(--info-light)', text: 'var(--text-secondary)', bar: '#17A2B8' },
-  preparing:  { bg: 'var(--purple-light)', text: 'var(--purple)', bar: '#8E44AD' },
-  shipped:    { bg: '#FFE0B2', text: '#E65100', bar: '#FF9800' },
-  delivered:  { bg: '#D4EDDA', text: 'var(--success)', bar: '#28A745' },
-  cancelled:  { bg: '#F8D7DA', text: 'var(--danger)', bar: '#DC3545' },
+  pending:    { bg: 'var(--warning-light)', text: 'var(--warning)', bar: 'var(--warning)' },
+  confirmed:  { bg: 'var(--info-light)', text: 'var(--info)', bar: 'var(--info)' },
+  preparing:  { bg: 'var(--purple-light)', text: 'var(--purple)', bar: 'var(--purple)' },
+  shipped:    { bg: 'var(--teal-light)', text: 'var(--teal)', bar: 'var(--teal)' },
+  delivered:  { bg: 'var(--success-light)', text: 'var(--success)', bar: 'var(--success)' },
+  cancelled:  { bg: 'var(--danger-light)', text: 'var(--danger)', bar: 'var(--danger)' },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
     <div style={{ padding: '24px' }}>
       {/* ── Welcome Section ── */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
           Dashboard
         </h1>
         <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
@@ -311,7 +311,7 @@ export default function AdminDashboard() {
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'var(--transition)',
                 fontFamily: 'inherit',
               }}
               onMouseEnter={(e) => {
@@ -513,7 +513,7 @@ export default function AdminDashboard() {
                               title={`${dateStr}: ${count} pedidos`}
                             >
                               <span style={{
-                                fontSize: 11, fontWeight: 700, color: 'var(--text)',
+                                fontSize: 11, fontWeight: 600, color: 'var(--text)',
                                 marginBottom: 4,
                               }}>
                                 {count > 0 ? count : ''}
@@ -579,7 +579,7 @@ export default function AdminDashboard() {
                             {productName}
                           </span>
                           <span style={{
-                            fontSize: 13, fontWeight: 700, color: 'var(--primary)',
+                            fontSize: 13, fontWeight: 600, color: 'var(--primary)',
                           }}>
                             {qty} uds
                           </span>
@@ -715,7 +715,7 @@ export default function AdminDashboard() {
           }}>
             <h2 style={{
               fontSize: 18,
-              fontWeight: 700,
+              fontWeight: 600,
               color: 'var(--text)',
               marginBottom: 16,
             }}>
@@ -743,10 +743,8 @@ export default function AdminDashboard() {
                             textAlign: 'left',
                             padding: '10px 12px',
                             fontSize: 12,
-                            fontWeight: 700,
-                            color: 'var(--text-light)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
+                            fontWeight: 500,
+                            color: 'var(--text-secondary)',
                             background: 'var(--input-bg)',
                             borderRadius: 0,
                           }}
@@ -783,7 +781,7 @@ export default function AdminDashboard() {
                           <td style={{ padding: '12px', fontSize: 13, color: 'var(--text)' }}>
                             {order.user?.name || order.userName || order.customerName || 'N/A'}
                           </td>
-                          <td style={{ padding: '12px', fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+                          <td style={{ padding: '12px', fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>
                             {formatPrice(order.total || order.totalAmount || 0)}
                           </td>
                           <td style={{ padding: '12px' }}>

@@ -379,7 +379,7 @@ const BannersPage: React.FC = () => {
       </button>
 
       {/* Section header */}
-      <h2 style={{ margin: '0 0 24px', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
+      <h2 style={{ margin: '0 0 24px', fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>
         Banners de Publicidad
       </h2>
 
@@ -436,12 +436,12 @@ const BannersPage: React.FC = () => {
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     padding: '12px 20px', borderRadius: 10,
-                    border: '2px dashed var(--primary)', background: 'rgba(243,156,18,0.04)',
+                    border: '2px dashed var(--primary)', background: 'var(--input-bg)',
                     cursor: 'pointer', transition: 'var(--transition-fast)',
                     color: 'var(--primary)', fontWeight: 600, fontSize: 14,
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(243,156,18,0.1)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(243,156,18,0.04)'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--border)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--input-bg)'; }}
                 >
                   <Plus size={18} />
                   Agregar banner
@@ -474,7 +474,7 @@ const BannersPage: React.FC = () => {
                             alignItems: 'center', justifyContent: 'center',
                             background: 'linear-gradient(135deg, #2C3E50, #34495E)',
                           }}>
-                            <span style={{ color: '#FFF', fontSize: 20, fontWeight: 700 }}>▶</span>
+                            <span style={{ color: '#FFF', fontSize: 20, fontWeight: 600 }}>▶</span>
                           </div>
                         ) : (
                           <img
@@ -496,8 +496,8 @@ const BannersPage: React.FC = () => {
                         <span style={{
                           position: 'absolute', top: 4, right: 4,
                           background: isVideo ? 'var(--danger)' : 'var(--primary)',
-                          color: '#FFF', fontSize: 9, fontWeight: 600, padding: '2px 6px',
-                          borderRadius: 4, textTransform: 'uppercase',
+                          color: '#FFF', fontSize: 10, fontWeight: 600, padding: '2px 6px',
+                          borderRadius: 4,
                         }}>
                           {isVideo ? 'Video' : 'Img'}
                         </span>
@@ -511,7 +511,7 @@ const BannersPage: React.FC = () => {
                             display: 'inline-flex', alignItems: 'center', gap: 4,
                             fontSize: 11, fontWeight: 600,
                             color: banner.active ? 'var(--success)' : 'var(--text-secondary)',
-                            background: banner.active ? 'rgba(39,174,96,0.1)' : 'var(--input-bg)',
+                            background: banner.active ? 'var(--success-light)' : 'var(--input-bg)',
                             padding: '3px 8px', borderRadius: 6,
                           }}>
                             {banner.active ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -628,7 +628,7 @@ const BannersPage: React.FC = () => {
                                   color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 10,
                                   transition: 'var(--transition-fast)',
                                 }}
-                                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(231,76,60,0.06)')}
+                                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--danger-light)')}
                                 onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
                               >
                                 <Trash2 size={14} />
@@ -697,7 +697,7 @@ const BannersPage: React.FC = () => {
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               marginBottom: 20,
             }}>
-              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: 'var(--text)' }}>
                 Subir Banner
               </h3>
               <button
@@ -878,17 +878,17 @@ const BannersPage: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 16px rgba(243,156,18,0.4)',
+            boxShadow: 'var(--shadow-md)',
             transition: 'var(--transition-fast)',
             zIndex: 900,
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.08)';
-            e.currentTarget.style.boxShadow = '0 6px 24px rgba(243,156,18,0.5)';
+            e.currentTarget.style.transform = 'none';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(243,156,18,0.4)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-md)';
           }}
           title="Agregar banner"
         >

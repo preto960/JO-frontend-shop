@@ -1,26 +1,26 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bell, X, Check, Trash2, Volume2, VolumeX } from 'lucide-react';
+import { Bell, X, Check, Trash2, Volume2, VolumeX, ShoppingCart, Package, RefreshCw, Truck, MessageCircle, MapPin, Headphones, Settings, LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useNotifications, AppNotification } from '@/contexts/NotificationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getStatusLabel } from '@/lib/utils';
 
 // ─── Icon helper for notification types ─────────────────────────────────────
-function getNotifIcon(type: AppNotification['type']): string {
-  const icons: Record<string, string> = {
-    'order-created': '🛒',
-    'order-updated': '📦',
-    'order-status-changed': '🔄',
-    'delivery-assigned': '🚚',
-    'order-message': '💬',
-    'new-message': '💬',
-    'location-update': '📍',
-    'admin-chat': '👨‍💼',
-    'system': '⚙️',
+function getNotifIcon(type: AppNotification['type']): { Icon: LucideIcon; size: number } {
+  const icons: Record<string, LucideIcon> = {
+    'order-created': ShoppingCart,
+    'order-updated': Package,
+    'order-status-changed': RefreshCw,
+    'delivery-assigned': Truck,
+    'order-message': MessageCircle,
+    'new-message': MessageCircle,
+    'location-update': MapPin,
+    'admin-chat': Headphones,
+    'system': Settings,
   };
-  return icons[type] || '🔔';
+  return { Icon: icons[type] || Bell, size: 18 };
 }
 
 function getNotifTime(date: Date): string {
@@ -114,11 +114,11 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
           <span style={{
             position: 'absolute', top: 2, right: 2,
             background: '#FF3B30', color: 'white',
-            fontSize: 10, fontWeight: 700,
+            fontSize: 10, fontWeight: 600,
             minWidth: 16, height: 16, borderRadius: 8,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '0 4px',
-            boxShadow: '0 2px 6px rgba(255,59,48,0.4)',
+            boxShadow: 'var(--shadow-sm)',
           }}>
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
@@ -155,14 +155,14 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Bell size={18} style={{ color: 'var(--primary)' }} />
-              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
                 Notificaciones
               </span>
               {unreadCount > 0 && (
                 <span style={{
                   background: 'var(--primary-gradient)',
                   color: 'var(--white)',
-                  fontSize: 11, fontWeight: 700,
+                  fontSize: 11, fontWeight: 600,
                   padding: '2px 8px',
                   borderRadius: 'var(--radius-full)',
                 }}>
@@ -251,11 +251,11 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
                     borderRadius: 'var(--radius-sm)',
                     background: notif.read ? 'var(--input-bg)' : 'var(--white)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 18,
+                    color: 'var(--text-secondary)',
                     flexShrink: 0,
                     boxShadow: notif.read ? 'none' : 'var(--shadow)',
                   }}>
-                    {getNotifIcon(notif.type)}
+                    {(() => { const { Icon, size } = getNotifIcon(notif.type); return <Icon size={size} />; })()}
                   </div>
 
                   {/* Content */}

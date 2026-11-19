@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Plus, Minus, Trash2, ShoppingCart, ShoppingBag } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingCart, ShoppingBag, Package } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -153,7 +153,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
               <ShoppingBag size={16} color="white" />
             </div>
             <div>
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
                 Mi Carrito
               </h3>
               <p style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
@@ -231,9 +231,9 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   ) : (
                     <div style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      height: '100%', fontSize: 20,
+                      height: '100%', color: 'var(--text-light)',
                     }}>
-                      📦
+                      <Package size={20} />
                     </div>
                   )}
                 </div>
@@ -246,7 +246,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   }}>
                     {item.name || item.nombre}
                   </p>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)', marginTop: 2 }}>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--primary)', marginTop: 2 }}>
                     {formatPrice(item.price * (item.quantity || 1))}
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                     <Minus size={14} />
                   </button>
                   <span style={{
-                    fontSize: 13, fontWeight: 700, color: 'var(--text)',
+                    fontSize: 13, fontWeight: 600, color: 'var(--text)',
                     minWidth: 20, textAlign: 'center',
                   }}>
                     {item.quantity || 1}
@@ -320,7 +320,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
               alignItems: 'center', marginBottom: 12,
             }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Total</span>
-              <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
+              <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>
                 {formatPrice(total)}
               </span>
             </div>
@@ -334,7 +334,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   border: '2px solid var(--border)', background: 'var(--white)',
                   color: 'var(--text)', cursor: 'pointer',
                   fontWeight: 600, fontSize: 13,
-                  transition: 'all 0.2s',
+                  transition: 'var(--transition)',
                 }}
               >
                 Ver carrito
@@ -346,9 +346,9 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   border: 'none',
                   background: 'var(--primary-gradient)',
                   color: 'var(--white)', cursor: 'pointer',
-                  fontWeight: 700, fontSize: 13,
+                  fontWeight: 600, fontSize: 13,
                   boxShadow: 'var(--shadow-accent)',
-                  transition: 'all 0.2s',
+                  transition: 'var(--transition)',
                 }}
               >
                 Comprar

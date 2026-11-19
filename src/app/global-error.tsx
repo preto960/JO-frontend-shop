@@ -37,13 +37,13 @@ export default function GlobalError({
               width: 64, height: 64, borderRadius: '50%',
               background: 'var(--primary-gradient)',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 20, color: 'var(--white)', fontWeight: 800, fontSize: 14,
+              marginBottom: 20, color: 'var(--white)', fontWeight: 600, fontSize: 14,
               overflow: 'hidden',
             }}>
               <span style={{ position: 'relative', zIndex: 1 }}>JS</span>
             </div>
             <h2 style={{
-              fontSize: 20, fontWeight: 700, color: 'var(--text)',
+              fontSize: 20, fontWeight: 600, color: 'var(--text)',
               marginBottom: 8,
             }}>
               Algo salio mal

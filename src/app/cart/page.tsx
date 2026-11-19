@@ -86,7 +86,7 @@ export default function CartPage() {
               <ShoppingCart size={40} color="var(--primary)" />
             </div>
             <p style={{
-              fontSize: 20, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+              fontSize: 20, fontWeight: 600, color: 'var(--text)', marginBottom: 6,
             }}>
               Tu carrito está vacío
             </p>
@@ -102,10 +102,10 @@ export default function CartPage() {
                 color: 'var(--white)',
                 border: 'none',
                 cursor: 'pointer',
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: 15,
                 boxShadow: 'var(--shadow-accent)',
-                transition: 'all 0.25s ease',
+                transition: 'var(--transition)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
@@ -154,7 +154,7 @@ export default function CartPage() {
                       }}>
                         {item.name}
                       </h3>
-                      <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)', marginTop: 2 }}>
+                      <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--primary)', marginTop: 2 }}>
                         {formatPrice(item.price * (item.quantity || 1))}
                       </p>
                     </div>
@@ -177,7 +177,7 @@ export default function CartPage() {
                           −
                         </button>
                         <span style={{
-                          width: 36, textAlign: 'center', fontSize: 14, fontWeight: 700,
+                          width: 36, textAlign: 'center', fontSize: 14, fontWeight: 600,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {item.quantity}
@@ -229,7 +229,7 @@ export default function CartPage() {
             <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
               Total ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})
             </span>
-            <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)' }}>
+            <span style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>
               {formatPrice(total)}
             </span>
           </div>
@@ -244,7 +244,7 @@ export default function CartPage() {
                   background: 'var(--primary-gradient)',
                   color: 'var(--white)',
                   fontSize: 16,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   border: 'none',
                   cursor: 'pointer',
                   display: 'flex',
@@ -252,7 +252,7 @@ export default function CartPage() {
                   justifyContent: 'center',
                   gap: 8,
                   boxShadow: 'var(--shadow-accent)',
-                  transition: 'all 0.25s ease',
+                  transition: 'var(--transition)',
                 }}
               >
                 Realizar pedido
@@ -270,7 +270,7 @@ export default function CartPage() {
                   background: 'var(--primary-gradient)',
                   color: 'var(--white)',
                   fontSize: 16,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   border: 'none',
                   cursor: 'pointer',
                   display: 'flex',
@@ -278,7 +278,7 @@ export default function CartPage() {
                   justifyContent: 'center',
                   gap: 8,
                   boxShadow: 'var(--shadow-accent)',
-                  transition: 'all 0.25s ease',
+                  transition: 'var(--transition)',
                 }}
               >
                 Inicia sesión para comprar

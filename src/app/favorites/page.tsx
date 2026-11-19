@@ -168,7 +168,7 @@ export default function FavoritesPage() {
                     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
                   }}
                   onClick={() => router.push(`/product/${product.id}`)}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
                 >
                   <div style={{
@@ -187,7 +187,7 @@ export default function FavoritesPage() {
                       <div style={{
                         position: 'absolute', top: 10, left: 10,
                         background: 'var(--accent)', color: 'var(--white)',
-                        fontSize: 11, fontWeight: 700,
+                        fontSize: 11, fontWeight: 600,
                         padding: '3px 10px', borderRadius: 'var(--radius-full)',
                       }}>
                         -{discount}%
@@ -204,7 +204,7 @@ export default function FavoritesPage() {
                       {name}
                     </h3>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 'auto' }}>
-                      <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)' }}>
+                      <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>
                         {formatPrice(finalPrice)}
                       </span>
                       {discount > 0 && (
@@ -234,7 +234,7 @@ export default function FavoritesPage() {
                         onClick={(e) => { e.stopPropagation(); removeFavorite(product.id); }}
                         style={{
                           width: 38, height: 38, borderRadius: 'var(--radius)',
-                          background: 'var(--danger-light)', border: '1px solid rgba(255,107,107,0.2)',
+                          background: 'var(--danger-light)', border: '1px solid var(--border)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           cursor: 'pointer', color: 'var(--danger)', flexShrink: 0,
                         }}

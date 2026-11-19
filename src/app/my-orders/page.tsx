@@ -168,7 +168,7 @@ export default function OrdersPage() {
               fontWeight: 600,
               whiteSpace: 'nowrap',
               cursor: 'pointer',
-              transition: 'all 0.25s ease',
+              transition: 'var(--transition)',
               background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--input-bg)',
               color: activeTab === tab.value ? 'var(--white)' : 'var(--text-secondary)',
               boxShadow: activeTab === tab.value ? 'var(--shadow-accent)' : 'none',
@@ -202,7 +202,7 @@ export default function OrdersPage() {
               <ClipboardList size={36} color="var(--primary)" />
             </div>
             <p style={{
-              fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+              fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 6,
             }}>
               No hay pedidos
             </p>
@@ -258,7 +258,7 @@ export default function OrdersPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div style={{
                         width: 40, height: 40, borderRadius: 10,
-                        background: getStatusColor(status) + '15',
+                        background: `color-mix(in srgb, ${getStatusColor(status)} 12%, transparent)`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         flexShrink: 0,
                       }}>
@@ -304,7 +304,7 @@ export default function OrdersPage() {
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                       {items.length} {items.length === 1 ? 'artículo' : 'artículos'}
                     </p>
-                    <p style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>
+                    <p style={{ fontSize: 17, fontWeight: 600, color: 'var(--text)' }}>
                       {formatPrice(total)}
                     </p>
                   </div>
@@ -321,8 +321,8 @@ export default function OrdersPage() {
                       {items.length > 0 && (
                         <div style={{ marginBottom: 16 }}>
                           <p style={{
-                            fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)',
-                            textTransform: 'uppercase', letterSpacing: '0.5px',
+                            fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
+                            
                             marginBottom: 10,
                           }}>
                             Productos
@@ -378,10 +378,10 @@ export default function OrdersPage() {
                           <div style={{
                             display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10,
                           }}>
-                            <UserIcon size={16} color="#1ABC9C" />
+                            <UserIcon size={16} color="var(--teal)" />
                             <p style={{
-                              fontSize: 12, fontWeight: 700, color: '#1ABC9C',
-                              textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0,
+                              fontSize: 12, fontWeight: 600, color: 'var(--teal)',
+                              margin: 0,
                             }}>
                               Tu repartidor
                             </p>
@@ -392,10 +392,10 @@ export default function OrdersPage() {
                           }}>
                             <div style={{
                               width: 40, height: 40, borderRadius: '50%',
-                              background: '#1ABC9C15',
+                              background: 'var(--teal-light)',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                             }}>
-                              <UserIcon size={20} color="#1ABC9C" />
+                              <UserIcon size={20} color="var(--teal)" />
                             </div>
                             <div>
                               <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>
@@ -423,15 +423,15 @@ export default function OrdersPage() {
                                   padding: '10px 16px',
                                   borderRadius: 10,
                                   border: 'none',
-                                  background: '#9B59B6',
+                                  background: 'var(--primary)',
                                   color: 'var(--white)',
                                   fontSize: 13, fontWeight: 600,
                                   cursor: 'pointer',
-                                  transition: 'all 0.2s ease',
+                                  transition: 'var(--transition)',
                                   fontFamily: 'inherit',
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = '#8E44AD'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.background = '#9B59B6'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--primary-hover)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--primary)'; }}
                               >
                                 <MapPin size={16} />
                                 Seguimiento
@@ -448,16 +448,16 @@ export default function OrdersPage() {
                                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                                   padding: '10px 16px',
                                   borderRadius: 10,
-                                  border: 'none',
-                                  background: '#1ABC9C',
-                                  color: 'var(--white)',
+                                  border: '1px solid var(--border)',
+                                  background: 'var(--white)',
+                                  color: 'var(--text)',
                                   fontSize: 13, fontWeight: 600,
                                   cursor: 'pointer',
-                                  transition: 'all 0.2s ease',
+                                  transition: 'var(--transition)',
                                   fontFamily: 'inherit',
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = '#16A085'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.background = '#1ABC9C'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--input-bg)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--white)'; }}
                               >
                                 <Phone size={16} />
                                 Llamar
@@ -474,16 +474,16 @@ export default function OrdersPage() {
                                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                                   padding: '10px 16px',
                                   borderRadius: 10,
-                                  border: 'none',
-                                  background: '#3498DB',
-                                  color: 'var(--white)',
+                                  border: '1px solid var(--border)',
+                                  background: 'var(--white)',
+                                  color: 'var(--text)',
                                   fontSize: 13, fontWeight: 600,
                                   cursor: 'pointer',
-                                  transition: 'all 0.2s ease',
+                                  transition: 'var(--transition)',
                                   fontFamily: 'inherit',
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = '#2980B9'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.background = '#3498DB'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--input-bg)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--white)'; }}
                               >
                                 <MessageCircle size={16} />
                                 Chat

@@ -228,17 +228,17 @@ export default function ProductDetailPage() {
           )}
 
           {/* Name */}
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', lineHeight: 1.25, marginBottom: 12, letterSpacing: '-0.3px' }}>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: 'var(--text)', lineHeight: 1.25, marginBottom: 12 }}>
             {name}
           </h1>
 
           {/* Action buttons row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <button onClick={toggleFavorite} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Favorito">
+            <button onClick={toggleFavorite} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'var(--transition)' }} aria-label="Favorito">
               <Heart size={16} fill={isFavorite ? 'var(--danger)' : 'none'} style={{ color: isFavorite ? 'var(--danger)' : undefined }} />
               {isFavorite ? 'Guardado' : 'Favorito'}
             </button>
-            <button onClick={shareProduct} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s ease' }} aria-label="Compartir">
+            <button onClick={shareProduct} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 'var(--radius-full)', background: 'var(--input-bg)', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'var(--transition)' }} aria-label="Compartir">
               <Share2 size={16} />
               Compartir
             </button>
@@ -246,7 +246,7 @@ export default function ProductDetailPage() {
 
           {/* Price */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 20 }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)', letterSpacing: '-0.5px', lineHeight: 1 }}>
+            <span style={{ fontSize: 32, fontWeight: 600, color: 'var(--primary)', lineHeight: 1 }}>
               {formatPrice(finalPrice)}
             </span>
             {discount > 0 && (
@@ -283,14 +283,14 @@ export default function ProductDetailPage() {
           {/* Quantity selector */}
           {inStock && (
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8 }}>
                 Cantidad
               </p>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 0, background: 'var(--input-bg)', borderRadius: 'var(--radius-full)', padding: 4 }}>
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))} style={{ width: 38, height: 38, borderRadius: '50%', background: 'var(--white)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', boxShadow: 'var(--shadow)' }} aria-label="Menos">
                   <Minus size={16} strokeWidth={2.5} />
                 </button>
-                <span style={{ width: 48, textAlign: 'center', fontSize: 17, fontWeight: 700, color: 'var(--text)', userSelect: 'none' }}>{quantity}</span>
+                <span style={{ width: 48, textAlign: 'center', fontSize: 17, fontWeight: 600, color: 'var(--text)', userSelect: 'none' }}>{quantity}</span>
                 <button onClick={() => setQuantity(Math.min(maxQty, quantity + 1))} style={{ width: 38, height: 38, borderRadius: '50%', background: 'var(--white)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', boxShadow: 'var(--shadow)' }} aria-label="Mas">
                   <Plus size={16} strokeWidth={2.5} />
                 </button>
@@ -301,13 +301,13 @@ export default function ProductDetailPage() {
           {/* Add to cart */}
           <button onClick={addToCart} disabled={!inStock} style={{
             width: '100%', maxWidth: 420, padding: '16px 24px', borderRadius: 14,
-            background: addedToCart ? 'linear-gradient(135deg, var(--success), var(--teal))' : inStock ? 'var(--primary-gradient)' : 'var(--input-bg)',
-            color: 'var(--white)', fontSize: 16, fontWeight: 700, border: 'none',
+            background: addedToCart ? 'var(--success)' : inStock ? 'var(--primary-gradient)' : 'var(--input-bg)',
+            color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none',
             cursor: inStock ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
             boxShadow: addedToCart ? '0 4px 14px rgba(0,184,148,0.35)' : inStock ? 'var(--shadow-accent)' : 'none',
             opacity: inStock ? 1 : 0.6,
-            transition: 'all 0.25s ease',
+            transition: 'var(--transition)',
           }}>
             {addedToCart ? (
               <>
@@ -333,8 +333,8 @@ export default function ProductDetailPage() {
               position: 'absolute', top: 8, left: 8, zIndex: 6,
               background: 'var(--accent)', color: 'var(--white)',
               padding: '5px 14px', borderRadius: 'var(--radius-full)',
-              fontSize: 13, fontWeight: 700,
-              boxShadow: '0 4px 12px rgba(233,69,96,0.3)',
+              fontSize: 13, fontWeight: 600,
+              boxShadow: 'var(--shadow-md)',
             }}>
               -{discount}%
             </div>
@@ -375,14 +375,14 @@ export default function ProductDetailPage() {
 
             {/* Left arrow */}
             {hasMultiple && (
-              <button onClick={(e) => { e.stopPropagation(); goPrev(); }} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)', transition: 'all 0.2s ease', zIndex: 5 }} aria-label="Imagen anterior">
+              <button onClick={(e) => { e.stopPropagation(); goPrev(); }} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)', transition: 'var(--transition)', zIndex: 5 }} aria-label="Imagen anterior">
                 <ChevronLeft size={20} color="var(--text)" />
               </button>
             )}
 
             {/* Right arrow */}
             {hasMultiple && (
-              <button onClick={(e) => { e.stopPropagation(); goNext(); }} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)', transition: 'all 0.2s ease', zIndex: 5 }} aria-label="Imagen siguiente">
+              <button onClick={(e) => { e.stopPropagation(); goNext(); }} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)', transition: 'var(--transition)', zIndex: 5 }} aria-label="Imagen siguiente">
                 <ChevronRight size={20} color="var(--text)" />
               </button>
             )}
@@ -412,7 +412,7 @@ export default function ProductDetailPage() {
 
             {/* Out of stock */}
             {!inStock && (
-              <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', background: 'var(--danger)', color: 'var(--white)', padding: '6px 16px', borderRadius: 'var(--radius-full)', fontSize: 13, fontWeight: 700, zIndex: 5, boxShadow: '0 2px 8px rgba(255,107,107,0.3)' }}>
+              <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', background: 'var(--danger)', color: 'var(--white)', padding: '6px 16px', borderRadius: 'var(--radius-full)', fontSize: 13, fontWeight: 600, zIndex: 5, boxShadow: 'var(--shadow-sm)' }}>
                 Agotado
               </div>
             )}
