@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search, PackageSearch, ShoppingCart, Star, TrendingUp,
-  Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, Sparkles,
+  Percent, ChevronRight, ChevronLeft, Truck, Shield, Clock, LayoutGrid,
   Menu, LogIn, LogOut, User, Heart,
 } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
@@ -529,7 +529,7 @@ export default function HomePage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                <Sparkles size={26} style={{ color: !selectedCategory ? 'var(--white)' : 'var(--text-light)' }} />
+                <LayoutGrid size={26} style={{ color: !selectedCategory ? 'var(--white)' : 'var(--text-light)' }} />
               </div>
               <span style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}>Todos</span>
             </button>
@@ -610,7 +610,7 @@ export default function HomePage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                <Sparkles size={20} style={{ color: !selectedStore ? 'var(--white)' : 'var(--text-light)' }} />
+                <LayoutGrid size={20} style={{ color: !selectedStore ? 'var(--white)' : 'var(--text-light)' }} />
               </div>
               <span style={{ fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', color: !selectedStore ? 'var(--white)' : 'var(--text)' }}>Todas</span>
             </button>
@@ -836,7 +836,7 @@ export default function HomePage() {
               background: 'var(--primary-light)', display: 'flex',
               alignItems: 'center', justifyContent: 'center',
             }}>
-              <Sparkles size={16} color="var(--primary)" />
+              <LayoutGrid size={16} color="var(--primary)" />
             </div>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
               {hasActiveFilters

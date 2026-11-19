@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Plus, Edit2, Trash2, X, Layers, Upload, ImagePlus, Star, GripVertical } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, X, Layers, Upload, ImagePlus, Star, GripVertical, AlertTriangle } from 'lucide-react';
 import api, { extractData } from '@/lib/api';
 import { useConfig } from '@/contexts/ConfigContext';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -425,7 +425,9 @@ export default function AdminProductsPage() {
         </div>
       ) : fetchError && products.length === 0 ? (
         <div style={{ background: 'var(--card)', borderRadius: 14, padding: 48, textAlign: 'center', boxShadow: 'var(--shadow)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
+          <div style={{ marginBottom: 12, color: 'var(--text-light)' }}>
+            <AlertTriangle size={44} strokeWidth={1.5} />
+          </div>
           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>Error al cargar productos</p>
           <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>{fetchError}</p>
           <button
@@ -446,12 +448,12 @@ export default function AdminProductsPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--input-bg)' }}>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Producto</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Precio</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stock</th>
-                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Categoría</th>
-                  {isMultiStore && <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tienda</th>}
-                  <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Acciones</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Producto</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Precio</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Stock</th>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Categoría</th>
+                  {isMultiStore && <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Tienda</th>}
+                  <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>

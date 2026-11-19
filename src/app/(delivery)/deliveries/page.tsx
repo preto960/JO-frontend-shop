@@ -255,7 +255,7 @@ export default function DeliveryPage() {
                       {/* Customer info */}
                       {(customer.name || customer.address || customer.phone) && (
                         <div style={{ marginBottom: 14, padding: 14, background: 'var(--white)', borderRadius: 12, boxShadow: 'var(--shadow)' }}>
-                          <p style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 10, color: 'var(--text-light)' }}>
                             Datos del cliente
                           </p>
                           {customer.name && (
@@ -281,7 +281,7 @@ export default function DeliveryPage() {
 
                       {/* Items */}
                       <div style={{ marginBottom: 14, padding: 14, background: 'var(--white)', borderRadius: 12, boxShadow: 'var(--shadow)' }}>
-                        <p style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 10, color: 'var(--text-light)' }}>
                           Artículos
                         </p>
                         {items.map((item: any, idx: number) => (

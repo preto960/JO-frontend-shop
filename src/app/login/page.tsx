@@ -327,8 +327,8 @@ export default function LoginPage() {
             <>
               {/* ── LOGIN FORM ── */}
               <div style={{ textAlign: 'center', marginBottom: 28 }}>
-                <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Bienvenido de vuelta</h1>
-                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Inicia sesión en tu cuenta {shopName}</p>
+                <h1 style={{ fontSize: 26, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Iniciar sesión</h1>
+                <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Entra a tu cuenta de {shopName}</p>
               </div>
 
               <form onSubmit={handleLogin}>

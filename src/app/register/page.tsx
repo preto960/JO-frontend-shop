@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { showToast } from '@/lib/utils';
-import { ShoppingBag, Bike, User, Mail, Lock, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Bike, User, Mail, Lock, Eye, EyeOff, Check, X, AlertCircle, Package, Gift } from 'lucide-react';
 
 const ROLE_OPTIONS = [
   {
@@ -138,16 +138,18 @@ export default function RegisterPage() {
           )}
         </div>
 
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           Únete a {shopName}
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center', maxWidth: 300 }}>
           Crea tu cuenta y descubre los mejores productos
         </p>
 
-        <div style={{ display: 'flex', gap: 16, fontSize: 32 }}>
-          {['🛍️', '📦', '🎉'].map((emoji, i) => (
-            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 14, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)' }}>{emoji}</span>
+        <div style={{ display: 'flex', gap: 16 }}>
+          {[ShoppingBag, Package, Gift].map((Icon, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 14, background: 'rgba(255,255,255,0.15)' }}>
+              <Icon size={26} color="rgba(255,255,255,0.9)" strokeWidth={1.5} />
+            </span>
           ))}
         </div>
       </div>

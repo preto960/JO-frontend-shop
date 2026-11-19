@@ -2,24 +2,23 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import api, { extractData } from '@/lib/api';
-import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { ShoppingBag, DollarSign, TrendingUp, Users, Package, Calendar, BarChart3, ShoppingBasket, PieChart } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════
-   Stat Card — 4px colored top border, 48px circle icon,
-   12px uppercase label with letter-spacing, 24px bold value
+   Stat Card — tarjeta neutral con hairline; el acento de marca se
+   reserva para la única métrica que importa (accent). Etiquetas en
+   sentence case y cifras con tabular-nums.
    ═══════════════════════════════════════════════════════════════ */
 
 interface StatCardProps {
   title: string;
   value: string;
   icon: any;
-  color: string;
-  bgColor: string;
+  accent?: boolean;
 }
 
-function StatCard({ title, value, icon: Icon, color, bgColor }: StatCardProps) {
+function StatCard({ title, value, icon: Icon, accent = false }: StatCardProps) {
   return (
     <div
       style={{
@@ -27,48 +26,41 @@ function StatCard({ title, value, icon: Icon, color, bgColor }: StatCardProps) {
         borderRadius: 16,
         padding: 20,
         boxShadow: 'var(--shadow)',
-        borderLeft: `4px solid ${color}`,
-        borderTop: `4px solid ${color}`,
-        borderRight: 'none',
-        borderBottom: 'none',
+        border: '1px solid var(--border)',
         display: 'flex',
         alignItems: 'center',
         gap: 16,
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'box-shadow 0.15s ease-out',
         cursor: 'default',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-        e.currentTarget.style.transform = 'translateY(-2px)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = 'var(--shadow)';
-        e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
-      {/* Icon circle */}
+      {/* Icon tile — neutral; acento solo en la métrica destacada */}
       <div style={{
-        width: 48, height: 48, borderRadius: '50%',
-        background: bgColor,
+        width: 44, height: 44, borderRadius: 12,
+        background: accent ? 'var(--primary-light)' : 'var(--background)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
       }}>
-        <Icon size={24} color={color} />
+        <Icon size={22} color={accent ? 'var(--primary)' : 'var(--text-secondary)'} />
       </div>
 
       {/* Text content */}
       <div>
         <p style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: 'var(--text-light)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          marginBottom: 4,
+          fontSize: 13,
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+          marginBottom: 2,
         }}>
           {title}
         </p>
-        <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)' }}>
+        <p style={{ fontSize: 26, fontWeight: 600, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>
           {value}
         </p>
       </div>
@@ -144,7 +136,7 @@ const PERIOD_BUTTONS = [
 ];
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  // (no se usa el usuario aquí: el título es contextual, no un saludo)
   const [stats, setStats] = useState<any>(null);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -273,7 +265,7 @@ export default function AdminDashboard() {
           Dashboard
         </h1>
         <p style={{ fontSize: 15, color: 'var(--text-secondary)' }}>
-          Bienvenido, {user?.name || 'Admin'}
+          Resumen de ventas y actividad de la tienda
         </p>
         <div style={{
           height: 1,
@@ -434,36 +426,27 @@ export default function AdminDashboard() {
               title="Total pedidos"
               value={stats?.totalOrders ?? '0'}
               icon={ShoppingBag}
-              color="var(--primary)"
-              bgColor="var(--primary-light)"
             />
             <StatCard
               title="Ingresos"
               value={formatPrice(stats?.revenue ?? 0)}
               icon={DollarSign}
-              color="var(--success)"
-              bgColor="var(--success-light)"
+              accent
             />
             <StatCard
               title="Pedidos hoy"
               value={stats?.todayOrders ?? '0'}
               icon={TrendingUp}
-              color="var(--info)"
-              bgColor="var(--info-light)"
             />
             <StatCard
               title="Clientes"
               value={stats?.totalUsers ?? '0'}
               icon={Users}
-              color="var(--warning)"
-              bgColor="var(--warning-light)"
             />
             <StatCard
               title="Productos"
               value={stats?.totalProducts ?? '0'}
               icon={Package}
-              color="var(--purple)"
-              bgColor="var(--purple-light)"
             />
           </div>
 
