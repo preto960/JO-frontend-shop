@@ -5,8 +5,10 @@ import { RefreshCw, ChevronDown, ChevronUp, MapPin, Phone, User, Package } from 
 import api, { extractData } from '@/lib/api';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, showToast } from '@/lib/utils';
 import { usePusher } from '@/contexts/PusherContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DeliveryPage() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [myOrders, setMyOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,8 @@ export default function DeliveryPage() {
       }
       try {
         const res = await api.get('/orders?status=shipped');
-        setMyOrders(extractData(res));
+        // Solo pedidos asignados a ESTE repartidor (mismo criterio que la app móvil)
+        setMyOrders(extractData(res).filter((o: any) => o.deliveryId === user?.id));
       } catch {
         setMyOrders([]);
       }
