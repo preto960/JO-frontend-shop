@@ -38,7 +38,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isLoginAttempt) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('joshop_auth');
-        window.location.href = '/';
+        // Limpiar también la cookie de presencia de sesión (middleware)
+        document.cookie = 'joshop_session_hint=; path=/; max-age=0; samesite=lax';
+        window.location.href = '/login';
       }
     }
     const errData = error.response?.data || error;

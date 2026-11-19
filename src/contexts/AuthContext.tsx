@@ -66,6 +66,23 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Cookie de presencia de sesión (NO contiene el token): permite que el
+ * middleware de Next (`src/middleware.ts`) bloquee las rutas privadas en el
+ * servidor antes de hidratar. La verificación real sigue siendo el token
+ * Bearer que valida el backend en cada request.
+ */
+const SESSION_COOKIE = 'joshop_session_hint';
+const SESSION_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 días
+
+function setSessionCookie() {
+  document.cookie = `${SESSION_COOKIE}=1; path=/; max-age=${SESSION_COOKIE_MAX_AGE}; samesite=lax`;
+}
+
+function clearSessionCookie() {
+  document.cookie = `${SESSION_COOKIE}=; path=/; max-age=0; samesite=lax`;
+}
+
 function extractUser(data: any): User | null {
   if (!data) return null;
   // Direct user object
@@ -80,11 +97,6 @@ function extractUser(data: any): User | null {
 function extractToken(data: any): string | null {
   if (!data) return null;
   return data.token || data.accessToken || null;
-}
-
-function extractRefreshToken(data: any): string | null {
-  if (!data) return null;
-  return data.refreshToken || null;
 }
 
 function getRoleFromUser(user: User): string {
@@ -137,11 +149,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               const freshUser = extractUser(res);
               if (freshUser) {
                 setUser(freshUser);
-                const updated = JSON.stringify({ user: freshUser, token: t, refreshToken: parsed.refreshToken });
+                const updated = JSON.stringify({ user: freshUser, token: t });
                 localStorage.setItem('joshop_auth', updated);
+                setSessionCookie();
               }
             } catch {
               // Token invalid - clear session
+              clearSessionCookie();
               localStorage.removeItem('joshop_auth');
               setToken(null);
               setUser(null);
@@ -171,12 +185,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const u = extractUser(res);
       const t = extractToken(res);
-      const rt = extractRefreshToken(res);
 
       if (u && t) {
         setToken(t);
         setUser(u);
-        localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+        localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t }));
+        setSessionCookie();
         return { requiresOtp: false };
       }
 
@@ -191,12 +205,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await api.post('/auth/login-verify', { email, code, type: type || 'email', role: ['admin', 'editor', 'customer'] });
     const u = extractUser(res);
     const t = extractToken(res);
-    const rt = extractRefreshToken(res);
 
     if (u && t) {
       setToken(t);
       setUser(u);
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t }));
+      setSessionCookie();
       return true;
     }
     return false;
@@ -275,21 +289,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await api.post('/auth/register', payload);
     const u = extractUser(res);
     const t = extractToken(res);
-    const rt = extractRefreshToken(res);
 
     if (u && t) {
       setToken(t);
       setUser(u);
-      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t, refreshToken: rt }));
+      localStorage.setItem('joshop_auth', JSON.stringify({ user: u, token: t }));
+      setSessionCookie();
     }
     return res;
   }, []);
 
   const logout = useCallback(() => {
+    clearSessionCookie();
     localStorage.removeItem('joshop_auth');
     setToken(null);
     setUser(null);
-    window.location.href = '/';
+    window.location.href = '/login';
   }, []);
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
