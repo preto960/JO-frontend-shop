@@ -336,7 +336,7 @@ export default function OrderChatModal({
                             width: 20, height: 20, borderRadius: '50%',
                             background: '#F39C12',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 8, fontWeight: 600, color: 'var(--white)',
+                            fontSize: 8, fontWeight: 600, color: '#fff',
                           }}>
                             {msg.senderName ? msg.senderName[0].toUpperCase() : <User size={10} />}
                           </div>

@@ -142,7 +142,7 @@ export default function OrdersPage() {
         rightAction={
           <button
             onClick={fetchOrders}
-            style={{ background: 'none', border: 'none', color: 'var(--white)', cursor: 'pointer', padding: 4 }}
+            style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 4 }}
             aria-label="Actualizar"
           >
             <RefreshCw size={20} />
@@ -424,7 +424,7 @@ export default function OrdersPage() {
                                   borderRadius: 10,
                                   border: 'none',
                                   background: 'var(--primary)',
-                                  color: 'var(--white)',
+                                  color: '#fff',
                                   fontSize: 13, fontWeight: 600,
                                   cursor: 'pointer',
                                   transition: 'var(--transition)',

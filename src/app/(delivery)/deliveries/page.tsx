@@ -310,7 +310,7 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); acceptOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'var(--success)', color: 'var(--white)', fontSize: 15,
+                            background: 'var(--success)', color: '#fff', fontSize: 15,
                             fontWeight: 600, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}
@@ -323,7 +323,7 @@ export default function DeliveryPage() {
                           onClick={(e) => { e.stopPropagation(); deliverOrder(order); }}
                           style={{
                             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-                            background: 'var(--success)', color: 'var(--white)', fontSize: 15,
+                            background: 'var(--success)', color: '#fff', fontSize: 15,
                             fontWeight: 600, cursor: 'pointer', boxShadow: 'var(--shadow-success)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                           }}

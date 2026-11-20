@@ -147,7 +147,7 @@ export default function ProductDetailPage() {
   const btnBase: React.CSSProperties = {
     background: 'rgba(255,255,255,0.15)',
     border: 'none',
-    color: 'var(--white)',
+    color: '#fff',
     cursor: 'pointer',
     padding: 0,
     display: 'flex',
@@ -302,7 +302,7 @@ export default function ProductDetailPage() {
           <button onClick={addToCart} disabled={!inStock} style={{
             width: '100%', maxWidth: 420, padding: '16px 24px', borderRadius: 14,
             background: addedToCart ? 'var(--success)' : inStock ? 'var(--primary-gradient)' : 'var(--input-bg)',
-            color: 'var(--white)', fontSize: 16, fontWeight: 600, border: 'none',
+            color: '#fff', fontSize: 16, fontWeight: 600, border: 'none',
             cursor: inStock ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
             boxShadow: addedToCart ? '0 4px 14px rgba(0,184,148,0.35)' : inStock ? 'var(--shadow-accent)' : 'none',
@@ -331,7 +331,7 @@ export default function ProductDetailPage() {
           {discount > 0 && (
             <div style={{
               position: 'absolute', top: 8, left: 8, zIndex: 6,
-              background: 'var(--accent)', color: 'var(--white)',
+              background: 'var(--accent)', color: '#fff',
               padding: '5px 14px', borderRadius: 'var(--radius-full)',
               fontSize: 13, fontWeight: 600,
               boxShadow: 'var(--shadow-md)',
@@ -405,14 +405,14 @@ export default function ProductDetailPage() {
 
             {/* Image counter */}
             {hasMultiple && (
-              <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.5)', color: 'var(--white)', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 'var(--radius-full)', backdropFilter: 'blur(4px)', letterSpacing: '0.3px', zIndex: 5 }}>
+              <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 'var(--radius-full)', backdropFilter: 'blur(4px)', letterSpacing: '0.3px', zIndex: 5 }}>
                 {currentSlide + 1} / {images.length}
               </div>
             )}
 
             {/* Out of stock */}
             {!inStock && (
-              <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', background: 'var(--danger)', color: 'var(--white)', padding: '6px 16px', borderRadius: 'var(--radius-full)', fontSize: 13, fontWeight: 600, zIndex: 5, boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', background: 'var(--danger)', color: '#fff', padding: '6px 16px', borderRadius: 'var(--radius-full)', fontSize: 13, fontWeight: 600, zIndex: 5, boxShadow: 'var(--shadow-sm)' }}>
                 Agotado
               </div>
             )}

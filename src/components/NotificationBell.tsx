@@ -95,7 +95,7 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
         style={{
           background: 'rgba(255,255,255,0.15)',
           border: 'none',
-          color: 'var(--white)',
+          color: '#fff',
           cursor: 'pointer',
           padding: 0,
           display: 'flex',
@@ -161,7 +161,7 @@ export default function NotificationBell({ anchorRef: externalAnchorRef }: Notif
               {unreadCount > 0 && (
                 <span style={{
                   background: 'var(--primary-gradient)',
-                  color: 'var(--white)',
+                  color: '#fff',
                   fontSize: 11, fontWeight: 600,
                   padding: '2px 8px',
                   borderRadius: 'var(--radius-full)',

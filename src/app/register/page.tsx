@@ -134,11 +134,11 @@ export default function RegisterPage() {
           {shopLogoUrl ? (
             <img src={shopLogoUrl} alt={shopName} style={{ width: 100, height: 100, borderRadius: 14, objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontWeight: 600, fontSize: 36, color: 'var(--white)', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
+            <span style={{ fontWeight: 600, fontSize: 36, color: '#fff', letterSpacing: -1 }}>{shopName.slice(0, 2).toUpperCase()}</span>
           )}
         </div>
 
-        <h1 style={{ fontSize: 32, fontWeight: 600, color: 'var(--white)', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 600, color: '#fff', marginBottom: 8, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           Únete a {shopName}
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, marginBottom: 40, textAlign: 'center', maxWidth: 300 }}>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
               <img src={shopLogoUrl} alt={shopName} style={{ width: 90, height: 90, borderRadius: 16, objectFit: 'contain', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }} />
             ) : (
               <div style={{ width: 70, height: 70, borderRadius: 16, background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, boxShadow: 'var(--shadow-accent)' }}>
-                <span style={{ fontWeight: 600, fontSize: 24, color: 'var(--white)' }}>{shopName.slice(0, 2).toUpperCase()}</span>
+                <span style={{ fontWeight: 600, fontSize: 24, color: '#fff' }}>{shopName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -300,7 +300,7 @@ export default function RegisterPage() {
             <button type="submit" disabled={loading} style={{
               width: '100%', height: 48, borderRadius: 12,
               background: loading ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-              color: 'var(--white)', fontSize: 15, fontWeight: 600, border: 'none',
+              color: '#fff', fontSize: 15, fontWeight: 600, border: 'none',
               cursor: loading ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
               boxShadow: loading ? 'none' : 'var(--shadow-accent)', opacity: loading ? 0.8 : 1,

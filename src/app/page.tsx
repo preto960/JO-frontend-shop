@@ -14,6 +14,8 @@ import SidebarMenu from '@/components/SidebarMenu';
 import ProductCard from '@/components/ProductCard';
 import CartDropdown from '@/components/CartDropdown';
 import FavoritesDropdown from '@/components/FavoritesDropdown';
+import FloatCartPill from '@/components/FloatCartPill';
+import ThemeToggle from '@/components/ThemeToggle';
 import { showToast, debounce, formatPrice } from '@/lib/utils';
 
 const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2NjYyIgZm9udC1zaXplPSIxNCI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4=';
@@ -237,12 +239,15 @@ export default function HomePage() {
           PUBLIC HEADER
          ═══════════════════════════════════════════ */}
       <header style={{
-        background: 'var(--primary-gradient)', color: 'var(--white)',
+        background: 'var(--header-bg)', color: '#fff',
         padding: '0 12px', height: 64, display: 'flex',
         alignItems: 'center', gap: 10,
         position: 'sticky', top: 0, zIndex: 100,
         boxShadow: 'var(--shadow-accent)',
         borderRadius: '0 0 16px 16px',
+        backdropFilter: 'blur(16px) saturate(1.2)',
+        WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
+        borderBottom: '1px solid var(--header-line)',
       }}>
         {/* Left section — Logo + Menu */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -255,7 +260,7 @@ export default function HomePage() {
             <button
               onClick={() => setMenuOpen(true)}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -282,11 +287,11 @@ export default function HomePage() {
               width: '100%',
               paddingLeft: 36,
               paddingRight: 12,
-              background: 'rgba(255,255,255,0.95)',
+              background: 'var(--paper2)',
+              border: '1px solid var(--line-strong)',
               borderRadius: 'var(--radius-full)',
               height: 38,
-              border: 'none',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              boxShadow: 'var(--shadow-sm)',
               fontSize: 13,
               color: 'var(--text)',
             }}
@@ -294,13 +299,14 @@ export default function HomePage() {
         </div>
 
         {/* Right section */}
-        <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 4, flexShrink: 0, alignItems: 'center' }}>
+          <ThemeToggle size={36} />
           <div style={{ position: 'relative' }}>
             <button
               ref={favBtnRef}
               onClick={() => { setFavOpen(!favOpen); setCartOpen(false); }}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative', flexShrink: 0,
@@ -311,7 +317,7 @@ export default function HomePage() {
               {favCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: 'var(--danger)', color: 'var(--white)',
+                  background: 'var(--danger)', color: '#fff',
                   fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -331,7 +337,7 @@ export default function HomePage() {
             ref={cartBtnRef}
             onClick={() => { setCartOpen(!cartOpen); setFavOpen(false); }}
             style={{
-              background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
+              background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
               cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative', flexShrink: 0,
@@ -342,7 +348,7 @@ export default function HomePage() {
             {cartCount > 0 && (
               <span style={{
                 position: 'absolute', top: 2, right: 2,
-                background: 'var(--danger)', color: 'var(--white)',
+                background: 'var(--danger)', color: '#fff',
                 fontSize: 10, fontWeight: 600,
                 minWidth: 16, height: 16, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -356,7 +362,7 @@ export default function HomePage() {
             <button
               onClick={logout}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -368,7 +374,7 @@ export default function HomePage() {
             <button
               onClick={() => router.push('/login')}
               style={{
-                background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--white)',
+                background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff',
                 cursor: 'pointer', width: 36, height: 36, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}
@@ -387,6 +393,19 @@ export default function HomePage() {
 
       {/* Sidebar menu (only if logged in) */}
       {isLoggedIn && <SidebarMenu open={menuOpen} onClose={() => setMenuOpen(false)} />}
+
+      {/* Píldora flotante del carrito — Liquid Neon */}
+      <FloatCartPill />
+
+      {/* ═══ Hero cinético — Liquid Neon ═══ */}
+      <div className="ln-aurora" style={{ borderRadius: '0 0 20px 20px', padding: '26px 20px 22px', marginTop: -8 }}>
+        <div className="kin" style={{ fontFamily: 'var(--font-display)', fontSize: 30, lineHeight: 1.08, color: 'var(--head)', margin: 0 }}>
+          ¿Qué llevamos <em>hoy</em>?
+        </div>
+        <p className="dim" style={{ marginTop: 8, fontSize: 13 }}>
+          Entrega el mismo día en tu barrio · despacho en <span className="mono lime" style={{ fontWeight: 700 }}>45 min</span>
+        </p>
+      </div>
 
       <div style={{ padding: '20px 16px 32px' }}>
 
@@ -452,7 +471,7 @@ export default function HomePage() {
                   style={{
                     position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
                     zIndex: 10, width: 34, height: 34, borderRadius: '50%',
-                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'var(--white)',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: '#fff',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   aria-label="Anterior"
@@ -464,7 +483,7 @@ export default function HomePage() {
                   style={{
                     position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
                     zIndex: 10, width: 34, height: 34, borderRadius: '50%',
-                    border: 'none', background: 'rgba(0,0,0,0.35)', color: 'var(--white)',
+                    border: 'none', background: 'rgba(0,0,0,0.35)', color: '#fff',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   aria-label="Siguiente"
@@ -882,7 +901,7 @@ export default function HomePage() {
               onClick={() => router.push('/login')}
               style={{
                 marginLeft: 'auto', padding: '6px 14px', borderRadius: 'var(--radius-full)',
-                background: 'var(--primary-gradient)', color: 'var(--white)', border: 'none',
+                background: 'var(--primary-gradient)', color: '#fff', border: 'none',
                 cursor: 'pointer', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap',
               }}
             >
@@ -934,7 +953,7 @@ export default function HomePage() {
                 padding: '12px 28px',
                 borderRadius: 'var(--radius-full)',
                 background: 'var(--primary-gradient)',
-                color: 'var(--white)',
+                color: '#fff',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: 600,

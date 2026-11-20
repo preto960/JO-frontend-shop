@@ -566,7 +566,7 @@ export default function ProfilePage() {
           <div style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 80, background: 'var(--primary-gradient)', opacity: 0.1 }} />
             <div style={{ position: 'relative' }}>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 600, color: 'var(--white)', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: 'var(--primary-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30, fontWeight: 600, color: '#fff', margin: '0 auto 16px', boxShadow: 'var(--shadow-accent)' }}>
                 {getInitials(user?.name || '')}
               </div>
               <h2 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>{user?.name || 'Usuario'}</h2>
@@ -632,7 +632,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <button onClick={() => openAddrModal()}
-                style={{ padding: '10px 16px', borderRadius: 12, background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-accent)' }}>
+                style={{ padding: '10px 16px', borderRadius: 12, background: 'var(--primary-gradient)', color: '#fff', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-accent)' }}>
                 <Plus size={16} /> Agregar
               </button>
             </div>
@@ -660,7 +660,7 @@ export default function ProfilePage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>{addr.label}</p>
                           {addr.isDefault && (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 10px', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'var(--white)', fontSize: 11, fontWeight: 600 }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 10px', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: '#fff', fontSize: 11, fontWeight: 600 }}>
                               <Star size={10} /> Principal
                             </span>
                           )}
@@ -737,7 +737,7 @@ export default function ProfilePage() {
                     Cancelar
                   </button>
                   <button onClick={handleSaveAddress} disabled={addrSaving}
-                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: 'var(--white)', fontSize: 15, fontWeight: 600, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    style={{ flex: 1, height: 48, borderRadius: 12, border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontSize: 15, fontWeight: 600, cursor: addrSaving ? 'not-allowed' : 'pointer', opacity: addrSaving ? 0.7 : 1, boxShadow: 'var(--shadow-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     {addrSaving ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: 'var(--white)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <Check size={18} />}
                     {addrSaving ? 'Guardando...' : 'Guardar'}
                   </button>

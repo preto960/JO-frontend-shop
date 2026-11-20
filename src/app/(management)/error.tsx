@@ -55,7 +55,7 @@ export default function ManagementError({
             borderRadius: 'var(--radius-full)',
             border: 'none',
             background: 'var(--primary-gradient)',
-            color: 'var(--white)',
+            color: '#fff',
             cursor: 'pointer',
             fontWeight: 600,
             fontSize: 14,

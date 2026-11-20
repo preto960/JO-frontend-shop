@@ -105,7 +105,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
               <div style={{
                 position: 'absolute', top: 8, left: 8,
                 background: 'rgba(0,0,0,0.55)',
-                color: 'var(--white)',
+                color: '#fff',
                 fontSize: 11, fontWeight: 600,
                 padding: '3px 8px',
                 borderRadius: 'var(--radius-full)',
@@ -154,7 +154,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
           <div style={{
             position: 'absolute', top: 10, right: 10,
             background: 'var(--danger)',
-            color: 'var(--white)',
+            color: '#fff',
             fontSize: 11,
             fontWeight: 600,
             padding: '4px 12px',
@@ -169,7 +169,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
           <div style={{
             position: 'absolute', top: hasMultiple ? 10 : 10, right: 10,
             background: 'var(--danger)',
-            color: 'var(--white)',
+            color: '#fff',
             fontSize: 11,
             fontWeight: 600,
             padding: '4px 10px',
@@ -217,8 +217,9 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             <span style={{
               fontSize: hasDiscount ? 16 : 18,
               fontWeight: 600,
-              color: hasDiscount ? 'var(--danger)' : 'var(--primary)',
-              letterSpacing: '-0.3px',
+              fontFamily: 'var(--font-mono)',
+              fontVariantNumeric: 'tabular-nums',
+              color: hasDiscount ? 'var(--danger)' : 'var(--neon-strong)',
             }}>
               {formatPrice(discountedPrice)}
             </span>
@@ -227,20 +228,23 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
             <button
               onClick={handleAdd}
               style={{
-                width: 36, height: 36, borderRadius: '50%',
-                background: 'var(--primary-gradient)',
-                color: 'var(--white)',
+                width: 34, height: 34, borderRadius: 10,
+                background: 'var(--neon-bg)',
+                color: 'var(--neon-strong)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: 'none', cursor: 'pointer',
-                transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+                border: '1px solid var(--neon-line)', cursor: 'pointer',
+                fontSize: 16, fontWeight: 700,
+                transition: 'box-shadow 0.2s ease, transform 0.18s cubic-bezier(.34,1.56,.64,1), background-color 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = 'var(--shadow-accent)';
-                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.transform = 'scale(1.12)';
+                e.currentTarget.style.background = 'var(--neon)';
+                e.currentTarget.style.color = 'var(--accent-ink, #12210F)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.background = 'var(--neon-bg)';
+                e.currentTarget.style.color = 'var(--neon-strong)';
               }}
               aria-label="Agregar al carrito"
             >

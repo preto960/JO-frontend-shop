@@ -162,7 +162,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
           justifyContent: 'space-between',
           padding: '24px 20px 20px',
           background: 'var(--primary-gradient)',
-          color: 'var(--white)',
+          color: '#fff',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             {shopLogoUrl ? (
@@ -178,7 +178,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 justifyContent: 'center',
                 fontWeight: 600,
                 fontSize: 24,
-                color: 'var(--white)',
+                color: '#fff',
                 boxShadow: 'var(--shadow-accent)',
                 letterSpacing: '0.5px',
               }}>
@@ -197,7 +197,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
             style={{
               background: 'rgba(255,255,255,0.12)',
               border: 'none',
-              color: 'var(--white)',
+              color: '#fff',
               cursor: 'pointer',
               width: 36,
               height: 36,
@@ -265,7 +265,7 @@ export default function SidebarMenu({ open, onClose }: SidebarMenuProps) {
                 {item.badge > 0 && (
                   <span style={{
                     background: 'var(--primary)',
-                    color: 'var(--white)',
+                    color: '#fff',
                     fontSize: 11,
                     fontWeight: 600,
                     minWidth: 20,

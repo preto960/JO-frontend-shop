@@ -384,7 +384,7 @@ export default function AdminDashboard() {
                   borderRadius: 10,
                   border: 'none',
                   background: 'var(--primary)',
-                  color: 'var(--white)',
+                  color: '#fff',
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: 'pointer',

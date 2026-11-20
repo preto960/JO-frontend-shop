@@ -345,7 +345,7 @@ export default function CartDropdown({ isOpen, onClose, anchorRef }: CartDropdow
                   flex: 1, padding: '11px 0', borderRadius: 10,
                   border: 'none',
                   background: 'var(--primary-gradient)',
-                  color: 'var(--white)', cursor: 'pointer',
+                  color: '#fff', cursor: 'pointer',
                   fontWeight: 600, fontSize: 13,
                   boxShadow: 'var(--shadow-accent)',
                   transition: 'var(--transition)',

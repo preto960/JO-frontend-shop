@@ -37,7 +37,7 @@ export default function GlobalError({
               width: 64, height: 64, borderRadius: '50%',
               background: 'var(--primary-gradient)',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 20, color: 'var(--white)', fontWeight: 600, fontSize: 14,
+              marginBottom: 20, color: '#fff', fontWeight: 600, fontSize: 14,
               overflow: 'hidden',
             }}>
               <span style={{ position: 'relative', zIndex: 1 }}>JS</span>
@@ -61,7 +61,7 @@ export default function GlobalError({
                 borderRadius: 9999,
                 border: 'none',
                 background: 'var(--primary-gradient)',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 fontWeight: 600,
                 fontSize: 14,

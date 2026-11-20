@@ -209,7 +209,7 @@ export default function AdminOrdersPage() {
                           style={{
                             padding: '10px 18px', borderRadius: 10, border: 'none',
                             background: 'var(--primary-gradient)',
-                            color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                            color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                             boxShadow: 'var(--shadow-accent)',
                             transition: 'var(--transition)',
                           }}

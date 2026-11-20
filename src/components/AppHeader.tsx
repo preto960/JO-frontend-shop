@@ -9,6 +9,7 @@ import SidebarMenu from '@/components/SidebarMenu';
 import CartDropdown from '@/components/CartDropdown';
 import FavoritesDropdown from '@/components/FavoritesDropdown';
 import NotificationBell from '@/components/NotificationBell';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function AppHeader() {
   const { logout, isEditor, user } = useAuth();
@@ -63,8 +64,8 @@ export default function AppHeader() {
   return (
     <>
       <header style={{
-        background: 'var(--primary-gradient)',
-        color: 'var(--white)',
+        background: 'var(--header-bg)',
+        color: '#fff',
         padding: '0 16px',
         height: 100,
         display: 'flex',
@@ -75,8 +76,11 @@ export default function AppHeader() {
         zIndex: 100,
         boxShadow: 'var(--shadow-accent)',
         borderRadius: '0 0 16px 16px',
+        backdropFilter: 'blur(16px) saturate(1.2)',
+        WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
+        borderBottom: '1px solid var(--header-line)',
       }}>
-        {/* Glass overlay */}
+        {/* Glass overlay (solo tema claro: da profundidad al degradado de marca) */}
         <div style={{
           position: 'absolute',
           inset: 0,
@@ -94,7 +98,7 @@ export default function AppHeader() {
             style={{
               background: 'rgba(255,255,255,0.15)',
               border: 'none',
-              color: 'var(--white)',
+              color: '#fff',
               cursor: 'pointer',
               padding: 0,
               display: 'flex',
@@ -123,8 +127,10 @@ export default function AppHeader() {
           )}
         </div>
 
-        {/* Right: notifications + favorites + cart dropdown + logout */}
-        <div style={{ position: 'absolute', right: 16, zIndex: 1, display: 'flex', gap: 8 }}>
+        {/* Right: theme + notifications + favorites + cart dropdown + logout */}
+        <div style={{ position: 'absolute', right: 16, zIndex: 1, display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Theme toggle — Liquid Neon */}
+          <ThemeToggle />
           {/* Notification bell */}
           <NotificationBell />
           {/* Favorites icon with badge + dropdown */}
@@ -135,7 +141,7 @@ export default function AppHeader() {
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
@@ -153,7 +159,7 @@ export default function AppHeader() {
               {favCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: 'var(--danger)', color: 'var(--white)',
+                  background: 'var(--danger)', color: '#fff',
                   fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -177,7 +183,7 @@ export default function AppHeader() {
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
@@ -195,7 +201,7 @@ export default function AppHeader() {
               {cartCount > 0 && (
                 <span style={{
                   position: 'absolute', top: 2, right: 2,
-                  background: 'var(--danger)', color: 'var(--white)',
+                  background: 'var(--danger)', color: '#fff',
                   fontSize: 10, fontWeight: 600,
                   minWidth: 16, height: 16, borderRadius: 8,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -216,7 +222,7 @@ export default function AppHeader() {
             style={{
               background: 'rgba(255,255,255,0.15)',
               border: 'none',
-              color: 'var(--white)',
+              color: '#fff',
               cursor: 'pointer',
               padding: 0,
               display: 'flex',

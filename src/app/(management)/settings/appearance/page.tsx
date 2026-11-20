@@ -222,7 +222,7 @@ export default function AppearanceSettingsPage() {
           <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-light)', marginBottom: 8 }}>Vista previa</p>
           <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
             <div style={{ flex: 1, padding: 16, borderRadius: 12, background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 80 }}>
-              <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
+              <span style={{ color: '#fff', fontWeight: 600, fontSize: 20 }}>{shopName || 'JO-Shop'}</span>
               <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>Tu tienda de confianza</span>
             </div>
             <div style={{ width: 80, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -337,7 +337,7 @@ export default function AppearanceSettingsPage() {
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
               background: savingAppearance ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-              color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: savingAppearance ? 'wait' : 'pointer',
+              color: '#fff', fontSize: 14, fontWeight: 600, cursor: savingAppearance ? 'wait' : 'pointer',
               display: 'flex', alignItems: 'center', gap: 8, boxShadow: savingAppearance ? 'none' : 'var(--shadow-md)',
               opacity: savingAppearance ? 0.7 : 1,
             }}>

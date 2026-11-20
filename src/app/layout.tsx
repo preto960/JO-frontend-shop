@@ -26,6 +26,14 @@ const themeInitScript = `
   var shopName = 'JO-Shop';
   var loaderUrl = '';
 
+  // Tema Liquid Neon: dark por defecto, recordado por visita.
+  // Se aplica ANTES de pintar para evitar flash.
+  try {
+    var t0 = localStorage.getItem('jo-theme');
+    if (t0 !== 'light' && t0 !== 'dark') t0 = 'dark';
+    r.setAttribute('data-theme', t0);
+  } catch(e) { r.setAttribute('data-theme', 'dark'); }
+
   // Apply cached colors from previous visit
   try {
     var t = JSON.parse(localStorage.getItem('joshop_theme') || '{}');
@@ -89,10 +97,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html lang="es" data-theme="dark">
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="icon" href="/api/favicon" type="image/png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet" />
       </head>
       <body>
         {/* Branded loading screen — visible until page is fully ready */}

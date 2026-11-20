@@ -136,13 +136,13 @@ export default function TrackingPage() {
         gap: 12,
         padding: '14px 16px',
         background: 'var(--primary-gradient)',
-        color: 'var(--white)',
+        color: '#fff',
         flexShrink: 0,
         zIndex: 10,
       }}>
         <button
           onClick={() => router.back()}
-          style={{ background: 'none', border: 'none', color: 'var(--white)', cursor: 'pointer', padding: 4 }}
+          style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 4 }}
           aria-label="Volver"
         >
           <ArrowLeft size={22} />
@@ -185,7 +185,7 @@ export default function TrackingPage() {
                 borderRadius: 'var(--radius-full)',
                 border: 'none',
                 background: 'var(--primary)',
-                color: 'var(--white)',
+                color: '#fff',
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -209,7 +209,7 @@ export default function TrackingPage() {
                 position: 'absolute',
                 top: 12,
                 right: 12,
-                background: 'rgba(255,255,255,0.95)',
+                background: 'var(--paper)',
                 borderRadius: 8,
                 padding: '6px 12px',
                 display: 'flex',
@@ -223,7 +223,7 @@ export default function TrackingPage() {
                   background: 'var(--success)',
                   animation: 'pulse 2s ease infinite',
                 }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#333' }}>En vivo</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>En vivo</span>
               </div>
             )}
 
@@ -234,7 +234,7 @@ export default function TrackingPage() {
                 top: 12,
                 left: '50%',
                 transform: 'translateX(-50%)',
-                background: 'rgba(255,255,255,0.9)',
+                background: 'var(--paper)',
                 borderRadius: 8,
                 padding: '8px 16px',
                 display: 'flex',
@@ -244,15 +244,29 @@ export default function TrackingPage() {
                 zIndex: 10,
               }}>
                 <MapPin size={16} color="#999" />
-                <span style={{ fontSize: 12, fontWeight: 500, color: '#666' }}>
+                <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text2)' }}>
                   Esperando ubicacion del repartidor...
                 </span>
+              </div>
+            )}
+
+            {latestLocation && (
+              <div style={{
+                position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 5,
+                display: 'flex', alignItems: 'center', gap: 9,
+                background: 'var(--paper2)', border: '1px solid var(--line-strong)',
+                borderRadius: 99, padding: '8px 16px', fontSize: 12, fontWeight: 600,
+                boxShadow: 'var(--shadow-md)', color: 'var(--text)',
+              }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--neon)', animation: 'neonPulse 1.6s infinite' }}></span>
+                {delivery ? `${delivery.name || 'Repartidor'} en ruta` : 'Repartidor en ruta'}
               </div>
             )}
 
             <iframe
               key={latestLocation ? `${latestLocation.lat}-${latestLocation.lng}` : 'default'}
               src={getMapUrl()}
+              className="dark-map"
               style={{
                 width: '100%',
                 height: '100%',

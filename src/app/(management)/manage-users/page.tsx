@@ -24,7 +24,7 @@ const styles = {
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'var(--transition)',
@@ -49,7 +49,7 @@ const styles = {
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'var(--transition)',
   },
@@ -304,7 +304,7 @@ export default function AdminUsersPage() {
                     width: 46, height: 46, borderRadius: '50%',
                     background: getRoleBadgeColor(user.roles?.[0]?.name),
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'var(--white)', fontSize: 16, fontWeight: 600, flexShrink: 0,
+                    color: '#fff', fontSize: 16, fontWeight: 600, flexShrink: 0,
                     boxShadow: 'var(--shadow-md)',
                   }}>
                     {getInitials(user.name)}

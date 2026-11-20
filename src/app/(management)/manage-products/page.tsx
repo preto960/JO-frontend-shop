@@ -26,7 +26,7 @@ const styles = {
   newBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'var(--white)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+    color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer',
     display: 'flex', alignItems: 'center', gap: 6,
     boxShadow: 'var(--shadow-accent)',
     transition: 'var(--transition)',
@@ -55,7 +55,7 @@ const styles = {
   saveBtn: {
     padding: '10px 20px', borderRadius: 10, border: 'none',
     background: 'var(--primary-gradient)',
-    color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+    color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: 14,
     boxShadow: 'var(--shadow-accent)',
     transition: 'var(--transition)',
   },
@@ -435,7 +435,7 @@ export default function AdminProductsPage() {
             style={{
               padding: '10px 24px', borderRadius: 10, border: 'none',
               background: 'var(--primary-gradient)',
-              color: 'var(--white)', cursor: 'pointer', fontWeight: 600, fontSize: 14,
+              color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: 14,
               boxShadow: 'var(--shadow-accent)',
             }}
           >
@@ -635,7 +635,7 @@ export default function AdminProductsPage() {
                     padding: '0 14px', height: 42, borderRadius: 10,
                     border: 'none',
                     background: urlInput.trim() ? 'var(--primary-gradient)' : 'var(--input-bg)',
-                    color: 'var(--white)', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
+                    color: '#fff', fontSize: 13, fontWeight: 600, cursor: urlInput.trim() ? 'pointer' : 'not-allowed',
                     display: 'flex', alignItems: 'center', gap: 5,
                     transition: 'var(--transition)',
                   }}
@@ -681,7 +681,7 @@ export default function AdminProductsPage() {
                         <div style={{
                           position: 'absolute', top: 2, left: 2,
                           background: 'var(--primary)',
-                          color: 'var(--white)', borderRadius: '0 0 6px 0',
+                          color: '#fff', borderRadius: '0 0 6px 0',
                           padding: '1px 5px', fontSize: 8, fontWeight: 600,
                           display: 'flex', alignItems: 'center', gap: 2,
                         }}>
@@ -698,7 +698,7 @@ export default function AdminProductsPage() {
                         style={{
                           position: 'absolute', top: 2, right: 2,
                           width: 20, height: 20, borderRadius: '50%',
-                          background: 'rgba(0,0,0,0.6)', color: 'var(--white)',
+                          background: 'rgba(0,0,0,0.6)', color: '#fff',
                           border: 'none', cursor: 'pointer', padding: 0,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'background 0.15s ease',
@@ -713,7 +713,7 @@ export default function AdminProductsPage() {
                       {/* Index number */}
                       <div style={{
                         position: 'absolute', bottom: 2, right: 2,
-                        background: 'rgba(0,0,0,0.5)', color: 'var(--white)',
+                        background: 'rgba(0,0,0,0.5)', color: '#fff',
                         borderRadius: 4, padding: '0 4px', fontSize: 9, fontWeight: 600,
                       }}>
                         {idx + 1}

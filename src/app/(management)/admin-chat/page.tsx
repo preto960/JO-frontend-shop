@@ -548,7 +548,7 @@ export default function AdminChatPage() {
               <span style={{
                 fontSize: 11,
                 fontWeight: 600,
-                color: 'var(--white)',
+                color: '#fff',
                 background: 'var(--success)',
                 borderRadius: 'var(--radius-full)',
                 padding: '2px 8px',

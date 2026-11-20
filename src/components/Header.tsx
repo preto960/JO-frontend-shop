@@ -51,7 +51,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
       <header
         style={{
           background: 'var(--primary-gradient)',
-          color: 'var(--white)',
+          color: '#fff',
           padding: '0 16px',
           height: 60,
           display: 'flex',
@@ -78,7 +78,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
@@ -100,7 +100,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
@@ -129,7 +129,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
@@ -157,7 +157,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
                 style={{
                   background: 'rgba(255,255,255,0.15)',
                   border: 'none',
-                  color: 'var(--white)',
+                  color: '#fff',
                   cursor: 'pointer',
                   padding: 0,
                   display: 'flex',
@@ -175,7 +175,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
                 {cartCount > 0 && (
                   <span style={{
                     position: 'absolute', top: 2, right: 2,
-                    background: 'var(--danger)', color: 'var(--white)',
+                    background: 'var(--danger)', color: '#fff',
                     fontSize: 10, fontWeight: 600,
                     minWidth: 16, height: 16, borderRadius: 8,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -199,7 +199,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: 'var(--white)',
+                color: '#fff',
                 cursor: 'pointer',
                 padding: 0,
                 display: 'flex',
