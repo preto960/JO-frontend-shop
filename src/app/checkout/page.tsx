@@ -124,7 +124,7 @@ export default function CheckoutPage() {
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
       {/* Header */}
       <header style={{
-        background: 'var(--primary-gradient)', color: '#fff',
+        background: 'var(--neon)', color: 'var(--accent-ink)',
         padding: '0 16px', height: 60, display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         position: 'sticky', top: 0, zIndex: 100,
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
             <p style={{ fontSize: 18, fontWeight: 600 }}>Tu carrito está vacío</p>
             <button onClick={() => router.push('/')} style={{
               marginTop: 16, padding: '12px 28px', borderRadius: 'var(--radius-full)',
-              background: 'var(--primary-gradient)', color: '#fff', border: 'none',
+              background: 'var(--neon)', color: 'var(--accent-ink)', border: 'none',
               cursor: 'pointer', fontWeight: 600, boxShadow: 'var(--shadow-accent)',
             }}>Explorar productos</button>
           </div>
@@ -329,8 +329,8 @@ export default function CheckoutPage() {
           </div>
           <button onClick={placeOrder} disabled={placing} style={{
             width: '100%', height: 50, borderRadius: 12,
-            background: placing ? 'var(--primary-hover)' : 'var(--primary-gradient)',
-            color: '#fff', fontSize: 16, fontWeight: 600, border: 'none',
+            background: placing ? 'var(--neon-hover)' : 'var(--neon)',
+            color: 'var(--accent-ink)', fontSize: 16, fontWeight: 600, border: 'none',
             cursor: placing ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: 'var(--shadow-accent)', opacity: placing ? 0.8 : 1, maxWidth: 900, margin: '0 auto',

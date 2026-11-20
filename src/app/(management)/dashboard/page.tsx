@@ -251,6 +251,7 @@ export default function AdminDashboard() {
   /* ── Chart computed values ── */
   const ordersByDay = chartData.ordersByDay || [];
   const maxOrderCount = Math.max(...ordersByDay.map((d: any) => d.count || 0), 1);
+  const activeOrders = recentOrders.filter((o: any) => ['pending', 'confirmed', 'preparing', 'shipped'].includes(o.status || o.estado));
 
   const topProducts = chartData.topProducts || [];
   const maxProductQty = Math.max(...topProducts.map((p: any) => p.quantity || 0), 1);
@@ -273,6 +274,16 @@ export default function AdminDashboard() {
           marginTop: 16,
           borderRadius: 1,
         }} />
+      </div>
+
+      {/* ── Hero KPI — Liquid Neon ── */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>INGRESOS TOTALES</div>
+          <div className="font-mono-l" style={{ fontSize: 36, fontWeight: 700, color: 'var(--head)', letterSpacing: '-0.02em', marginTop: 4 }}>
+            {formatPrice(stats?.revenue ?? 0)}
+          </div>
+        </div>
       </div>
 
       {/* ── Date Filter Bar ── */}
@@ -495,60 +506,60 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Bars */}
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        gap: 4,
-                        height: 192,
-                        paddingTop: 4,
-                      }}>
-                        {ordersByDay.map((item: any, idx: number) => {
-                          const count = item.count || 0;
-                          const barHeight = (count / maxOrderCount) * 180;
-                          const dateStr = new Date(item.date).toLocaleDateString('es', { day: 'numeric', month: 'short' });
+                      <div>
+                        {(() => {
+                          const n = Math.max(ordersByDay.length, 2);
+                          const W = 600, H = 150, PADX = 16;
+                          const pts = ordersByDay.map((d: any, i: number) => ({
+                            x: PADX + (i * (W - PADX * 2)) / (n - 1),
+                            y: 140 - ((d.count || 0) / maxOrderCount) * 110,
+                            count: d.count || 0,
+                            date: d.date ? new Date(d.date).toLocaleDateString('es', { day: 'numeric', month: 'short' }) : '',
+                          }));
+                          const line = pts.map((pt: any) => `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(' ');
+                          const areaPath = `M ${pts[0].x.toFixed(1)},150 ` + pts.map((pt: any) => `L ${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(' ') + ` L ${pts[pts.length - 1].x.toFixed(1)},150 Z`;
                           return (
-                            <div
-                              key={item.date || idx}
-                              style={{ flex: 1, minWidth: 32, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-                              title={`${dateStr}: ${count} pedidos`}
-                            >
-                              <span style={{
-                                fontSize: 11, fontWeight: 600, color: 'var(--text)',
-                                marginBottom: 4,
-                              }}>
-                                {count > 0 ? count : ''}
-                              </span>
-                              <div style={{
-                                width: '100%',
-                                maxWidth: 40,
-                                backgroundColor: 'var(--primary)',
-                                height: `${Math.max(barHeight, 2)}px`,
-                                borderRadius: '6px 6px 0 0',
-                                transition: 'height 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                                opacity: 0.85,
-                                cursor: 'pointer',
-                              }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.opacity = '1';
-                                  e.currentTarget.style.filter = 'brightness(1.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.opacity = '0.85';
-                                  e.currentTarget.style.filter = 'none';
-                                }}
-                              />
-                              <span style={{
-                                fontSize: 10, color: 'var(--text-light)', marginTop: 6,
-                                whiteSpace: 'nowrap',
-                              }}>
-                                {dateStr}
-                              </span>
-                            </div>
+                            <svg viewBox="0 0 600 150" style={{ width: '100%', height: 170 }}>
+                              <defs>
+                                <linearGradient id="areaPedidos" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0" stopColor="var(--neon)" stopOpacity="0.3" />
+                                  <stop offset="1" stopColor="var(--neon)" stopOpacity="0" />
+                                </linearGradient>
+                              </defs>
+                              <path d={areaPath} fill="url(#areaPedidos)" />
+                              <polyline points={line} fill="none" stroke="var(--neon)" strokeWidth="3" strokeLinecap="round" />
+                              {pts.map((pt: any, i: number) => (
+                                <g key={i}>
+                                  <circle cx={pt.x} cy={pt.y} r={i === pts.length - 1 ? 5 : 3.5} fill="var(--neon)" />
+                                  <text x={pt.x} y={pt.y - 10} textAnchor="middle" fill="var(--text)" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600 }}>{pt.count > 0 ? pt.count : ''}</text>
+                                  <text x={pt.x} y={147} textAnchor="middle" fill="var(--text2)" style={{ fontSize: 10 }}>{pt.date}</text>
+                                </g>
+                              ))}
+                            </svg>
                           );
-                        })}
+                        })()}
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
+            </ChartCard>
+
+            {/* Live: pedidos activos */}
+            <ChartCard title="En vivo ahora" icon={BarChart3}>
+              {activeOrders.length === 0 ? (
+                <p style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '24px 0', fontSize: 14 }}>
+                  Sin pedidos activos en este momento
+                </p>
+              ) : (
+                <div>
+                  {activeOrders.slice(0, 4).map((order: any) => (
+                    <div key={order.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', fontSize: 12.5, color: 'var(--text)' }}>
+                      <span className="chip-live" style={{ fontSize: 10, padding: '3px 9px' }}><span className="dot"></span>{getStatusLabel(order.status || order.estado || 'pending')}</span>
+                      <span style={{ fontWeight: 600 }}>#{String(order.id).slice(-8).toUpperCase()}</span>
+                      <span style={{ marginLeft: 'auto', color: 'var(--text-secondary)' }}>{order.delivery?.name || order.deliveryName || 'sin asignar'}</span>
+                    </div>
+                  ))}
                 </div>
               )}
             </ChartCard>

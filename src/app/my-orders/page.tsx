@@ -197,7 +197,7 @@ export default function OrdersPage() {
               whiteSpace: 'nowrap',
               cursor: 'pointer',
               transition: 'var(--transition)',
-              background: activeTab === tab.value ? 'var(--primary-gradient)' : 'var(--input-bg)',
+              background: activeTab === tab.value ? 'var(--neon)' : 'var(--input-bg)',
               color: activeTab === tab.value ? 'var(--white)' : 'var(--text-secondary)',
               boxShadow: activeTab === tab.value ? 'var(--shadow-accent)' : 'none',
             }}
@@ -466,14 +466,14 @@ export default function OrdersPage() {
                                   padding: '10px 16px',
                                   borderRadius: 10,
                                   border: 'none',
-                                  background: 'var(--primary)',
-                                  color: '#fff',
+                                  background: 'var(--neon)',
+                                  color: 'var(--accent-ink)',
                                   fontSize: 13, fontWeight: 600,
                                   cursor: 'pointer',
                                   transition: 'var(--transition)',
                                   fontFamily: 'inherit',
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--primary-hover)'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--neon-hover)'; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--primary)'; }}
                               >
                                 <MapPin size={16} />

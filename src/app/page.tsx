@@ -405,6 +405,21 @@ export default function HomePage() {
         <p className="dim" style={{ marginTop: 8, fontSize: 13 }}>
           Entrega el mismo día en tu barrio · despacho en <span className="mono lime" style={{ fontWeight: 700 }}>45 min</span>
         </p>
+        <div style={{ maxWidth: 560, position: 'relative', marginTop: 16 }}>
+          <Search size={16} style={{ position: 'absolute', left: 15, top: '50%', transform: 'translateY(-50%)', color: 'var(--neon)', zIndex: 1, pointerEvents: 'none' }} />
+          <input
+            type="text"
+            placeholder="Busca “esterilla”, “botella”…"
+            defaultValue={search}
+            onChange={(e) => debouncedSearch(e.target.value)}
+            style={{
+              width: '100%', padding: '12px 16px 12px 42px', borderRadius: 14,
+              background: 'var(--paper2)', border: '1px solid var(--line-strong)',
+              color: 'var(--text)', fontSize: 13.5, outline: 'none',
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          />
+        </div>
       </div>
 
       <div style={{ padding: '20px 16px 32px' }}>
@@ -534,7 +549,7 @@ export default function HomePage() {
               className="cat-card"
               style={{
                 minWidth: 110, width: 110, flexShrink: 0, scrollSnapAlign: 'center',
-                background: !selectedCategory ? 'var(--primary-gradient)' : 'var(--white)',
+                background: !selectedCategory ? 'var(--neon)' : 'var(--white)',
                 borderRadius: 18, border: 'none', cursor: 'pointer',
                 padding: '14px 10px', display: 'flex', flexDirection: 'column',
                 alignItems: 'center', gap: 10, boxShadow: 'var(--shadow)',
@@ -563,7 +578,7 @@ export default function HomePage() {
                   className="cat-card"
                   style={{
                     minWidth: 110, width: 110, flexShrink: 0, scrollSnapAlign: 'center',
-                    background: isActive ? 'var(--primary-gradient)' : 'var(--white)',
+                    background: isActive ? 'var(--neon)' : 'var(--white)',
                     borderRadius: 18, border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
                     cursor: 'pointer',
                     padding: '14px 10px', display: 'flex', flexDirection: 'column',
@@ -616,7 +631,7 @@ export default function HomePage() {
               onClick={() => setSelectedStore('')}
               style={{
                 minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'center',
-                background: !selectedStore ? 'var(--primary-gradient)' : 'var(--white)',
+                background: !selectedStore ? 'var(--neon)' : 'var(--white)',
                 borderRadius: 18, border: 'none', cursor: 'pointer',
                 padding: '10px 8px', display: 'flex', flexDirection: 'column',
                 alignItems: 'center', gap: 6, boxShadow: 'var(--shadow)',
@@ -642,7 +657,7 @@ export default function HomePage() {
                   onClick={() => setSelectedStore(isActive ? '' : String(store.id))}
                   style={{
                     minWidth: 90, width: 90, flexShrink: 0, scrollSnapAlign: 'center',
-                    background: isActive ? 'var(--primary-gradient)' : 'var(--white)',
+                    background: isActive ? 'var(--neon)' : 'var(--white)',
                     borderRadius: 18, border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
                     cursor: 'pointer',
                     padding: '10px 8px', display: 'flex', flexDirection: 'column',
@@ -901,7 +916,7 @@ export default function HomePage() {
               onClick={() => router.push('/login')}
               style={{
                 marginLeft: 'auto', padding: '6px 14px', borderRadius: 'var(--radius-full)',
-                background: 'var(--primary-gradient)', color: '#fff', border: 'none',
+                background: 'var(--neon)', color: 'var(--accent-ink)', border: 'none',
                 cursor: 'pointer', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap',
               }}
             >
@@ -952,8 +967,8 @@ export default function HomePage() {
               style={{
                 padding: '12px 28px',
                 borderRadius: 'var(--radius-full)',
-                background: 'var(--primary-gradient)',
-                color: '#fff',
+                background: 'var(--neon)',
+                color: 'var(--accent-ink)',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: 600,

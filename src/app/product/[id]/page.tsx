@@ -311,8 +311,8 @@ export default function ProductDetailPage() {
           {/* Add to cart */}
           <button onClick={addToCart} disabled={!inStock} style={{
             width: '100%', maxWidth: 420, padding: '16px 24px', borderRadius: 14,
-            background: addedToCart ? 'var(--success)' : inStock ? 'var(--primary-gradient)' : 'var(--input-bg)',
-            color: '#fff', fontSize: 16, fontWeight: 600, border: 'none',
+            background: addedToCart ? 'var(--success)' : inStock ? 'var(--neon)' : 'var(--input-bg)',
+            color: 'var(--accent-ink)', fontSize: 16, fontWeight: 600, border: 'none',
             cursor: inStock ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
             boxShadow: addedToCart ? '0 4px 14px rgba(0,184,148,0.35)' : inStock ? 'var(--shadow-accent)' : 'none',
@@ -400,7 +400,7 @@ export default function ProductDetailPage() {
             {/* Progress bar */}
             {hasMultiple && (
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'rgba(0,0,0,0.08)', zIndex: 5 }}>
-                <div style={{ height: '100%', width: `${progress}%`, background: 'var(--primary)', transition: 'width 0.05s linear', borderRadius: '0 2px 2px 0' }} />
+                <div style={{ height: '100%', width: `${progress}%`, background: 'var(--neon)', transition: 'width 0.05s linear', borderRadius: '0 2px 2px 0' }} />
               </div>
             )}
 

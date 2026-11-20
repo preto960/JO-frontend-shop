@@ -46,6 +46,28 @@ export default function AdminOrdersPage() {
   const { isConnected } = usePusher();
   const fetchOrdersRef = useCallback(fetchOrders, [activeTab]);
 
+  // ─── Asignación de repartidor por fila ───
+  const [assignTarget, setAssignTarget] = useState<any>(null);
+  const [couriers, setCouriers] = useState<any[]>([]);
+  const [assigningTo, setAssigningTo] = useState<number | null>(null);
+  const loadCouriers = async () => {
+    try {
+      const res: any = await api.get('/auth/users', { params: { role: 'delivery' } });
+      setCouriers(extractData(res));
+    } catch { setCouriers([]); }
+  };
+  const assignTo = async (orderId: number, deliveryId: any) => {
+    try {
+      setAssigningTo(Number(deliveryId));
+      await api.put(`/orders/${orderId}/assign`, { deliveryId });
+      showToast('Repartidor asignado', 'success');
+      setAssignTarget(null);
+      fetchOrders();
+    } catch (err: any) {
+      showToast(err?.message || 'No se pudo asignar', 'error');
+    } finally { setAssigningTo(null); }
+  };
+
   useEffect(() => {
     if (!isConnected) return;
 
@@ -174,11 +196,25 @@ export default function AdminOrdersPage() {
                       {getStatusLabel(status)}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                     <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                       {order.user?.name || order.userName || 'Cliente'} · {items.length} artículo(s)
                     </p>
-                    <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>{formatPrice(total)}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      {['pending', 'confirmed', 'preparing', 'shipped'].includes(status) && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setAssignTarget(order); loadCouriers(); }}
+                          style={{
+                            padding: '7px 13px', borderRadius: 10, fontSize: 11.5, fontWeight: 600,
+                            background: 'var(--neon-bg)', color: 'var(--neon-strong)',
+                            border: '1px solid var(--neon-line)', cursor: 'pointer',
+                          }}
+                        >
+                          {order.deliveryId ? 'Reasignar' : 'Asignar'}
+                        </button>
+                      )}
+                      <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--primary)' }}>{formatPrice(total)}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -240,6 +276,55 @@ export default function AdminOrdersPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* ─── Modal: asignar repartidor ─── */}
+      {assignTarget && (
+        <div
+          onClick={() => setAssignTarget(null)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(26,29,41,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 16, width: 340, maxHeight: '70vh', overflowY: 'auto', padding: 18, boxShadow: 'var(--shadow-xl)' }}
+          >
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--head)', fontSize: 15, marginBottom: 4 }}>
+              Asignar repartidor
+            </div>
+            <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginBottom: 12 }}>
+              Pedido #{String(assignTarget.id).slice(-8).toUpperCase()}
+            </div>
+            {assigningTo ? (
+              <div style={{ padding: 14, color: 'var(--text-secondary)', fontSize: 12.5 }}>Asignando…</div>
+            ) : couriers.length === 0 ? (
+              <div style={{ padding: 14, color: 'var(--text-secondary)', fontSize: 12.5 }}>No hay repartidores registrados</div>
+            ) : (
+              couriers.map((c: any) => (
+                <button
+                  key={c.id}
+                  onClick={() => assignTo(assignTarget.id, c.id)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 12px', borderRadius: 10, marginBottom: 8,
+                    border: '1px solid var(--line)', background: 'var(--paper2)',
+                    color: 'var(--text)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--neon-bg)', color: 'var(--neon-strong)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>
+                    {(c.name || '?').slice(0, 2).toUpperCase()}
+                  </span>
+                  {c.name || c.email}
+                </button>
+              ))
+            )}
+            <button
+              onClick={() => setAssignTarget(null)}
+              style={{ width: '100%', marginTop: 6, padding: 9, borderRadius: 10, background: 'var(--paper2)', border: '1px solid var(--line)', color: 'var(--text)', fontSize: 12, cursor: 'pointer' }}
+            >
+              Cancelar
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -485,8 +485,18 @@ export default function AdminProductsPage() {
                       <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: 'var(--primary)' }}>
                         {formatPrice(product.price)}
                       </td>
-                      <td style={{ padding: '14px 16px', fontSize: 14, color: (product.stock != null && product.stock <= 0) ? 'var(--danger)' : 'var(--text)' }}>
-                        {product.stock != null ? product.stock : 'N/A'}
+                      <td style={{ padding: '14px 16px' }}>
+                        {product.stock == null ? (
+                          <span className="mini">N/A</span>
+                        ) : product.stock <= 0 ? (
+                          <span className="spill sp-danger">Agotado</span>
+                        ) : product.stock <= 5 ? (
+                          <span className="spill sp-danger">{product.stock} uds</span>
+                        ) : product.stock <= 20 ? (
+                          <span className="spill sp-warn">{product.stock} uds</span>
+                        ) : (
+                          <span className="spill sp-ok">{product.stock} uds</span>
+                        )}
                       </td>
                       <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{catName || 'N/A'}</td>
                       {isMultiStore && <td style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>{storeName || 'N/A'}</td>}
