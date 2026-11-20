@@ -14,6 +14,7 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
   const [product, setProduct] = useState<any>(null);
+  const [related, setRelated] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -70,6 +71,15 @@ export default function ProductDetailPage() {
         const res = await api.get(`/products/${id}`);
         const data = (res as any).data || (res as any).product || res;
         setProduct(data);
+        // Combina bien con: misma categoría, excluyendo el actual
+        try {
+          const catId = typeof data.category === 'object' ? (data.category && (data.category.id || data.category._id)) : data.category;
+          if (catId) {
+            const rel: any = await api.get(`/products?category=${catId}&limit=8`);
+            const list = (rel as any).products || (rel as any).data?.products || (rel as any).data || (Array.isArray(rel) ? rel : []);
+            setRelated(list.filter((rp: any) => String(rp.id) !== String(id)).slice(0, 4));
+          }
+        } catch {}
       } catch {
         showToast('Error al cargar el producto', 'error');
       } finally {
@@ -246,7 +256,7 @@ export default function ProductDetailPage() {
 
           {/* Price */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 20 }}>
-            <span style={{ fontSize: 32, fontWeight: 600, color: 'var(--primary)', lineHeight: 1 }}>
+            <span style={{ fontSize: 32, fontWeight: 600, fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--neon-strong)', lineHeight: 1 }}>
               {formatPrice(finalPrice)}
             </span>
             {discount > 0 && (
@@ -273,7 +283,7 @@ export default function ProductDetailPage() {
               background: inStock ? 'var(--success-light)' : 'var(--danger-light)',
               marginBottom: 20,
             }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: inStock ? 'var(--success)' : 'var(--danger)' }} />
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: inStock ? 'var(--neon)' : 'var(--danger)', animation: inStock ? 'neonPulse 1.6s infinite' : undefined }} />
               <span style={{ fontSize: 14, fontWeight: 500, color: inStock ? 'var(--success)' : 'var(--danger)' }}>
                 {inStock ? `En stock (${product.stock} disponibles)` : 'Agotado'}
               </span>
@@ -436,6 +446,35 @@ export default function ProductDetailPage() {
           }
         }
       `}</style>
+
+      {related.length > 0 && (
+        <div style={{ padding: '10px 30px 46px' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: '0 0 14px' }}>
+            Combina bien con
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 }}>
+            {related.map((rp: any) => {
+              const imgs = getProductImages(rp);
+              const img = imgs[0];
+              return (
+                <a key={rp.id} href={`/product/${rp.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, overflow: 'hidden', transition: 'box-shadow .2s ease, transform .18s ease', cursor: 'pointer' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-md)'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+                    <div style={{ height: 120, background: 'var(--input-bg)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {img ? <img src={img} alt={rp.name || rp.title || ''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" /> : <ShoppingBag size={30} strokeWidth={1.2} color="var(--text-light)" />}
+                    </div>
+                    <div style={{ padding: '10px 13px 13px' }}>
+                      <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{rp.name || rp.title}</div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 600, color: 'var(--neon-strong)', marginTop: 3 }}>{formatPrice(rp.price ?? rp.precio)}</div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

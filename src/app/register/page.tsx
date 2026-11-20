@@ -108,7 +108,7 @@ export default function RegisterPage() {
       display: 'flex',
       alignItems: 'stretch',
       justifyContent: 'stretch',
-      background: 'var(--primary-gradient)',
+      background: 'var(--header-bg)', backdropFilter: 'blur(16px) saturate(1.2)', WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
     }}>
       {/* Left Side: Illustration (Desktop Only) */}
       <div style={{

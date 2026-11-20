@@ -370,13 +370,13 @@ h1, h2, h3, h4 {
   }
 }
 
-/* ═══ Status Badges ═══ */
-.status-pending { background-color: #FFF3CD; color: #856404; }
-.status-confirmed { background-color: #D1ECF1; color: #0C5460; }
-.status-preparing { background-color: #E8DAEF; color: #6C3483; }
-.status-shipped { background-color: #D5F5E3; color: #155724; }
-.status-delivered { background-color: #C8F7DC; color: #1B7A42; }
-.status-cancelled { background-color: #FFE3E3; color: #CC3333; }
+/* ═══ Status Badges — tokens de tema (varían con dark/light) ═══ */
+.status-pending { background: var(--warn-bg); color: var(--warn); }
+.status-confirmed { background: var(--info-bg); color: var(--info); }
+.status-preparing { background: var(--violet-bg); color: var(--violet); }
+.status-shipped { background: var(--accent-bg); color: var(--accent-strong); }
+.status-delivered { background: var(--ok-bg); color: var(--ok); }
+.status-cancelled { background: var(--danger-bg); color: var(--danger); }
 
 /* ═══ Animations ═══ */
 @keyframes fadeIn {

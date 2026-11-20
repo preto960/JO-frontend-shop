@@ -154,7 +154,7 @@ export default function CartPage() {
                       }}>
                         {item.name}
                       </h3>
-                      <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--primary)', marginTop: 2 }}>
+                      <p style={{ fontSize: 16, fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--neon-strong)', marginTop: 2 }}>
                         {formatPrice(item.price * (item.quantity || 1))}
                       </p>
                     </div>
@@ -229,7 +229,7 @@ export default function CartPage() {
             <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>
               Total ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})
             </span>
-            <span style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontSize: 21, fontWeight: 700, color: 'var(--head)' }}>
               {formatPrice(total)}
             </span>
           </div>

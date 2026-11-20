@@ -149,10 +149,25 @@ export default function CheckoutPage() {
       <SidebarMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <div style={{ padding: '16px 16px 160px', maxWidth: 900, margin: '0 auto' }}>
+        {/* Stepper — Liquid Neon */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
+          <div style={{ flex: 1, background: 'var(--neon-bg)', border: '1px solid var(--neon-line)', borderRadius: 10, padding: '10px 14px' }}>
+            <span style={{ fontSize: 11, color: 'var(--neon-strong)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>✓ 1</span>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>Carrito</div>
+          </div>
+          <div style={{ flex: 1, background: 'var(--paper2)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px' }}>
+            <span style={{ fontSize: 11, color: 'var(--text2, #8FA096)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>2</span>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>Dirección</div>
+          </div>
+          <div style={{ flex: 1, background: 'var(--paper2)', border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px' }}>
+            <span style={{ fontSize: 11, color: 'var(--text2, #8FA096)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>3</span>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>Confirmación</div>
+          </div>
+        </div>
         {cart.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60 }}>
             <ShoppingBag size={48} style={{ color: 'var(--text-light)', margin: '0 auto 16px' }} />
-            <p style={{ fontSize: 18, fontWeight: 600 }}>Tu carrito esta vacio</p>
+            <p style={{ fontSize: 18, fontWeight: 600 }}>Tu carrito está vacío</p>
             <button onClick={() => router.push('/')} style={{
               marginTop: 16, padding: '12px 28px', borderRadius: 'var(--radius-full)',
               background: 'var(--primary-gradient)', color: '#fff', border: 'none',
@@ -280,23 +295,22 @@ export default function CheckoutPage() {
               />
             </div>
 
-            {/* ─── Order Summary ─── */}
+            {/* ─── Order Summary — ticket ─── */}
             <div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>Resumen del pedido</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, marginBottom: 12, color: 'var(--head)' }}>Resumen del pedido</h2>
+              <div className="ticket" style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 14, padding: '14px 16px' }}>
                 {cart.map(item => (
-                  <div key={item.id} style={{
-                    background: 'var(--white)', borderRadius: 14, padding: 14,
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    boxShadow: 'var(--shadow)',
-                  }}>
-                    <div>
-                      <p style={{ fontSize: 14, fontWeight: 600 }}>{item.name || 'Producto'}</p>
-                      <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Cant.: {item.quantity}</p>
-                    </div>
-                    <p style={{ fontSize: 15, fontWeight: 600 }}>{formatPrice(item.price * item.quantity)}</p>
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+                    <span style={{ fontSize: 13, color: 'var(--text2, #5B6B60)' }}>{item.quantity}× {item.name || 'Producto'}</span>
+                    <span className="mono" style={{ fontWeight: 600, color: 'var(--text)' }}>{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
+                <hr className="ticket-sep" />
+                <div className="pills" style={{ marginBottom: 4 }}>
+                  <span className="chip">💵 Efectivo al recibir</span>
+                  <span className="pill">Tarjeta (próximamente)</span>
+                </div>
+                <p className="dim" style={{ fontSize: 10.5, marginTop: 8 }}>El repartidor lleva el cambio preparado · ticket n.º al confirmar</p>
               </div>
             </div>
           </div>
@@ -309,9 +323,9 @@ export default function CheckoutPage() {
           background: 'var(--white)', borderTopLeftRadius: 20, borderTopRightRadius: 20,
           padding: 18, boxShadow: 'var(--shadow-xl)', zIndex: 50,
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, maxWidth: 900, margin: '0 auto' }}>
-            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)' }}>Total</span>
-            <span style={{ fontSize: 20, fontWeight: 600 }}>{formatPrice(total)}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, maxWidth: 900, margin: '0 auto' }}>
+            <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-secondary)' }}>Total a pagar</span>
+            <span className="mono" style={{ fontSize: 22, fontWeight: 700, color: 'var(--head)' }}>{formatPrice(total)}</span>
           </div>
           <button onClick={placeOrder} disabled={placing} style={{
             width: '100%', height: 50, borderRadius: 12,

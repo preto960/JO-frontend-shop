@@ -126,6 +126,34 @@ export default function OrdersPage() {
     window.open(`tel:${phone}`, '_self');
   };
 
+  // Volver a pedir: re-agrega los items del pedido al carrito
+  const reorderItems = (order: any) => {
+    try {
+      const items = (order.items || order.orderItems || []).map((it: any) => ({
+        id: it.productId || it.product_id || it.id,
+        name: it.name || it.productName || 'Producto',
+        price: it.subtotal || it.productPrice || it.price || it.unitPrice || 0,
+        quantity: it.quantity || 1,
+        image: it.image || it.imageUrl || '',
+      })).filter((it: any) => it.id);
+      if (items.length === 0) {
+        showToast('No hay productos para volver a pedir', 'error');
+        return;
+      }
+      const cart = JSON.parse(localStorage.getItem('joshop_cart') || '[]');
+      for (const it of items) {
+        const existing = cart.find((c: any) => String(c.id) === String(it.id));
+        if (existing) existing.quantity = (existing.quantity || 1) + it.quantity;
+        else cart.push(it);
+      }
+      localStorage.setItem('joshop_cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('cartUpdated'));
+      showToast('Productos agregados al carrito', 'success');
+    } catch {
+      showToast('No se pudo agregar al carrito', 'error');
+    }
+  };
+
   if (isLoading || !user) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
@@ -267,8 +295,9 @@ export default function OrdersPage() {
                       <div>
                         <p style={{
                           fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2,
+                          fontFamily: 'var(--font-mono)',
                         }}>
-                          Pedido #{orderIdStr.slice(-8).toUpperCase()}
+                          #{orderIdStr.slice(-8).toUpperCase()}
                         </p>
                         <p style={{ fontSize: 12, color: 'var(--text-light)' }}>
                           {formatDate(date)}
@@ -298,16 +327,30 @@ export default function OrdersPage() {
                   {/* Items summary (always visible) */}
                   <div style={{
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '0 16px 14px', borderTop: '1px solid var(--border)',
+                    padding: '0 16px 14px', borderTop: '1.5px dashed var(--line)',
                     paddingTop: 12, marginLeft: 52,
                   }}>
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                       {items.length} {items.length === 1 ? 'artículo' : 'artículos'}
                     </p>
-                    <p style={{ fontSize: 17, fontWeight: 600, color: 'var(--text)' }}>
+                    <p style={{ fontSize: 17, fontWeight: 600, color: 'var(--head)', fontFamily: 'var(--font-mono)' }}>
                       {formatPrice(total)}
                     </p>
                   </div>
+                  {status === 'delivered' && (
+                    <div style={{ padding: '0 16px 14px', marginLeft: 52 }}>
+                      <button
+                        onClick={() => reorderItems(order)}
+                        style={{
+                          width: '100%', padding: '10px 14px', borderRadius: 10,
+                          background: 'var(--neon-bg)', color: 'var(--neon-strong)',
+                          border: '1px solid var(--neon-line)', fontWeight: 600, fontSize: 12.5,
+                        }}
+                      >
+                        ↻ Volver a pedir
+                      </button>
+                    </div>
+                  )}
 
                   {/* Expanded content */}
                   {isExpanded && (
@@ -331,7 +374,7 @@ export default function OrdersPage() {
                             <div key={idx} style={{
                               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                               padding: '8px 0',
-                              borderBottom: idx < items.length - 1 ? '1px solid var(--border)' : 'none',
+                              borderBottom: idx < items.length - 1 ? '1.5px dashed var(--line)' : 'none',
                             }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                                 {item.image && (

@@ -50,7 +50,7 @@ export default function Header({ title, showBack, showLogout = true, showSetting
     <>
       <header
         style={{
-          background: 'var(--primary-gradient)',
+          background: 'var(--header-bg)',
           color: '#fff',
           padding: '0 16px',
           height: 60,
@@ -61,6 +61,9 @@ export default function Header({ title, showBack, showLogout = true, showSetting
           top: 0,
           zIndex: 100,
           boxShadow: 'var(--shadow-accent)',
+          backdropFilter: 'blur(16px) saturate(1.2)',
+          WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
+          borderBottom: '1px solid var(--header-line)',
         }}
       >
         {/* Left section */}
